@@ -110,7 +110,8 @@ export class AuthController {
       } else {
         res.status(401).json({
           success: false,
-          message: "Registracija nije uspela. Korisnicko ime vec postoji",
+          message:
+            "Registracija nije uspela. Korisnicko ime ili email vec su iskorišćeni",
         });
         return;
       }

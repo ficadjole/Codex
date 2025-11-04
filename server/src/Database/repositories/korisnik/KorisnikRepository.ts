@@ -88,6 +88,33 @@ export class KorisnikRepository implements IKorisnikRepository {
       return new Korisnik();
     }
   }
+
+  async getByEmail(email: string): Promise<Korisnik> {
+    try {
+      const query = "SELECT * FROM korisnik WHERE email = ?";
+
+      const [rows] = await db.execute<RowDataPacket[]>(query, [email]);
+
+      if (rows.length > 0) {
+        const row = rows[0];
+
+        return new Korisnik(
+          row.korisnik_id,
+          row.ime,
+          row.prezime,
+          row.email,
+          row.korisnicko_ime,
+          row.lozinka_hash,
+          row.uloga
+        );
+      } else {
+        return new Korisnik();
+      }
+    } catch {
+      return new Korisnik();
+    }
+  }
+
   async getAll(): Promise<Korisnik[]> {
     try {
       const query = "SELECT * FROM korisnik";

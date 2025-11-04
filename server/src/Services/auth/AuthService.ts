@@ -46,11 +46,16 @@ export class AuthService implements IAuthService {
     password: string,
     uloga: Uloga
   ): Promise<KorisnikLoginDto> {
-    const postojeciKorisnik = await this.korisnikRepository.getByKorisnickoIme(
-      korisnicko_ime
-    );
+    //proveravamo korisnicko ime da li postoji
+    const postojeceKorisnickoIme =
+      await this.korisnikRepository.getByKorisnickoIme(korisnicko_ime);
 
-    if (postojeciKorisnik.korisnik_id !== 0) return new KorisnikLoginDto();
+    if (postojeceKorisnickoIme.korisnik_id !== 0) return new KorisnikLoginDto();
+
+    //proveravamo da li postoji vec nalog sa datim emailom
+    const postojeciEmail = await this.korisnikRepository.getByEmail(email);
+
+    if (postojeciEmail.korisnik_id !== 0) return new KorisnikLoginDto();
 
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
