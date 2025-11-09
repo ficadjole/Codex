@@ -10,3 +10,6 @@ export class ArtikalDto {
     public datum_kreiranja: Date = new Date()
   ) {}
 }
+
+//ovo sluzi kada hocemo da prikazemo sve artikle bez detalja
+//npr na pocetnoj strani ili u pretrazi

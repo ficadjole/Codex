@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Korisnik } from "../../../Domain/models/Korisnik";
-import { IKorisnikRepository } from "../../../Domain/repositories/korisnik/IKorisnikRepository";
+import { IKorisnikRepository } from "../../../Domain/repositories/IKorisnikRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class KorisnikRepository implements IKorisnikRepository {

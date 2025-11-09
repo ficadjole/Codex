@@ -1,7 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { TipArtikla } from "../../../Domain/enums/TipArtikla";
 import { Artikal } from "../../../Domain/models/Artikal";
-import { IArtikalRepository } from "../../../Domain/repositories/artikal/IArtikalRepository";
+import { IArtikalRepository } from "../../../Domain/repositories/IArtikalRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class ArtikalRepository implements IArtikalRepository {
@@ -18,7 +18,7 @@ export class ArtikalRepository implements IArtikalRepository {
         artikal.korisnik_id,
       ]);
 
-      if (result.insertId) {
+      if (result.affectedRows > 0) {
         return new Artikal(
           result.insertId,
           artikal.naziv,

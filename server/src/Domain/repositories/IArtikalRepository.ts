@@ -1,5 +1,6 @@
-import { TipArtikla } from "../../enums/TipArtikla";
-import { Artikal } from "../../models/Artikal";
+import { TipArtikla } from "../enums/TipArtikla";
+import { Artikal } from "../models/Artikal";
+
 
 export interface IArtikalRepository {
   dodajArtikal(artikal: Artikal): Promise<Artikal>;

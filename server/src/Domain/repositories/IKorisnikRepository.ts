@@ -1,4 +1,5 @@
-import { Korisnik } from "../../models/Korisnik";
+import { Korisnik } from "../models/Korisnik";
+
 
 export interface IKorisnikRepository {
   create(korisnik: Korisnik): Promise<Korisnik>;

@@ -1,0 +1,6 @@
+result.insertId - prikazuje id insertovan u bazi samo ako imamo automatski generisani ID namesten u bazi, inace je 0
+result.affectedRow - prikazuje koliko je redova obuhvaceno rezultatom
+
+kod tabela koje nemaju automatski generisani ID treba prosledjivati i id, u mom primeri su to knjiga i aksesoar
+
+{ ...(artikal as Knjiga), artikal_id: noviArtikal.artikal_id } - ovo vrsi kastovanje artikla u Knjigu radi daljeg koriscenja njega kao Knjige i dodaje mu artikal_id od objekta noviArtikal

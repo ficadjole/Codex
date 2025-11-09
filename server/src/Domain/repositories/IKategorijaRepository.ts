@@ -1,4 +1,5 @@
-import { Kategorija } from "../../models/Kategorija";
+import { Kategorija } from "../models/Kategorija";
+
 
 export interface IKategorijaRepository {
   dodajKategoriju(naziv: string): Promise<Kategorija>;

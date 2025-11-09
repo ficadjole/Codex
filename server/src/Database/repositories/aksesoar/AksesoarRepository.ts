@@ -1,21 +1,23 @@
 import { ResultSetHeader } from "mysql2";
 import { Aksesoar } from "../../../Domain/models/Aksesoar";
-import { IAksesoarRepository } from "../../../Domain/repositories/aksesoar/IAksesoarRepository";
+import { IAksesoarRepository } from "../../../Domain/repositories/IAksesoarRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class AksesoarRepository implements IAksesoarRepository {
   async dodajAksesoar(aksesoar: Aksesoar): Promise<Aksesoar> {
     try {
-      const query = "INSERT INTO aksesoar (opis,sadrzaj) VALUES (?,?)";
+      const query =
+        "INSERT INTO aksesoar (artikal_id,opis,sadrzaj) VALUES (?,?,?)";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
+        aksesoar.artikal_id,
         aksesoar.opis,
         aksesoar.sadrzaj,
       ]);
 
-      if (result.insertId) {
+      if (result.affectedRows > 0) {
         return new Aksesoar(
-          result.insertId,
+          aksesoar.artikal_id,
           aksesoar.naziv,
           aksesoar.cena,
           aksesoar.slika_url,
@@ -26,7 +28,7 @@ export class AksesoarRepository implements IAksesoarRepository {
       } else {
         return new Aksesoar();
       }
-    } catch {
+    } catch (error) {
       return new Aksesoar();
     }
   }

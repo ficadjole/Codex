@@ -1,7 +1,7 @@
 import { KorisnikLoginDto } from "../../Domain/DTOs/auth/KorisnikLoginDto";
 import { Uloga } from "../../Domain/enums/Uloga";
 import { Korisnik } from "../../Domain/models/Korisnik";
-import { IKorisnikRepository } from "../../Domain/repositories/korisnik/IKorisnikRepository";
+import { IKorisnikRepository } from "../../Domain/repositories/IKorisnikRepository";
 import { IAuthService } from "../../Domain/services/auth/IAuthService";
 import bcrypt from "bcryptjs";
 

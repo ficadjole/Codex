@@ -1,4 +1,5 @@
-import { Aksesoar } from "../../models/Aksesoar";
+import { Aksesoar } from "../models/Aksesoar";
+
 
 export interface IAksesoarRepository {
   dodajAksesoar(aksesoar: Aksesoar): Promise<Aksesoar>;

@@ -1,15 +1,16 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Knjiga } from "../../../Domain/models/Knjiga";
-import { IKnjigaRepository } from "../../../Domain/repositories/knjiga/IKnjigaRepository";
+import { IKnjigaRepository } from "../../../Domain/repositories/IKnjigaRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class KnjigaRepository implements IKnjigaRepository {
   async dodajKnjigu(knjiga: Knjiga): Promise<Knjiga> {
     try {
       const query =
-        "INSERT INTO knjiga (isbn,autor,broj_strana,korice,godina_izdanja,opis,goodreads_link) VALUES (?,?,?,?,?,?,?)";
+        "INSERT INTO knjiga (artikal_id,isbn,autor,broj_strana,korice,godina_izdanja,opis,goodreads_link) VALUES (?,?,?,?,?,?,?,?)";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
+        knjiga.artikal_id,
         knjiga.isbn,
         knjiga.autor,
         knjiga.broj_strana,
@@ -19,9 +20,9 @@ export class KnjigaRepository implements IKnjigaRepository {
         knjiga.goodreads_link,
       ]);
 
-      if (result.insertId) {
+      if (result.affectedRows > 0) {
         return new Knjiga(
-          result.insertId,
+          knjiga.artikal_id,
           knjiga.naziv,
           knjiga.cena,
           knjiga.slika_url,

@@ -1,5 +1,6 @@
 import { TipArtikla } from "../enums/TipArtikla";
 import { Artikal } from "./Artikal";
+import { Kategorija } from "./Kategorija";
 
 export class Knjiga extends Artikal {
   public constructor(
@@ -14,7 +15,8 @@ export class Knjiga extends Artikal {
     public korice: "meke" | "tvrde" = "meke",
     public godina_izdanja: number = 0,
     public opis: string = "",
-    public goodreads_link = ""
+    public goodreads_link = "",
+    public kategorije?: Kategorija[] //ovo su nam kategorije (zanrovi) knjige koji ce se prolsedjivati zajedno sa njom
   ) {
     super(
       artikal_id,

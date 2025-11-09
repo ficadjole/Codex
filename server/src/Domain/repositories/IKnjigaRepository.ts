@@ -1,4 +1,5 @@
-import { Knjiga } from "../../models/Knjiga";
+import { Knjiga } from "../models/Knjiga";
+
 
 export interface IKnjigaRepository {
   dodajKnjigu(knjiga: Knjiga): Promise<Knjiga>;
