@@ -137,14 +137,13 @@ export class KorisnikRepository implements IKorisnikRepository {
   async update(korisnik: Korisnik): Promise<Korisnik> {
     try {
       const query =
-        "UPDATE korisnik SET ime = ?, prezime = ?, email = ?, korisnicko_ime = ?, lozinka_hash = ? WHERE korisnik_id = ?";
+        "UPDATE korisnik SET ime = ?, prezime = ?, email = ?, korisnicko_ime = ? WHERE korisnik_id = ?";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         korisnik.ime,
         korisnik.prezime,
         korisnik.email,
         korisnik.korisnicko_ime,
-        korisnik.lozinka_hash,
         korisnik.korisnik_id,
       ]);
 

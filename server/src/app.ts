@@ -18,6 +18,9 @@ import { IKategorijaRepository } from "./Domain/repositories/IKategorijaReposito
 import { KategorijaRepository } from "./Database/repositories/kategorija/KategorijaRepository";
 import { ArtikalController } from "./WebAPI/controllers/ArtikalController";
 import { IKorisnikRepository } from "./Domain/repositories/IKorisnikRepository";
+import { IUserService } from "./Domain/services/user/IUserService";
+import { KorisnikService } from "./Services/korisnik/KorisnikService";
+import { KorisnikController } from "./WebAPI/controllers/KorisnikController";
 
 require("dotenv").config();
 
@@ -51,8 +54,15 @@ const artikalService: IArtikalService = new ArtikalService(
 
 const artikalController = new ArtikalController(artikalService);
 
+//Korisnik
+
+const korisnikService: IUserService = new KorisnikService(korisnikRepository);
+const korisnikController = new KorisnikController(korisnikService);
+
 app.use("/api/v1", authController.getRouter());
 
 app.use("/api/v1/artikal", artikalController.getRouter());
+
+app.use("/api/v1/korisnik", korisnikController.getRouter());
 
 export default app;
