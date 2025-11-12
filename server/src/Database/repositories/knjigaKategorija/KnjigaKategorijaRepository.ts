@@ -4,6 +4,16 @@ import { IKnjigaKategorijaRepository } from "../../../Domain/repositories/IKnjig
 import db from "../../connection/DbConnectionPool";
 
 export class KnjigaKategorijaRepository implements IKnjigaKategorijaRepository {
+  async obrisiKategorijeZaKnjigu(knjiga_id: number): Promise<boolean> {
+    try {
+      const query = `DELETE FROM knjiga_kategorija WHERE knjiga_id = ?`;
+      const [result] = await db.execute<ResultSetHeader>(query, [knjiga_id]);
+
+      return result.affectedRows > 0;
+    } catch {
+      return false;
+    }
+  }
   async dodajKnjigaKategorija(
     knjiga_id: number,
     kategorija_id: number
@@ -15,8 +25,6 @@ export class KnjigaKategorijaRepository implements IKnjigaKategorijaRepository {
         knjiga_id,
         kategorija_id,
       ]);
-
-      console.log("Rezultat dodavanja knjiga_kategorija:", result);
 
       if (result.affectedRows > 0) {
         return new KnjigaKategorija(knjiga_id, kategorija_id);

@@ -37,6 +37,36 @@ export class ArtikalController {
       authorize(Uloga.admin),
       this.azurirajArtikal.bind(this)
     );
+
+    this.router.get(
+      "/getArtikalById/:artikalId",
+      authenticate,
+      this.getArtikalById.bind(this)
+    );
+
+    this.router.get(
+      "/getAllArtikli",
+      authenticate,
+      this.getAllArtikli.bind(this)
+    );
+
+    this.router.get(
+      "/getArtikliByTip/:tip",
+      authenticate,
+      this.getArtikliByTip.bind(this)
+    );
+
+    this.router.get(
+      "/getKnjiga/:artikalId",
+      authenticate,
+      this.getKnjiga.bind(this)
+    );
+
+    this.router.get(
+      "/getAksesoar/:artikalId",
+      authenticate,
+      this.getAksesoar.bind(this)
+    );
   }
 
   private async dodajArtikal(req: any, res: any): Promise<void> {
@@ -101,6 +131,128 @@ export class ArtikalController {
         res
           .status(200)
           .json({ success: true, message: "Artikal je uspesno azuriran." });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getAllArtikli(req: any, res: any): Promise<void> {
+    try {
+      const rezultat = await this.artikalService.getAllArtikli();
+
+      if (rezultat.length === 0) {
+        res
+          .status(404)
+          .json({ success: false, message: "Nema artikala u ponudi." });
+        return;
+      } else {
+        res.status(200).json({ success: true, data: rezultat });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getArtikalById(req: any, res: any): Promise<void> {
+    try {
+      const artikalId = parseInt(req.params.artikalId);
+
+      const rezultat = await this.artikalService.getArtikalById(artikalId);
+
+      if (rezultat.artikal_id === 0) {
+        res.status(404).json({
+          success: false,
+          message: "Artikal sa tim ID-jem ne postoji.",
+        });
+        return;
+      } else {
+        res.status(200).json({ success: true, data: rezultat });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getArtikliByTip(req: any, res: any): Promise<void> {
+    try {
+      const tip = req.params.tip;
+      const rezultat = await this.artikalService.getArtikliByTip(tip);
+
+      if (rezultat.length === 0) {
+        res.status(404).json({
+          success: false,
+          message: "Nema artikala tog tipa u ponudi.",
+        });
+        return;
+      } else {
+        res.status(200).json({ success: true, data: rezultat });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getKnjiga(req: any, res: any): Promise<void> {
+    try {
+      const artikalId = parseInt(req.params.artikalId);
+      const artikalTrazeni = await this.artikalService.getArtikalById(
+        artikalId
+      );
+
+      const rezultat = await this.artikalService.getKnjiga(artikalId);
+
+      //ovo moram da uradim da bih vratio i osnovne informacije o artiklu
+      rezultat.naziv = artikalTrazeni.naziv;
+      rezultat.cena = artikalTrazeni.cena;
+      rezultat.slika_url = artikalTrazeni.slika_url;
+
+      if (rezultat.artikal_id === 0 || artikalTrazeni.artikal_id === 0) {
+        res.status(404).json({
+          success: false,
+          message: "Knjiga sa tim ID-jem ne postoji.",
+        });
+        return;
+      } else {
+        res.status(200).json({ success: true, data: rezultat });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getAksesoar(req: any, res: any): Promise<void> {
+    try {
+      const artikalId = parseInt(req.params.artikalId);
+      const artikalTrazeni = await this.artikalService.getArtikalById(
+        artikalId
+      );
+
+      const rezultat = await this.artikalService.getAksesoar(artikalId);
+
+      //ovo moram da uradim da bih vratio i osnovne informacije o artiklu
+      rezultat.naziv = artikalTrazeni.naziv;
+      rezultat.cena = artikalTrazeni.cena;
+      rezultat.slika_url = artikalTrazeni.slika_url;
+
+      if (rezultat.artikal_id === 0 || artikalTrazeni.artikal_id === 0) {
+        res.status(404).json({
+          success: false,
+          message: "Aksesoar sa tim ID-jem ne postoji.",
+        });
+        return;
+      } else {
+        res.status(200).json({ success: true, data: rezultat });
       }
     } catch {
       res

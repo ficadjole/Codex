@@ -9,6 +9,7 @@ export interface IKnjigaKategorijaRepository {
     knjiga_id: number,
     kategorija_id: number
   ): Promise<boolean>;
+  obrisiKategorijeZaKnjigu(knjiga_id: number): Promise<boolean>;
   azurirajKnjigaKategorija(
     knjigaKategorija: KnjigaKategorija,
     id_nove_kategorije: number

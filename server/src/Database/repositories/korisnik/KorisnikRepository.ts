@@ -32,8 +32,7 @@ export class KorisnikRepository implements IKorisnikRepository {
       } else {
         return new Korisnik();
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       return new Korisnik();
     }
   }
@@ -58,8 +57,7 @@ export class KorisnikRepository implements IKorisnikRepository {
       } else {
         return new Korisnik();
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       return new Korisnik();
     }
   }
@@ -83,8 +81,7 @@ export class KorisnikRepository implements IKorisnikRepository {
       } else {
         return new Korisnik();
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       return new Korisnik();
     }
   }

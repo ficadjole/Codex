@@ -120,6 +120,33 @@ export class ArtikalService implements IArtikalService {
         const azuriranaKnjiga = await this.knjigaRepository.azurirajKnjigu(
           artikal as Knjiga
         );
+
+
+        if(azuriranaKnjiga.kategorije && azuriranaKnjiga.kategorije.length > 0){
+          //prvo brisemo sve postojece kategorije za tu knjigu
+          await this.knjigaKategorijaRepository.obrisiKategorijeZaKnjigu(azuriranaKnjiga.artikal_id);
+          //pa dodajemo nove
+          for (const kategorija of azuriranaKnjiga.kategorije) {
+            let postojecaKategorija =
+              await this.kategorijaRepository.getByKategorijaID(
+                kategorija.kategorija_id
+              );
+            if (postojecaKategorija.kategorija_id !== 0) {
+              const uspesnoDodataKnjigaKategorija =
+                await this.knjigaKategorijaRepository.dodajKnjigaKategorija(
+                  azuriranaKnjiga.artikal_id,
+                  postojecaKategorija.kategorija_id
+                );  
+              if (uspesnoDodataKnjigaKategorija.kategorija_id === 0) {
+                //nije uspelo dodavanje veze knjiga-kategorija
+                return new ArtikalDto();
+              }   
+            } else {
+              return new ArtikalDto(); //za sad ne dozvoljavamo dodavanje novih kategorija kroz ovaj endpoint
+            }
+          }
+        }
+
         if (azuriranaKnjiga.artikal_id === 0) {
           return new ArtikalDto();
         }
@@ -209,7 +236,7 @@ export class ArtikalService implements IArtikalService {
       return new KnjigaDetaljiDto();
     }
 
-    //dohvatamo kategorije knjige
+    //dohvatimo kategorije knjige
 
     const knjigaKategorije =
       await this.knjigaKategorijaRepository.getByKnjigaId(artikalId);
