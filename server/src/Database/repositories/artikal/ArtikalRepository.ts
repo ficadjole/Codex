@@ -157,6 +157,7 @@ export class ArtikalRepository implements IArtikalRepository {
 
       const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
 
+      
       return result.affectedRows > 0;
     } catch {
       return false;

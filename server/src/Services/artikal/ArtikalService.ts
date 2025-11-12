@@ -97,6 +97,7 @@ export class ArtikalService implements IArtikalService {
       noviArtikal.datumKreiranja
     );
   }
+
   async azurirajArtikal(artikal: Artikal): Promise<ArtikalDto> {
     const postojeciArtikal = await this.artikalRepository.getByArtikalId(
       artikal.artikal_id
@@ -141,6 +142,7 @@ export class ArtikalService implements IArtikalService {
       azuriraniArtikal.datumKreiranja
     );
   }
+
   async obrisiArtikal(artikalId: number): Promise<boolean> {
     const postojeciArtikal = await this.artikalRepository.getByArtikalId(
       artikalId
@@ -153,30 +155,6 @@ export class ArtikalService implements IArtikalService {
     const uspesnoObrisan = await this.artikalRepository.obrisiArtikal(
       artikalId
     );
-
-    if (uspesnoObrisan === true) {
-      //brisemo i detalje
-      switch (postojeciArtikal.tip) {
-        case TipArtikla.knjiga:
-          const uspesnoObrisanaKnjiga =
-            await this.knjigaRepository.obrisiKnjigu(artikalId);
-
-          if (uspesnoObrisanaKnjiga === false) {
-            return false;
-          }
-
-          break;
-        case TipArtikla.aksesoar:
-          const uspesnoObrisanAksesoar =
-            await this.aksesoarRepository.obrisiAksesoar(artikalId);
-
-          if (uspesnoObrisanAksesoar === false) {
-            return false;
-          }
-
-          break;
-      }
-    }
 
     return uspesnoObrisan;
   }

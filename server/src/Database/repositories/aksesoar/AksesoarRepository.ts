@@ -52,17 +52,19 @@ export class AksesoarRepository implements IAksesoarRepository {
       return new Aksesoar();
     }
   }
-  async obrisiAksesoar(artikal_id: number): Promise<boolean> {
-    try {
-      const query = "DELETE FROM aksesoar WHERE artikal_id = ?";
+  // async obrisiAksesoar(artikal_id: number): Promise<boolean> {
+  //   try {
+  //     const query = "DELETE FROM aksesoar WHERE artikal_id = ?";
 
-      const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
+  //     const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
+  //     console.log("Rezultat brisanja aksesoara: ", result);
+  //     return result.affectedRows > 0;
+  //   } catch (error) {
+  //     console.error("Greska pri brisanju aksesoara:", error);
 
-      return result.affectedRows > 0;
-    } catch {
-      return false;
-    }
-  }
+  //     return false;
+  //   }
+  // }
   async getByAksesoarID(artikal_id: number): Promise<Aksesoar> {
     try {
       const query = "SELECT * FROM aksesoar WHERE artikal_id = ?";

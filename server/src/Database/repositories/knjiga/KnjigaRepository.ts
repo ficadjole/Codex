@@ -67,17 +67,17 @@ export class KnjigaRepository implements IKnjigaRepository {
       return new Knjiga();
     }
   }
-  async obrisiKnjigu(artikal_id: number): Promise<boolean> {
-    try {
-      const query = "DELETE FROM knjiga WHERE artikal_id = ?";
+  // async obrisiKnjigu(artikal_id: number): Promise<boolean> {
+  //   try {
+  //     const query = "DELETE FROM knjiga WHERE artikal_id = ?";
 
-      const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
+  //     const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
 
-      return result.affectedRows > 0;
-    } catch {
-      return false;
-    }
-  }
+  //     return result.affectedRows > 0;
+  //   } catch {
+  //     return false;
+  //   }
+  // }
   async getByKnjigaID(artikal_id: number): Promise<Knjiga> {
     try {
       const query = "SELECT * FROM knjiga WHERE artikal_id = ?";
