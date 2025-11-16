@@ -1,4 +1,4 @@
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Kategorija } from "../../../Domain/models/Kategorija";
 import { IKategorijaRepository } from "../../../Domain/repositories/IKategorijaRepository";
 import db from "../../connection/DbConnectionPool";
@@ -66,7 +66,7 @@ export class KategorijaRepository implements IKategorijaRepository {
   async getByKategorijaID(kategorija_id: number): Promise<Kategorija> {
     try {
       const query = `SELECT * FROM kategorija WHERE kategorija_id = ?`;
-      const [rows] = await db.execute<any[]>(query, [kategorija_id]);
+      const [rows] = await db.execute<RowDataPacket[]>(query, [kategorija_id]);
       if (rows.length > 0) {
         const row = rows[0];
         return new Kategorija(row.kategorija_id, row.naziv);
@@ -80,7 +80,7 @@ export class KategorijaRepository implements IKategorijaRepository {
   async getAll(): Promise<Kategorija[]> {
     try {
       const query = `SELECT * FROM kategorija`;
-      const [rows] = await db.execute<any[]>(query);
+      const [rows] = await db.execute<RowDataPacket[]>(query);
       return rows.map((row) => new Kategorija(row.kategorija_id, row.naziv));
     } catch {
       return [];

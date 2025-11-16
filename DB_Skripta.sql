@@ -113,12 +113,23 @@ CREATE TABLE blog_lajk (
 -- NARUDŽBINE, STAVKE, TRANSAKCIJE
 -- ========================================
 CREATE TABLE narudzbina (
-    narudzbina_id INT AUTO_INCREMENT PRIMARY KEY,
-    korisnik_id INT NULL,
-    datum_narudzbine TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('na_cekanju','placeno','poslato','otkazano') DEFAULT 'na_cekanju',
-    ukupna_cena DECIMAL(10,2),
-    FOREIGN KEY (korisnik_id) REFERENCES korisnik(korisnik_id) ON DELETE SET NULL
+  narudzbina_id int NOT NULL AUTO_INCREMENT,
+  korisnik_id int DEFAULT NULL,
+  datum_narudzbine timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  status enum('na_cekanju','placeno','poslato','otkazano') DEFAULT 'na_cekanju',
+  ukupna_cena decimal(10,2) DEFAULT NULL,
+  ime varchar(100) NOT NULL,
+  prezime varchar(100) NOT NULL,
+  email varchar(255) NOT NULL,
+  telefon varchar(30) DEFAULT NULL,
+  grad varchar(100) NOT NULL,
+  ulica varchar(255) NOT NULL,
+  broj varchar(20) DEFAULT NULL,
+  postanski_broj varchar(20) DEFAULT NULL,
+  napomena text,
+  PRIMARY KEY (`narudzbina_id`),
+  KEY korisnik_id (`korisnik_id`),
+  CONSTRAINT narudzbina_ibfk_1 FOREIGN KEY (`korisnik_id`) REFERENCES `korisnik` (`korisnik_id`) ON DELETE SET NULL
 );
 
 CREATE TABLE stavka_narudzbine (
