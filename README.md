@@ -1,9 +1,3 @@
-# Codex
-
-Web aplikacija za Codex udruzenje
-
-Rade: Velemir Filip i Katarina Kalauz
-
 # Codex – Web Shop & Blog Platform
 
 This project is a web application for the Codex association, combining an online store and a blog. It allows admins to manage articles and blog posts, while customers can browse products, make purchases, and interact with the blog.
