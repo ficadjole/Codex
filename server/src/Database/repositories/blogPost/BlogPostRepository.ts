@@ -56,7 +56,7 @@ export class BlogPostRepository implements IBlogPostRepository {
   }
   async getBlogPostsPoTipu(tip: TipBlogPosta): Promise<BlogPost[]> {
     try {
-      const query = `SELECT * FROM blog_post WHERE tipPosta = ?`;
+      const query = `SELECT * FROM blog_post WHERE tip = ?`;
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [tip]);
 
@@ -80,16 +80,15 @@ export class BlogPostRepository implements IBlogPostRepository {
       return [];
     }
   }
-  async createBlogPost(blogPost: any): Promise<BlogPost> {
+  async createBlogPost(blogPost: BlogPost): Promise<BlogPost> {
     try {
-      const query = `INSERT INTO blog_post (naslov, slika_url, sadrzaj, tipPosta, datum_objave, admin_id) VALUES (?, ?, ?, ?, ?, ?)`;
+      const query = `INSERT INTO blog_post (naslov, slika_url, sadrzaj, tip, korisnik_id) VALUES (?, ?, ?, ?, ?)`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         blogPost.naslov,
         blogPost.slika_url,
         blogPost.sadrzaj,
         blogPost.tipPosta,
-        blogPost.datum_objave,
         blogPost.admin_id,
       ]);
 
@@ -106,20 +105,20 @@ export class BlogPostRepository implements IBlogPostRepository {
       } else {
         return new BlogPost();
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
       return new BlogPost();
     }
   }
   async updateBlogPost(id: number, blogPost: any): Promise<BlogPost> {
     try {
-      const query = `UPDATE blog_post SET naslov = ?, slika_url = ?, sadrzaj = ?, tipPosta = ?, datum_objave = ?, admin_id = ? WHERE blog_post_id = ?`;
+      const query = `UPDATE blog_post SET naslov = ?, slika_url = ?, sadrzaj = ?, tip = ?, korisnik_id = ? WHERE blog_post_id = ?`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         blogPost.naslov,
         blogPost.slika_url,
         blogPost.sadrzaj,
         blogPost.tipPosta,
-        blogPost.datum_objave,
         blogPost.admin_id,
         id,
       ]);
