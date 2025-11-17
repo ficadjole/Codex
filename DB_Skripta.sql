@@ -74,7 +74,7 @@ CREATE TABLE blog_post (
     blog_post_id INT AUTO_INCREMENT PRIMARY KEY,
     naslov VARCHAR(255) NOT NULL,
     slika_url TEXT,
-    opis LONGTEXT NOT NULL,
+    sadrzaj LONGTEXT NOT NULL,
     tip ENUM('obavestenje', 'zanimljivost') NOT NULL,
     datum_objave TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     korisnik_id INT,

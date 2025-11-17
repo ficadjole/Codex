@@ -1,14 +1,13 @@
-import { TipBlogPosta } from "../enums/TipBlogPosta";
+import { TipBlogPosta } from "../../enums/TipBlogPosta";
+import { ArtikalDto } from "../artikal/ArtikalDto";
 
-export class BlogPost {
-  constructor(
+export class BlogPostDto {
+  public constructor(
     public blog_post_id: number = 0,
     public naslov: string = "",
     public slika_url: string = "",
     public sadrzaj: string = "",
     public tipPosta: TipBlogPosta = TipBlogPosta.obavestenja,
-    public datum_objave: Date = new Date(),
-    public admin_id: number = 0,
-    public artikal_id: number[] = []
+    public datumKreiranja: Date = new Date()
   ) {}
 }

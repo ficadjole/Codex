@@ -17,7 +17,7 @@ export class BlogPostRepository implements IBlogPostRepository {
               row.blog_post_id,
               row.naslov,
               row.slika_url,
-              row.opis,
+              row.sadrzaj,
               row.tipPosta,
               new Date(row.datum_objave),
               row.admin_id
@@ -42,7 +42,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           row.blog_post_id,
           row.naslov,
           row.slika_url,
-          row.opis,
+          row.sadrzaj,
           row.tipPosta,
           new Date(row.datum_objave),
           row.admin_id
@@ -67,7 +67,7 @@ export class BlogPostRepository implements IBlogPostRepository {
               row.blog_post_id,
               row.naslov,
               row.slika_url,
-              row.opis,
+              row.sadrzaj,
               row.tipPosta,
               new Date(row.datum_objave),
               row.admin_id
@@ -82,12 +82,12 @@ export class BlogPostRepository implements IBlogPostRepository {
   }
   async createBlogPost(blogPost: any): Promise<BlogPost> {
     try {
-      const query = `INSERT INTO blog_post (naslov, slika_url, opis, tipPosta, datum_objave, admin_id) VALUES (?, ?, ?, ?, ?, ?)`;
+      const query = `INSERT INTO blog_post (naslov, slika_url, sadrzaj, tipPosta, datum_objave, admin_id) VALUES (?, ?, ?, ?, ?, ?)`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         blogPost.naslov,
         blogPost.slika_url,
-        blogPost.opis,
+        blogPost.sadrzaj,
         blogPost.tipPosta,
         blogPost.datum_objave,
         blogPost.admin_id,
@@ -98,7 +98,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           result.insertId,
           blogPost.naslov,
           blogPost.slika_url,
-          blogPost.opis,
+          blogPost.sadrzaj,
           blogPost.tipPosta,
           blogPost.datum_objave,
           blogPost.admin_id
@@ -112,12 +112,12 @@ export class BlogPostRepository implements IBlogPostRepository {
   }
   async updateBlogPost(id: number, blogPost: any): Promise<BlogPost> {
     try {
-      const query = `UPDATE blog_post SET naslov = ?, slika_url = ?, opis = ?, tipPosta = ?, datum_objave = ?, admin_id = ? WHERE blog_post_id = ?`;
+      const query = `UPDATE blog_post SET naslov = ?, slika_url = ?, sadrzaj = ?, tipPosta = ?, datum_objave = ?, admin_id = ? WHERE blog_post_id = ?`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         blogPost.naslov,
         blogPost.slika_url,
-        blogPost.opis,
+        blogPost.sadrzaj,
         blogPost.tipPosta,
         blogPost.datum_objave,
         blogPost.admin_id,
@@ -129,7 +129,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           id,
           blogPost.naslov,
           blogPost.slika_url,
-          blogPost.opis,
+          blogPost.sadrzaj,
           blogPost.tipPosta,
           blogPost.datum_objave,
           blogPost.admin_id
