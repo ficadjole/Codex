@@ -41,6 +41,18 @@ export class BlogPostArtikalRepository implements IBlogPostArtikalRepository {
       return false;
     }
   }
+
+  async obrisiSveArtikleBloga(blog_post_id: number): Promise<boolean> {
+    try {
+      const query = `DELETE FROM blog_post_artikal WHERE blog_post_id = ?`;
+
+      const [result] = await db.execute<ResultSetHeader>(query, [blog_post_id]);
+
+      return result.affectedRows > 0;
+    } catch {
+      return false;
+    }
+  }
   async getByIds(
     blog_post_id: number,
     artikal_id: number

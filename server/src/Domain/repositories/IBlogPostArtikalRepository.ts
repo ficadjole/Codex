@@ -9,6 +9,7 @@ export interface IBlogPostArtikalRepository {
     blog_post_id: number,
     artikal_id: number
   ): Promise<boolean>;
+  obrisiSveArtikleBloga(blog_post_id: number): Promise<boolean>;
   getByIds(blog_post_id: number, artikal_id: number): Promise<BlogPostArtikal>;
   getAllPoBlogPostId(blog_post_id: number): Promise<BlogPostArtikal[]>;
 }

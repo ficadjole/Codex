@@ -18,53 +18,133 @@ export class BlogPostService implements IBlogPostService {
   ) {}
 
   async dodajBlogPost(noviBlogPost: BlogPost): Promise<BlogPostDetaljiDto> {
-    try {
-      const dodatBlogPost = await this.blogPostRepository.createBlogPost(
-        noviBlogPost
-      );
+    const dodatBlogPost = await this.blogPostRepository.createBlogPost(
+      noviBlogPost
+    );
 
-      if (dodatBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+    if (dodatBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
 
-      //sada trebam dodati podatke u poveznu tabelu
+    //sada trebam dodati podatke u poveznu tabelu
 
-      for (var i = 0; i < noviBlogPost.artikal_id.length; i++) {
-        const dodatPoveznik =
-          await this.blogPostArtikalRepository.dodajBlogPostArtikal(
-            dodatBlogPost.blog_post_id,
-            noviBlogPost.artikal_id[i]
-          );
+    for (var i = 0; i < noviBlogPost.artikal_id.length; i++) {
+      const dodatPoveznik =
+        await this.blogPostArtikalRepository.dodajBlogPostArtikal(
+          dodatBlogPost.blog_post_id,
+          noviBlogPost.artikal_id[i]
+        );
 
-        if (
-          dodatPoveznik.artikal_id === 0 ||
-          dodatPoveznik.blog_post_id === 0
-        ) {
-          return new BlogPostDetaljiDto();
-        }
+      if (dodatPoveznik.artikal_id === 0 || dodatPoveznik.blog_post_id === 0) {
+        return new BlogPostDetaljiDto();
       }
-
-      //ako je sve dobro proslo vracamo ceo dto nazad
-
-      return this.mapToDTO(dodatBlogPost, noviBlogPost.artikal_id);
-    } catch {
-      return new BlogPostDetaljiDto();
     }
+
+    //ako je sve dobro proslo vracamo ceo dto nazad
+
+    return this.mapToDTO(dodatBlogPost, noviBlogPost.artikal_id);
   }
+
   async izmeniBlogPost(
     izmenjeniBlogPost: BlogPost
   ): Promise<BlogPostDetaljiDto> {
-    throw new Error("Method not implemented.");
+    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
+      izmenjeniBlogPost.blog_post_id
+    );
+
+    if (postojeciBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+
+    const azuriraniBlogPost = await this.blogPostRepository.updateBlogPost(
+      postojeciBlogPost.blog_post_id,
+      izmenjeniBlogPost
+    );
+
+    if (azuriraniBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+
+    const blogPostArtikli =
+      await this.blogPostArtikalRepository.getAllPoBlogPostId(
+        postojeciBlogPost.blog_post_id
+      );
+
+    //prvo cu obrisati sve pa cu azurirati
+
+    const obrisano = await this.blogPostArtikalRepository.obrisiSveArtikleBloga(
+      postojeciBlogPost.blog_post_id
+    );
+
+    if (izmenjeniBlogPost.artikal_id.length !== 0) {
+      for (var i = 0; i < izmenjeniBlogPost.artikal_id.length; i++) {
+        const dodato =
+          await this.blogPostArtikalRepository.dodajBlogPostArtikal(
+            izmenjeniBlogPost.blog_post_id,
+            izmenjeniBlogPost.artikal_id[i]
+          );
+
+        if (dodato.artikal_id === 0 || dodato.blog_post_id === 0) {
+          return new BlogPostDetaljiDto();
+        }
+      }
+    }
+
+    return this.mapToDTO(azuriraniBlogPost, izmenjeniBlogPost.artikal_id);
   }
+
   async obrisiBlogPost(blog_post_id: number): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
+      blog_post_id
+    );
+
+    if (postojeciBlogPost.blog_post_id === 0) return false;
+
+    return await this.blogPostRepository.deleteBlogPost(blog_post_id);
   }
+
   async getAllBlogPostovi(): Promise<BlogPostDto[]> {
-    throw new Error("Method not implemented.");
+    const blogPostovi: BlogPost[] =
+      await this.blogPostRepository.getAllBlogPosts();
+
+    return blogPostovi.map(
+      (blogPost) =>
+        new BlogPostDto(
+          blogPost.blog_post_id,
+          blogPost.naslov,
+          blogPost.slika_url,
+          blogPost.sadrzaj,
+          blogPost.tipPosta,
+          blogPost.datum_objave
+        )
+    );
   }
   async getBlogPostById(blog_post_id: number): Promise<BlogPostDetaljiDto> {
-    throw new Error("Method not implemented.");
+    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
+      blog_post_id
+    );
+
+    if (postojeciBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+
+    const blogPostArtikli =
+      await this.blogPostArtikalRepository.getAllPoBlogPostId(blog_post_id);
+
+    const artikli: number[] = blogPostArtikli.map(
+      (artikal) => artikal.artikal_id
+    );
+
+    return this.mapToDTO(postojeciBlogPost, artikli);
   }
+
   async getBlogPostByTip(tipPosta: TipBlogPosta): Promise<BlogPostDto[]> {
-    throw new Error("Method not implemented.");
+    const blogoviPoTipu: BlogPost[] =
+      await this.blogPostRepository.getBlogPostsPoTipu(tipPosta);
+
+    return blogoviPoTipu.map(
+      (blogPost) =>
+        new BlogPostDto(
+          blogPost.blog_post_id,
+          blogPost.naslov,
+          blogPost.slika_url,
+          blogPost.sadrzaj,
+          blogPost.tipPosta,
+          blogPost.datum_objave
+        )
+    );
   }
 
   private async mapToDTO(
