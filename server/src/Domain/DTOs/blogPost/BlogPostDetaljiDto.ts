@@ -7,7 +7,7 @@ export class BlogPostDetaljiDto {
     public naslov: string = "",
     public slika_url: string = "",
     public sadrzaj: string = "",
-    public tipPosta: TipBlogPosta = TipBlogPosta.obavestenja,
+    public tipPosta: TipBlogPosta = TipBlogPosta.obavestenje,
     public datumKreiranja: Date = new Date(),
     public artikli: ArtikalDto[] = [],
     public autor?: {

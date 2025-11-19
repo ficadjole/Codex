@@ -6,7 +6,7 @@ export class BlogPost {
     public naslov: string = "",
     public slika_url: string = "",
     public sadrzaj: string = "",
-    public tipPosta: TipBlogPosta = TipBlogPosta.obavestenja,
+    public tipPosta: TipBlogPosta = TipBlogPosta.obavestenje,
     public datum_objave: Date = new Date(),
     public admin_id: number = 0,
     public artikal_id: number[] = []

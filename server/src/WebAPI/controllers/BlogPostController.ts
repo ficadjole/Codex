@@ -21,6 +21,20 @@ export class BlogPostController {
       authorize(Uloga.admin),
       this.dodajBlogPost.bind(this)
     );
+
+    this.router.put(
+      "/azurirajBlogPost/:blogPostId",
+      authenticate,
+      authorize(Uloga.admin),
+      this.azurirajBlogPost.bind(this)
+    );
+
+    this.router.delete(
+      "/obrisiBlogPost/:blogPostId",
+      authenticate,
+      authorize(Uloga.admin),
+      this.obrisiBlogPost.bind(this)
+    );
   }
 
   private async dodajBlogPost(req: Request, res: Response): Promise<void> {
@@ -38,6 +52,62 @@ export class BlogPostController {
         res
           .status(201)
           .json({ success: true, message: "Blog post je uspesno dodat." });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async azurirajBlogPost(req: Request, res: Response): Promise<void> {
+    try {
+      const blog_post_id = parseInt(req.params.blogPostId);
+
+      const noviBlogPost = req.body;
+
+      noviBlogPost.blog_post_id = blog_post_id;
+
+      const azuriranBlogPost = await this.blogPostService.izmeniBlogPost(
+        noviBlogPost
+      );
+
+      if (azuriranBlogPost.blog_post_id === 0) {
+        res.status(400).json({
+          success: false,
+          message: "Azuriranje blog posta nije uspelo.",
+        });
+        return;
+      } else {
+        res.status(200).json({
+          success: true,
+          message: "Blog post je uspesno azuriran.",
+          data: azuriranBlogPost,
+        });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async obrisiBlogPost(req: Request, res: Response): Promise<void> {
+    try {
+      const blog_post_id = parseInt(req.params.blogPostId);
+
+      const obrisan = await this.blogPostService.obrisiBlogPost(blog_post_id);
+
+      if (obrisan) {
+        res.status(200).json({
+          success: true,
+          message: "Blog post je uspesno obrisan.",
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Brisanje blog posta nije uspelo.",
+        });
       }
     } catch {
       res

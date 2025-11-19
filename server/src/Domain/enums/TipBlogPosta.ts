@@ -1,4 +1,4 @@
 export enum TipBlogPosta {
-  obavestenja = "obavestenje",
-  zanimljivosti = "zanimljivost",
+  obavestenje = "obavestenje",
+  zanimljivost = "zanimljivost",
 }
