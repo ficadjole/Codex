@@ -3,6 +3,7 @@ import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostServic
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
 import { Uloga } from "../../Domain/enums/Uloga";
+import { TipBlogPosta } from "../../Domain/enums/TipBlogPosta";
 
 export class BlogPostController {
   private router: Router;
@@ -34,6 +35,18 @@ export class BlogPostController {
       authenticate,
       authorize(Uloga.admin),
       this.obrisiBlogPost.bind(this)
+    );
+
+    this.router.get("/getAllBlogPosts", this.getAllBlogPostovi.bind(this));
+
+    this.router.get(
+      "/getArtikalById/:blogPostId",
+      this.getBlogPostById.bind(this)
+    );
+
+    this.router.get(
+      "/getBlogPostByTip/:tipPosta",
+      this.getBlogPostByTip.bind(this)
     );
   }
 
@@ -113,6 +126,82 @@ export class BlogPostController {
       res
         .status(500)
         .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getAllBlogPostovi(req: Request, res: Response): Promise<void> {
+    try {
+      const sviBlogPostovi = await this.blogPostService.getAllBlogPostovi();
+
+      if (sviBlogPostovi.length > 0) {
+        res.status(200).json({
+          success: true,
+          message: "Uspesno ste ucitali sve blogove",
+          data: sviBlogPostovi,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Dobavljanje svih blog postova nije uspelo",
+        });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getBlogPostById(req: Request, res: Response): Promise<void> {
+    try {
+      const blog_post_id = parseInt(req.params.blogPostId);
+
+      const blogPost = await this.blogPostService.getBlogPostById(blog_post_id);
+
+      if (blogPost.blog_post_id !== 0) {
+        res.status(200).json({
+          success: true,
+          message: "Uspesno ste ucitali blog",
+          data: blogPost,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Ucitavanje blog posta nije uspelo",
+        });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru." });
+    }
+  }
+
+  private async getBlogPostByTip(req: Request, res: Response): Promise<void> {
+    try {
+      const tipPosta =
+        req.params.tipPosta === TipBlogPosta.obavestenje.toString()
+          ? TipBlogPosta.obavestenje
+          : TipBlogPosta.zanimljivost;
+
+      const blogPostovi = await this.blogPostService.getBlogPostByTip(tipPosta);
+
+      if (blogPostovi.length > 0) {
+        res.status(200).json({
+          success: true,
+          message: "Uspesno ste ucitali blogove tipa",
+          data: blogPostovi,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Dobavljanje svih blog postova nije uspelo",
+        });
+      }
+    } catch {
+      res
+        .status(500)
+        .json({ success: false, message: "Doslo je do greske na serveru" });
     }
   }
 
