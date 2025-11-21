@@ -45,7 +45,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           row.sadrzaj,
           row.tipPosta,
           new Date(row.datum_objave),
-          row.admin_id
+          row.korisnik_id
         );
       } else {
         return new BlogPost();

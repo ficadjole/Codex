@@ -113,6 +113,7 @@ export class BlogPostService implements IBlogPostService {
         )
     );
   }
+
   async getBlogPostById(blog_post_id: number): Promise<BlogPostDetaljiDto> {
     const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
       blog_post_id
