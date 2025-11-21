@@ -21,6 +21,13 @@ import { IKorisnikRepository } from "./Domain/repositories/IKorisnikRepository";
 import { IUserService } from "./Domain/services/user/IUserService";
 import { KorisnikService } from "./Services/korisnik/KorisnikService";
 import { KorisnikController } from "./WebAPI/controllers/KorisnikController";
+import { IBlogPostRepository } from "./Domain/repositories/IBlogPostRepository";
+import { BlogPostRepository } from "./Database/repositories/blogPost/BlogPostRepository";
+import { IBlogPostArtikalRepository } from "./Domain/repositories/IBlogPostArtikalRepository";
+import { BlogPostArtikalRepository } from "./Database/repositories/blogPost/BlogPostArtikalRepository";
+import { IBlogPostService } from "./Domain/services/blogPost/IBlogPostService";
+import { BlogPostService } from "./Services/blogPost/BlogPostService";
+import { BlogPostController } from "./WebAPI/controllers/BlogPostController";
 
 require("dotenv").config();
 
@@ -59,10 +66,27 @@ const artikalController = new ArtikalController(artikalService);
 const korisnikService: IUserService = new KorisnikService(korisnikRepository);
 const korisnikController = new KorisnikController(korisnikService);
 
+//
+const blogPostRepository: IBlogPostRepository = new BlogPostRepository();
+
+const blogPostArtikalRepository: IBlogPostArtikalRepository =
+  new BlogPostArtikalRepository();
+
+const blogPostService: IBlogPostService = new BlogPostService(
+  blogPostRepository,
+  blogPostArtikalRepository,
+  artikalRepository,
+  korisnikRepository
+);
+
+const blogPostController = new BlogPostController(blogPostService);
+
 app.use("/api/v1", authController.getRouter());
 
 app.use("/api/v1/artikal", artikalController.getRouter());
 
 app.use("/api/v1/korisnik", korisnikController.getRouter());
+
+app.use("/api/v1/blogPost", blogPostController.getRouter());
 
 export default app;

@@ -64,14 +64,14 @@ export class AuthController {
 
   private async registracija(req: Request, res: Response): Promise<void> {
     try {
-      const { ime, prezime, email, korisnicko_ime, lozinka, uloga } = req.body;
+      const { ime, prezime, email, korisnicko_ime, password, uloga } = req.body;
 
       const rezultat = validacijaPodatakaAuth(
         ime,
         prezime,
         korisnicko_ime,
         email,
-        lozinka,
+        password,
         uloga
       );
 
@@ -85,7 +85,7 @@ export class AuthController {
         prezime,
         email,
         korisnicko_ime,
-        lozinka,
+        password,
         uloga
       );
 
