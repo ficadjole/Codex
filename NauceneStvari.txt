@@ -6,3 +6,6 @@ kod tabela koje nemaju automatski generisani ID treba prosledjivati i id, u mom 
 { ...(artikal as Knjiga), artikal_id: noviArtikal.artikal_id } - ovo vrsi kastovanje artikla u Knjigu radi daljeg koriscenja njega kao Knjige i dodaje mu artikal_id od objekta noviArtikal
 
 CONSTRAINT `knjiga_kategorija_ibfk_1` FOREIGN KEY (`knjiga_id`) REFERENCES `knjiga` (`artikal_id`) ON DELETE CASCADE - kada ovo imamo onda kada god se izbrise artikal_id u tabeli artikal, izbrise se i u ostalim tabelama koje ga korsite kao foreignkey
+
+
+await Promise.all(komentari.map((kom) => this.mapToDTO(kom))); - ceka da se zavrse svi async pozivi fje mapToDTO

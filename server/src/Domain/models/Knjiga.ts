@@ -16,7 +16,7 @@ export class Knjiga extends Artikal {
     public godina_izdanja: number = 0,
     public opis: string = "",
     public goodreads_link = "",
-    public kategorije?: Kategorija[] //ovo su nam kategorije (zanrovi) knjige koji ce se prolsedjivati zajedno sa njom
+    public kategorije?: number[] //ovo su nam kategorije (zanrovi) knjige koji ce se prolsedjivati zajedno sa njom
   ) {
     super(
       artikal_id,
