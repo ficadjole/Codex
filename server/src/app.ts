@@ -28,6 +28,11 @@ import { BlogPostArtikalRepository } from "./Database/repositories/blogPost/Blog
 import { IBlogPostService } from "./Domain/services/blogPost/IBlogPostService";
 import { BlogPostService } from "./Services/blogPost/BlogPostService";
 import { BlogPostController } from "./WebAPI/controllers/BlogPostController";
+import { IKomentarRepository } from "./Domain/repositories/IKomentarRepository";
+import { KomentarRepository } from "./Database/repositories/komentar/KomentarRepository";
+import { IKomentarService } from "./Domain/services/komentar/IKomentarService";
+import { KomentarService } from "./Services/komentar/KomentarService";
+import { KomentarController } from "./WebAPI/controllers/KomentarController";
 
 require("dotenv").config();
 
@@ -66,7 +71,7 @@ const artikalController = new ArtikalController(artikalService);
 const korisnikService: IUserService = new KorisnikService(korisnikRepository);
 const korisnikController = new KorisnikController(korisnikService);
 
-//
+//BlogPost
 const blogPostRepository: IBlogPostRepository = new BlogPostRepository();
 
 const blogPostArtikalRepository: IBlogPostArtikalRepository =
@@ -81,6 +86,16 @@ const blogPostService: IBlogPostService = new BlogPostService(
 
 const blogPostController = new BlogPostController(blogPostService);
 
+//Komentar
+const komentarRepository: IKomentarRepository = new KomentarRepository();
+
+const komentarService: IKomentarService = new KomentarService(
+  komentarRepository,
+  korisnikRepository
+);
+
+const komentarController = new KomentarController(komentarService);
+
 app.use("/api/v1", authController.getRouter());
 
 app.use("/api/v1/artikal", artikalController.getRouter());
@@ -89,4 +104,5 @@ app.use("/api/v1/korisnik", korisnikController.getRouter());
 
 app.use("/api/v1/blogPost", blogPostController.getRouter());
 
+app.use("/api/v1/komentar", komentarController.getRouter());
 export default app;

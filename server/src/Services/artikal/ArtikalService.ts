@@ -23,9 +23,7 @@ export class ArtikalService implements IArtikalService {
 
   async dodajArtikal(artikal: Artikal): Promise<ArtikalDto> {
     //dodajemo osnovni artikal
-
     const noviArtikal = await this.artikalRepository.dodajArtikal(artikal);
-
     if (noviArtikal.artikal_id === 0) {
       //nije uspelo dodavanje artikla
       return new ArtikalDto();
@@ -53,9 +51,7 @@ export class ArtikalService implements IArtikalService {
           for (const kategorija of novaKnjiga.kategorije) {
             //foreach
             let postojecaKategorija =
-              await this.kategorijaRepository.getByKategorijaID(
-                kategorija.kategorija_id
-              );
+              await this.kategorijaRepository.getByKategorijaID(kategorija);
             if (postojecaKategorija.kategorija_id !== 0) {
               const uspesnoDodataKnjigaKategorija =
                 await this.knjigaKategorijaRepository.dodajKnjigaKategorija(
@@ -121,26 +117,28 @@ export class ArtikalService implements IArtikalService {
           artikal as Knjiga
         );
 
-
-        if(azuriranaKnjiga.kategorije && azuriranaKnjiga.kategorije.length > 0){
+        if (
+          azuriranaKnjiga.kategorije &&
+          azuriranaKnjiga.kategorije.length > 0
+        ) {
           //prvo brisemo sve postojece kategorije za tu knjigu
-          await this.knjigaKategorijaRepository.obrisiKategorijeZaKnjigu(azuriranaKnjiga.artikal_id);
+          await this.knjigaKategorijaRepository.obrisiKategorijeZaKnjigu(
+            azuriranaKnjiga.artikal_id
+          );
           //pa dodajemo nove
           for (const kategorija of azuriranaKnjiga.kategorije) {
             let postojecaKategorija =
-              await this.kategorijaRepository.getByKategorijaID(
-                kategorija.kategorija_id
-              );
+              await this.kategorijaRepository.getByKategorijaID(kategorija);
             if (postojecaKategorija.kategorija_id !== 0) {
               const uspesnoDodataKnjigaKategorija =
                 await this.knjigaKategorijaRepository.dodajKnjigaKategorija(
                   azuriranaKnjiga.artikal_id,
                   postojecaKategorija.kategorija_id
-                );  
+                );
               if (uspesnoDodataKnjigaKategorija.kategorija_id === 0) {
                 //nije uspelo dodavanje veze knjiga-kategorija
                 return new ArtikalDto();
-              }   
+              }
             } else {
               return new ArtikalDto(); //za sad ne dozvoljavamo dodavanje novih kategorija kroz ovaj endpoint
             }
