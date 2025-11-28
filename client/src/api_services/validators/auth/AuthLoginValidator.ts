@@ -1,6 +1,6 @@
 import type { RezultatValidacije } from "../../../types/validation/ValidationResult";
 
-export function validacijaPodatakaAuth(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
+export function validacijaPodatakaAuthPrijava(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
   if (!korisnickoIme || !lozinka) {
     return { uspesno: false, poruka: 'Korisničko ime i lozinka su obavezni.' };
   }

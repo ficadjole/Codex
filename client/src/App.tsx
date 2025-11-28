@@ -9,7 +9,7 @@ function App() {
 
   useEffect(() => {
     const token = PročitajVrednostPoKljuču('authToken')
-    if (token && token.includes('/')) {
+    if (token) {
       setPrijavljen(true)
     }
   }, [])
