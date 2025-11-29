@@ -70,97 +70,81 @@ export default function AutentifikacionaForma({
     }
   };
 
-  return (
-    <div className="form-container">
-      <h1>{jeRegistracija ? "Registracija" : "Prijava"}</h1>
+ return (
+    <div className="bg-white/30 backdrop-blur-lg shadow-md rounded-2xl p-10 w-full max-w-md border border-blue-400 mx-auto">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        {jeRegistracija ? "Registracija" : "Prijava"}
+      </h1>
 
-      <form onSubmit={podnesiFormu}>
+      <form onSubmit={podnesiFormu} className="space-y-4">
         {jeRegistracija && (
           <>
-            <div className="input-group">
-              <label htmlFor="ime">Ime:</label>
-              <input
-                id="ime"
-                type="text"
-                value={ime}
-                onChange={(e) => setIme(e.target.value)}
-                placeholder="Unesite ime"
-                required
-                minLength={3}
-                maxLength={15}
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Ime"
+              value={ime}
+              onChange={(e) => setIme(e.target.value)}
+              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
 
-            <div className="input-group">
-              <label htmlFor="prezime">Prezime:</label>
-              <input
-                id="prezime"
-                type="text"
-                value={prezime}
-                onChange={(e) => setPrezime(e.target.value)}
-                placeholder="Unesite prezime"
-                required
-                minLength={3}
-                maxLength={15}
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Prezime"
+              value={prezime}
+              onChange={(e) => setPrezime(e.target.value)}
+              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
 
-            <div className="input-group">
-              <label htmlFor="email">Email:</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Unesite email"
-                required
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
           </>
         )}
 
-        <div className="input-group">
-          <label htmlFor="korisnickoIme">Korisnicko ime:</label>
-          <input
-            id="korisnickoIme"
-            type="text"
-            value={korisnickoIme}
-            onChange={(e) => setKorisnickoIme(e.target.value)}
-            placeholder="Unesite korisnicko ime"
-            minLength={3}
-            maxLength={15}
-            required
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Korisničko ime"
+          value={korisnickoIme}
+          onChange={(e) => setKorisnickoIme(e.target.value)}
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
+                     focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-        <div className="input-group">
-          <label htmlFor="password">Lozinka:</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Unesite lozinku"
-            minLength={3}
-            maxLength={15}
-            required
-          />
-        </div>
+        <input
+          type="password"
+          placeholder="Lozinka"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
+                     focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-        {greska && <p style={{ color: "red" }}>{greska}</p>}
+        {greska && <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>}
 
-        <button type="submit">
+        <button
+          type="submit"
+          className="w-full bg-blue-700/70 hover:bg-blue-700/90 text-white py-2 rounded-xl transition"
+        >
           {jeRegistracija ? "Registracija" : "Prijava"}
         </button>
       </form>
-      <button
-        onClick={() => setJeRegistracija(!jeRegistracija)}
-        style={{ marginTop: "1rem" }}
-      >
-        {jeRegistracija
-          ? "Imate nalog? Prijavite se"
-          : "Nemate nalog? Registrujte se"}
-      </button>
+
+      <p className="text-center text-sm mt-4">
+        {jeRegistracija ? "Imate nalog?" : "Nemate nalog?"}{" "}
+        <button
+          onClick={() => setJeRegistracija(!jeRegistracija)}
+          className="text-blue-700 hover:underline"
+        >
+          {jeRegistracija ? "Prijavite se" : "Registrujte se"}
+        </button>
+      </p>
     </div>
   );
 }

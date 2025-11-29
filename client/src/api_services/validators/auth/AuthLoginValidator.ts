@@ -1,21 +1,28 @@
 import type { RezultatValidacije } from "../../../types/validation/ValidationResult";
 
 export function validacijaPodatakaAuthPrijava(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
-  if (!korisnickoIme || !lozinka) {
-    return { uspesno: false, poruka: 'Korisničko ime i lozinka su obavezni.' };
+ var poruka: string = "";
+
+  // Validacija username-a
+  if (!korisnickoIme || korisnickoIme.trim() === "") {
+    poruka = "Username ne sme biti prazan.";
+  } else if (korisnickoIme.length < 3) {
+    poruka = "Username mora imati najmanje 3 karaktera.";
+  } else if (korisnickoIme.length > 15) {
+    poruka = "Username ne sme imati više od 15 karaktera.";
   }
 
-  if (korisnickoIme.length < 3) {
-    return { uspesno: false, poruka: 'Korisničko ime mora imati najmanje 3 karaktera.' };
+  // Validacija password-a
+  if (!lozinka || lozinka.trim() === "") {
+    poruka = "Password ne sme biti prazan.";
+  } else if (lozinka.length < 3) {
+    poruka = "Password mora imati najmanje 3 karaktera.";
+  } else if (lozinka.length > 15) {
+    poruka = "Password ne sme imati više od 15 karaktera.";
   }
 
-  if (lozinka.length < 6) {
-    return { uspesno: false, poruka: 'Lozinka mora imati najmanje 6 karaktera.' };
-  }
-
-  if (lozinka.length > 20) {
-    return { uspesno: false, poruka: 'Lozinka može imati najviše 20 karaktera.' };
-  }
-
-  return { uspesno: true };
+  return {
+    uspesno: poruka.length === 0,
+    poruka,
+  };
 }
