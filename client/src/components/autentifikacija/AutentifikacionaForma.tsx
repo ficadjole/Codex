@@ -1,8 +1,13 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { SačuvajVrednostPoKljuču } from "../../helpers/local_storage";
 import type { AuthFormProps } from "../../types/props/auth_form_props/AuthFormProps";
 import { validacijaPodatakaAuthPrijava } from "../../api_services/validators/auth/AuthLoginValidator";
 import { validacijaPodatakaAuthRegistracija } from "../../api_services/validators/auth/AuthRegisterValidator";
+// react icons
+import {RiAccountCircleLine, RiLockPasswordLine} from "react-icons/ri";
+import {MdOutlineMail} from "react-icons/md";
+import { AiOutlineUser } from "react-icons/ai";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 export default function AutentifikacionaForma({
   authApi,
@@ -13,9 +18,10 @@ export default function AutentifikacionaForma({
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
   const [email, setEmail] = useState("");
-  const [uloga, setUloga] = useState("kupac");
+  const [uloga] = useState("kupac");
   const [greska, setGreska] = useState("");
   const [jeRegistracija, setJeRegistracija] = useState(false);
+  const [isEyeOpen, setIsEyeOpen] = useState(false);
 
   const podnesiFormu = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,53 +84,84 @@ export default function AutentifikacionaForma({
 
       <form onSubmit={podnesiFormu} className="space-y-4">
         {jeRegistracija && (
-          <>
-            <input
-              type="text"
-              placeholder="Ime"
-              value={ime}
-              onChange={(e) => setIme(e.target.value)}
-              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
-                         focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
+          <>  
+            <div className="w-full relative">
+              <AiOutlineUser
+                      className=" absolute top-3.5 left-3 text-[1.5rem] dark:text-slate-400 text-[#777777]"/>
+              <input
+                type="text"
+                placeholder="Ime"
+                value={ime}
+                onChange={(e) => setIme(e.target.value)}
+                className="w-full bg-white/40 pl-10 pr-4 py-3 rounded-xl border border-gray-300 
+                          focus:outline-none focus:ring-2 focus:ring-blue-400 dark:placeholder:text-slate-500"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Prezime"
-              value={prezime}
-              onChange={(e) => setPrezime(e.target.value)}
-              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
-                         focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
+            <div className="w-full relative">
+              <AiOutlineUser
+                      className=" absolute top-3.5 left-3 text-[1.5rem] dark:text-slate-400 text-[#777777]"/>
+              <input
+                type="text"
+                placeholder="Prezime"
+                value={prezime}
+                onChange={(e) => setPrezime(e.target.value)}
+                className="w-full bg-white/40 pl-10 pr-4 py-3 rounded-xl border border-gray-300 
+                          focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
 
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
-                         focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
+            <div className="w-full relative">
+              <MdOutlineMail
+                    className=" absolute top-3.5 left-3 text-[1.5rem] dark:text-slate-400 text-[#777777]"/>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white/40 pl-10 pr-4 py-3 rounded-xl border border-gray-300 
+                          focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
           </>
         )}
 
-        <input
-          type="text"
-          placeholder="Korisničko ime"
-          value={korisnickoIme}
-          onChange={(e) => setKorisnickoIme(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
-                     focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div className="w-full relative">
+          <RiAccountCircleLine
+                      className=" absolute top-3.5 left-3 text-[1.5rem] dark:text-slate-400 text-[#777777]"/>
+          <input
+            type="text"
+            placeholder="Korisničko ime"
+            value={korisnickoIme}
+            onChange={(e) => setKorisnickoIme(e.target.value)}
+            className="w-full bg-white/40 pl-10 pr-4 py-3 rounded-xl border border-gray-300 
+                      focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Lozinka"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 
-                     focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div className="w-full relative">
+          <RiLockPasswordLine
+                      className=" absolute top-3.5 left-3 text-[1.5rem] dark:text-slate-400 text-[#777777]"/>
+          <input
+            type={isEyeOpen ? "text" : "password"}
+            placeholder="Lozinka"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-white/40 pl-10 pr-4 py-3 rounded-xl border border-gray-300 
+                      focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+           {isEyeOpen ? (
+                    <IoEyeOutline
+                        className=" absolute top-4 right-4 text-[1.5rem] dark:text-slate-400 text-[#777777] cursor-pointer"
+                        onClick={() => setIsEyeOpen(false)}
+                    />
+                ) : (
+                    <IoEyeOffOutline
+                        className=" absolute top-4 right-4 text-[1.5rem] dark:text-slate-400 text-[#777777] cursor-pointer"
+                        onClick={() => setIsEyeOpen(true)}
+                    />
+                )}
+        </div>
 
         {greska && <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>}
 

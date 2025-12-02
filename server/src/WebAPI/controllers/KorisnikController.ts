@@ -18,6 +18,8 @@ export class KorisnikController {
     );
   }
 
+  //trebace mi getUserById(), za getAllUsers() ne verujem da treba ali videcemo
+
   private async azurirajPodatkeKorisnika(
     req: Request,
     res: Response

@@ -1,27 +1,18 @@
-import { useState, useEffect } from 'react'
-import { PročitajVrednostPoKljuču } from './helpers/local_storage'
-import KontrolnaTabla from './components/kontrolna_tabla/KontrolnaTabla'
-import AutentifikacionaForma from './components/autentifikacija/AutentifikacionaForma'
-import { authApi } from './api_services/auth/AuthAPIService';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import { authApi } from './api_services/authApi/AuthAPIService';
+import { AuthProvider } from './contexts/auth_context/AuthContext';
 
 function App() {
-  const [prijavljen, setPrijavljen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const token = PročitajVrednostPoKljuču('authToken')
-    if (token) {
-      setPrijavljen(true)
-    }
-  }, [])
-
-  return prijavljen ? (
-    <KontrolnaTabla onLogout={() => setPrijavljen(false)} />
-  ) : (
-    <AutentifikacionaForma
-      authApi={authApi}
-      onLoginSuccess={() => setPrijavljen(true)}
-    />
-  )
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage authApi={authApi}/>}/>      
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
 export default App;
