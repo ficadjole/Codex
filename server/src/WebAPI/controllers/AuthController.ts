@@ -21,16 +21,16 @@ export class AuthController {
 
   private async prijava(req: Request, res: Response): Promise<void> {
     try {
-      const { korisnicko_ime, password } = req.body;
+      const { korisnickoIme, password } = req.body;
 
-      const rezultat = validacijaPodatakaAuthLogin(korisnicko_ime, password);
+      const rezultat = validacijaPodatakaAuthLogin(korisnickoIme, password);
 
       if (!rezultat.uspesno) {
         res.status(400).json({ succes: false, message: rezultat.poruka });
         return;
       }
 
-      const result = await this.authService.prijava(korisnicko_ime, password);
+      const result = await this.authService.prijava(korisnickoIme, password);
 
       if (result.korisnik_id !== 0) {
         //kreiranje tokena za autorizaciju korisnika
@@ -64,12 +64,12 @@ export class AuthController {
 
   private async registracija(req: Request, res: Response): Promise<void> {
     try {
-      const { ime, prezime, email, korisnicko_ime, password, uloga } = req.body;
+      const { ime, prezime, email, korisnickoIme, password, uloga } = req.body;
 
       const rezultat = validacijaPodatakaAuth(
         ime,
         prezime,
-        korisnicko_ime,
+        korisnickoIme,
         email,
         password,
         uloga
@@ -84,7 +84,7 @@ export class AuthController {
         ime,
         prezime,
         email,
-        korisnicko_ime,
+        korisnickoIme,
         password,
         uloga
       );
