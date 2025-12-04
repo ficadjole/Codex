@@ -1,4 +1,4 @@
 export type AuthValidType = {
-  uspesno: boolean;
-  poruka?: string;
+  success: boolean;
+  message?: string;
 };

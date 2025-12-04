@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
-import { Uloga } from "../../Domain/enums/Uloga";
+import { UserRole } from "../../Domain/enums/UserRole";
 import { TipBlogPosta } from "../../Domain/enums/TipBlogPosta";
 
 export class BlogPostController {
@@ -19,21 +19,21 @@ export class BlogPostController {
     this.router.post(
       "/dodajBlogPost",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.dodajBlogPost.bind(this)
     );
 
     this.router.put(
       "/azurirajBlogPost/:blogPostId",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.azurirajBlogPost.bind(this)
     );
 
     this.router.delete(
       "/obrisiBlogPost/:blogPostId",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.obrisiBlogPost.bind(this)
     );
 

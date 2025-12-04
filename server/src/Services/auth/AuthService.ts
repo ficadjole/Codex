@@ -1,7 +1,7 @@
-import { KorisnikLoginDto } from "../../Domain/DTOs/auth/KorisnikLoginDto";
-import { Uloga } from "../../Domain/enums/Uloga";
-import { Korisnik } from "../../Domain/models/Korisnik";
-import { IKorisnikRepository } from "../../Domain/repositories/IKorisnikRepository";
+import { LoginDto } from "../../Domain/DTOs/auth/LoginDto";
+import { UserRole } from "../../Domain/enums/UserRole";
+import { User } from "../../Domain/models/User";
+import { IUserRepository } from "../../Domain/repositories/IUserRepository";
 import { IAuthService } from "../../Domain/services/auth/IAuthService";
 import bcrypt from "bcryptjs";
 
@@ -11,77 +11,73 @@ export class AuthService implements IAuthService {
     10
   );
 
-  public constructor(private korisnikRepository: IKorisnikRepository) {}
+  public constructor(private userRepository: IUserRepository) {}
 
-  async prijava(
-    korisnicko_ime: string,
-    passwordHash: string
-  ): Promise<KorisnikLoginDto> {
-    const korisnik = await this.korisnikRepository.getByKorisnickoIme(
-      korisnicko_ime
-    );
+  async login(username: string, password: string): Promise<LoginDto> {
+    const user = await this.userRepository.getByUsername(username);
 
     if (
-      korisnik.korisnik_id !== 0 &&
-      (await bcrypt.compare(passwordHash, korisnik.lozinka_hash))
+      user.userId !== 0 &&
+      (await bcrypt.compare(password, user.passwordHash))
     ) {
-      return new KorisnikLoginDto(
-        korisnik.korisnik_id,
-        korisnik.ime,
-        korisnik.prezime,
-        korisnik.email,
-        korisnik.korisnicko_ime,
-        korisnik.uloga
+      return new LoginDto(
+        user.userId,
+        user.firstName,
+        user.lastName,
+        user.email,
+        user.username,
+        user.userRole
       );
     } else {
-      return new KorisnikLoginDto();
+      return new LoginDto();
     }
   }
 
-  async registracija(
-    ime: string,
-    prezime: string,
+  async registration(
+    firstName: string,
+    lastName: string,
     email: string,
-    korisnicko_ime: string,
+    username: string,
     password: string,
-    uloga: Uloga
-  ): Promise<KorisnikLoginDto> {
+    userRole: UserRole
+  ): Promise<LoginDto> {
     //proveravamo korisnicko ime da li postoji
-    const postojeceKorisnickoIme =
-      await this.korisnikRepository.getByKorisnickoIme(korisnicko_ime);
+    const existingUserUsername = await this.userRepository.getByUsername(
+      username
+    );
 
-    if (postojeceKorisnickoIme.korisnik_id !== 0) return new KorisnikLoginDto();
+    if (existingUserUsername.userId !== 0) return new LoginDto();
 
     //proveravamo da li postoji vec nalog sa datim emailom
-    const postojeciEmail = await this.korisnikRepository.getByEmail(email);
+    const existingUserEmail = await this.userRepository.getByEmail(email);
 
-    if (postojeciEmail.korisnik_id !== 0) return new KorisnikLoginDto();
+    if (existingUserEmail.userId !== 0) return new LoginDto();
 
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
-    const noviKorisnik = await this.korisnikRepository.create(
-      new Korisnik(
+    const newUser = await this.userRepository.create(
+      new User(
         0,
-        ime,
-        prezime,
+        firstName,
+        lastName,
         email,
-        korisnicko_ime,
+        username,
         hashedPassword,
-        uloga
+        userRole
       )
     );
 
-    if (noviKorisnik.korisnik_id !== 0) {
-      return new KorisnikLoginDto(
-        noviKorisnik.korisnik_id,
-        noviKorisnik.ime,
-        noviKorisnik.prezime,
-        noviKorisnik.email,
-        noviKorisnik.korisnicko_ime,
-        noviKorisnik.uloga
+    if (newUser.userId !== 0) {
+      return new LoginDto(
+        newUser.userId,
+        newUser.firstName,
+        newUser.lastName,
+        newUser.email,
+        newUser.username,
+        newUser.userRole
       );
     } else {
-      return new KorisnikLoginDto();
+      return new LoginDto();
     }
   }
 }

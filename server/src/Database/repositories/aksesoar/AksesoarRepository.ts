@@ -1,6 +1,6 @@
 import { ResultSetHeader } from "mysql2";
-import { Aksesoar } from "../../../Domain/models/Aksesoar";
-import { IAksesoarRepository } from "../../../Domain/repositories/IAksesoarRepository";
+import { Aksesoar } from "../../../Domain/models/Accessories";
+import { IAksesoarRepository } from "../../../Domain/repositories/IAccessoryRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class AksesoarRepository implements IAksesoarRepository {

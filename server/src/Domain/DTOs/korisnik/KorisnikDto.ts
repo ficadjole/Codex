@@ -1,4 +1,4 @@
-import { Uloga } from "../../enums/Uloga";
+import { UserRole } from "../../enums/UserRole";
 
 export class KorisnikDto {
   public constructor(
@@ -7,6 +7,6 @@ export class KorisnikDto {
     public prezime: string = "",
     public email: string = "",
     public korisnicko_ime: string = "",
-    public uloga?: Uloga
+    public uloga?: UserRole
   ) {}
 }

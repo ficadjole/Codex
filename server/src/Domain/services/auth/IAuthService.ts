@@ -1,18 +1,15 @@
-import { KorisnikLoginDto } from "../../DTOs/auth/KorisnikLoginDto";
-import { Uloga } from "../../enums/Uloga";
+import { LoginDto } from "../../DTOs/auth/LoginDto";
+import { UserRole } from "../../enums/UserRole";
 
 export interface IAuthService {
-  prijava(
-    korisnicko_ime: string,
-    passwordHash: string
-  ): Promise<KorisnikLoginDto>;
+  login(username: string, password: string): Promise<LoginDto>;
 
-  registracija(
-    ime: string,
-    prezime: string,
+  registration(
+    firstName: string,
+    lastName: string,
     email: string,
-    korisnicko_ime: string,
+    username: string,
     password: string,
-    uloga: Uloga
-  ): Promise<KorisnikLoginDto>;
+    userRole: UserRole
+  ): Promise<LoginDto>;
 }

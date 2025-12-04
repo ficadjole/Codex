@@ -3,10 +3,10 @@ import { BlogPostDetaljiDto } from "../../Domain/DTOs/blogPost/BlogPostDetaljiDt
 import { BlogPostDto } from "../../Domain/DTOs/blogPost/BlogPostListDto";
 import { TipBlogPosta } from "../../Domain/enums/TipBlogPosta";
 import { BlogPost } from "../../Domain/models/BlogPost";
-import { IArtikalRepository } from "../../Domain/repositories/IArtikalRepository";
+import { IArtikalRepository } from "../../Domain/repositories/IItemRepository";
 import { IBlogPostArtikalRepository } from "../../Domain/repositories/IBlogPostArtikalRepository";
 import { IBlogPostRepository } from "../../Domain/repositories/IBlogPostRepository";
-import { IKorisnikRepository } from "../../Domain/repositories/IKorisnikRepository";
+import { IUserRepository } from "../../Domain/repositories/IUserRepository";
 import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostService";
 
 export class BlogPostService implements IBlogPostService {
@@ -14,7 +14,7 @@ export class BlogPostService implements IBlogPostService {
     private blogPostRepository: IBlogPostRepository,
     private blogPostArtikalRepository: IBlogPostArtikalRepository,
     private artikalRepository: IArtikalRepository,
-    private korisnikRepository: IKorisnikRepository
+    private korisnikRepository: IUserRepository
   ) {}
 
   async dodajBlogPost(noviBlogPost: BlogPost): Promise<BlogPostDetaljiDto> {
@@ -184,9 +184,9 @@ export class BlogPostService implements IBlogPostService {
       dodatBlogPost.datum_objave,
       artikli,
       {
-        autor_id: autor.korisnik_id,
-        ime: autor.ime,
-        prezime: autor.prezime,
+        autor_id: autor.userId,
+        ime: autor.username,
+        prezime: autor.lastName,
       }
     );
   }

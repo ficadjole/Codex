@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { Kategorija } from "../../../Domain/models/Kategorija";
-import { IKategorijaRepository } from "../../../Domain/repositories/IKategorijaRepository";
+import { Kategorija } from "../../../Domain/models/Genre";
+import { IKategorijaRepository } from "../../../Domain/repositories/IGenreRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class KategorijaRepository implements IKategorijaRepository {

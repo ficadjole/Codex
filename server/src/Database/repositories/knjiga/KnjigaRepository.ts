@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { Knjiga } from "../../../Domain/models/Knjiga";
-import { IKnjigaRepository } from "../../../Domain/repositories/IKnjigaRepository";
+import { Knjiga } from "../../../Domain/models/Book";
+import { IKnjigaRepository } from "../../../Domain/repositories/IBookRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class KnjigaRepository implements IKnjigaRepository {

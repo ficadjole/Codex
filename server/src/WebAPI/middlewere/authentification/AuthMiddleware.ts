@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { Uloga } from "../../../Domain/enums/Uloga";
+import { UserRole } from "../../../Domain/enums/UserRole";
 
 interface JwtPayload {
-  idKorisnika: number;
+  userId: number;
   username: string;
-  uloga: Uloga;
+  userRole: UserRole;
 }
 
 declare global {
@@ -24,7 +24,7 @@ export const authenticate = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ success: false, message: "Nedostaje token" });
+    res.status(401).json({ success: false, message: "Missing token" });
     return;
   }
 
@@ -39,6 +39,6 @@ export const authenticate = (
     req.user = decoded; // postavlja korisnika na req
     next();
   } catch (err) {
-    res.status(401).json({ success: false, message: "Nevažeći token" });
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 };

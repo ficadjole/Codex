@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import { IKomentarService } from "../../Domain/services/komentar/IKomentarService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
-import { Uloga } from "../../Domain/enums/Uloga";
+import { UserRole } from "../../Domain/enums/UserRole";
 
 export class KomentarController {
   private router: Router;
@@ -24,7 +24,7 @@ export class KomentarController {
     this.router.delete(
       "/:komentarId",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.obrisiKomentar.bind(this)
     );
 

@@ -1,23 +1,21 @@
 import express from "express";
 import cors from "cors";
-import { KorisnikRepository } from "./Database/repositories/korisnik/KorisnikRepository";
 import { IAuthService } from "./Domain/services/auth/IAuthService";
 import { AuthService } from "./Services/auth/AuthService";
 import { AuthController } from "./WebAPI/controllers/AuthController";
-import { IArtikalRepository } from "./Domain/repositories/IArtikalRepository";
+import { IArtikalRepository } from "./Domain/repositories/IItemRepository";
 import { ArtikalRepository } from "./Database/repositories/artikal/ArtikalRepository";
 import { KnjigaRepository } from "./Database/repositories/knjiga/KnjigaRepository";
-import { IKnjigaRepository } from "./Domain/repositories/IKnjigaRepository";
-import { IKnjigaKategorijaRepository } from "./Domain/repositories/IKnjigaKategorijaRepository";
+import { IKnjigaRepository } from "./Domain/repositories/IBookRepository";
+import { IKnjigaKategorijaRepository } from "./Domain/repositories/IBookGenreRepository";
 import { KnjigaKategorijaRepository } from "./Database/repositories/knjigaKategorija/KnjigaKategorijaRepository";
-import { IAksesoarRepository } from "./Domain/repositories/IAksesoarRepository";
+import { IAksesoarRepository } from "./Domain/repositories/IAccessoryRepository";
 import { AksesoarRepository } from "./Database/repositories/aksesoar/AksesoarRepository";
 import { IArtikalService } from "./Domain/services/artikal/IArtikalService";
 import { ArtikalService } from "./Services/artikal/ArtikalService";
-import { IKategorijaRepository } from "./Domain/repositories/IKategorijaRepository";
+import { IKategorijaRepository } from "./Domain/repositories/IGenreRepository";
 import { KategorijaRepository } from "./Database/repositories/kategorija/KategorijaRepository";
 import { ArtikalController } from "./WebAPI/controllers/ArtikalController";
-import { IKorisnikRepository } from "./Domain/repositories/IKorisnikRepository";
 import { IUserService } from "./Domain/services/user/IUserService";
 import { KorisnikService } from "./Services/korisnik/KorisnikService";
 import { KorisnikController } from "./WebAPI/controllers/KorisnikController";
@@ -33,6 +31,8 @@ import { KomentarRepository } from "./Database/repositories/komentar/KomentarRep
 import { IKomentarService } from "./Domain/services/komentar/IKomentarService";
 import { KomentarService } from "./Services/komentar/KomentarService";
 import { KomentarController } from "./WebAPI/controllers/KomentarController";
+import { IUserRepository } from "./Domain/repositories/IUserRepository";
+import { UserRepository } from "./Database/repositories/UserRepository";
 
 require("dotenv").config();
 
@@ -43,8 +43,8 @@ app.use(express.json());
 
 //Korisnik
 
-const korisnikRepository: IKorisnikRepository = new KorisnikRepository();
-const authService: IAuthService = new AuthService(korisnikRepository);
+const userRepository: IUserRepository = new UserRepository();
+const authService: IAuthService = new AuthService(userRepository);
 const authController = new AuthController(authService);
 
 //Artikal
@@ -68,7 +68,7 @@ const artikalController = new ArtikalController(artikalService);
 
 //Korisnik
 
-const korisnikService: IUserService = new KorisnikService(korisnikRepository);
+const korisnikService: IUserService = new KorisnikService(userRepository);
 const korisnikController = new KorisnikController(korisnikService);
 
 //BlogPost
@@ -81,7 +81,7 @@ const blogPostService: IBlogPostService = new BlogPostService(
   blogPostRepository,
   blogPostArtikalRepository,
   artikalRepository,
-  korisnikRepository
+  userRepository
 );
 
 const blogPostController = new BlogPostController(blogPostService);
@@ -91,7 +91,7 @@ const komentarRepository: IKomentarRepository = new KomentarRepository();
 
 const komentarService: IKomentarService = new KomentarService(
   komentarRepository,
-  korisnikRepository
+  userRepository
 );
 
 const komentarController = new KomentarController(komentarService);

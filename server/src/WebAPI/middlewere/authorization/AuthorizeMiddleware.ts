@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { Uloga } from "../../../Domain/enums/Uloga";
+import { UserRole } from "../../../Domain/enums/UserRole";
 
-export const authorize = (...dozvoljeneUloge: Uloga[]) => {
+export const authorize = (...dozvoljeneUloge: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const korisnik = req.user;
+    const user = req.user;
 
-    if (!korisnik || !dozvoljeneUloge.includes(korisnik.uloga)) {
-      res.status(403).json({ success: false, message: "Zabranjen pristup" });
+    if (!user || !dozvoljeneUloge.includes(user.userRole)) {
+      res.status(403).json({ success: false, message: "Access denied" });
       return;
     }
 

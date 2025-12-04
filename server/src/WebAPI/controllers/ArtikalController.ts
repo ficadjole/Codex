@@ -2,7 +2,7 @@ import { Router } from "express";
 import { IArtikalService } from "../../Domain/services/artikal/IArtikalService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
-import { Uloga } from "../../Domain/enums/Uloga";
+import { UserRole } from "../../Domain/enums/UserRole";
 
 export class ArtikalController {
   private router: Router;
@@ -20,21 +20,21 @@ export class ArtikalController {
     this.router.post(
       "/dodajArtikal",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.dodajArtikal.bind(this)
     );
 
     this.router.delete(
       "/obrisiArtikal/:artikalId",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.obrisiArtikal.bind(this)
     );
 
     this.router.put(
       "/azurirajArtikal/:artikalId",
       authenticate,
-      authorize(Uloga.admin),
+      authorize(UserRole.ADMIN),
       this.azurirajArtikal.bind(this)
     );
 

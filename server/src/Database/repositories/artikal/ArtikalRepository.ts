@@ -1,7 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { TipArtikla } from "../../../Domain/enums/TipArtikla";
-import { Artikal } from "../../../Domain/models/Artikal";
-import { IArtikalRepository } from "../../../Domain/repositories/IArtikalRepository";
+import { TipArtikla } from "../../../Domain/enums/ItemType";
+import { Artikal } from "../../../Domain/models/Item";
+import { IArtikalRepository } from "../../../Domain/repositories/IItemRepository";
 import db from "../../connection/DbConnectionPool";
 
 export class ArtikalRepository implements IArtikalRepository {
@@ -157,7 +157,6 @@ export class ArtikalRepository implements IArtikalRepository {
 
       const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
 
-      
       return result.affectedRows > 0;
     } catch {
       return false;

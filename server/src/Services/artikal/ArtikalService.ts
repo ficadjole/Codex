@@ -1,15 +1,15 @@
 import { AksesoarDetaljiDto } from "../../Domain/DTOs/artikal/AksesoarDetaljiDto";
 import { ArtikalDto } from "../../Domain/DTOs/artikal/ArtikalDto";
 import { KnjigaDetaljiDto } from "../../Domain/DTOs/artikal/KnjigaDetaljiDto";
-import { TipArtikla } from "../../Domain/enums/TipArtikla";
-import { Aksesoar } from "../../Domain/models/Aksesoar";
-import { Artikal } from "../../Domain/models/Artikal";
-import { Knjiga } from "../../Domain/models/Knjiga";
-import { IAksesoarRepository } from "../../Domain/repositories/IAksesoarRepository";
-import { IArtikalRepository } from "../../Domain/repositories/IArtikalRepository";
-import { IKategorijaRepository } from "../../Domain/repositories/IKategorijaRepository";
-import { IKnjigaKategorijaRepository } from "../../Domain/repositories/IKnjigaKategorijaRepository";
-import { IKnjigaRepository } from "../../Domain/repositories/IKnjigaRepository";
+import { TipArtikla } from "../../Domain/enums/ItemType";
+import { Aksesoar } from "../../Domain/models/Accessories";
+import { Artikal } from "../../Domain/models/Item";
+import { Knjiga } from "../../Domain/models/Book";
+import { IAksesoarRepository } from "../../Domain/repositories/IAccessoryRepository";
+import { IArtikalRepository } from "../../Domain/repositories/IItemRepository";
+import { IKategorijaRepository } from "../../Domain/repositories/IGenreRepository";
+import { IKnjigaKategorijaRepository } from "../../Domain/repositories/IBookGenreRepository";
+import { IKnjigaRepository } from "../../Domain/repositories/IBookRepository";
 import { IArtikalService } from "../../Domain/services/artikal/IArtikalService";
 
 export class ArtikalService implements IArtikalService {

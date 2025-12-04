@@ -1,8 +1,8 @@
 import { AksesoarDetaljiDto } from "../../DTOs/artikal/AksesoarDetaljiDto";
 import { ArtikalDto } from "../../DTOs/artikal/ArtikalDto";
 import { KnjigaDetaljiDto } from "../../DTOs/artikal/KnjigaDetaljiDto";
-import { TipArtikla } from "../../enums/TipArtikla";
-import { Artikal } from "../../models/Artikal";
+import { TipArtikla } from "../../enums/ItemType";
+import { Artikal } from "../../models/Item";
 
 export interface IArtikalService {
   dodajArtikal(artikal: Artikal): Promise<ArtikalDto>;

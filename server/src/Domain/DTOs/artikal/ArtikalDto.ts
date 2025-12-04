@@ -1,4 +1,4 @@
-import { TipArtikla } from "../../enums/TipArtikla";
+import { TipArtikla } from "../../enums/ItemType";
 
 export class ArtikalDto {
   public constructor(
