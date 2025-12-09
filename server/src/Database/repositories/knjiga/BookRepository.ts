@@ -1,70 +1,68 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { Knjiga } from "../../../Domain/models/Book";
-import { IKnjigaRepository } from "../../../Domain/repositories/IBookRepository";
 import db from "../../connection/DbConnectionPool";
+import { IBookRepository } from "../../../Domain/repositories/IBookRepository";
+import { Book } from "../../../Domain/models/Book";
 
-export class KnjigaRepository implements IKnjigaRepository {
-  async dodajKnjigu(knjiga: Knjiga): Promise<Knjiga> {
+export class BookRepository implements IBookRepository {
+  async create(book: Book): Promise<Book> {
     try {
       const query =
-        "INSERT INTO knjiga (artikal_id,isbn,autor,broj_strana,korice,godina_izdanja,opis,goodreads_link) VALUES (?,?,?,?,?,?,?,?)";
+        "INSERT INTO books (itemId,isbn,author,nmbrOfPages,cover,publicationYear,goodreads_link) VALUES (?,?,?,?,?,?,?)";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
-        knjiga.artikal_id,
-        knjiga.isbn,
-        knjiga.autor,
-        knjiga.broj_strana,
-        knjiga.korice,
-        knjiga.godina_izdanja,
-        knjiga.opis,
-        knjiga.goodreads_link,
+        book.itemId,
+        book.isbn,
+        book.author,
+        book.nmbrOfPages,
+        book.cover,
+        book.publicationYear,
+        book.goodreads_link,
       ]);
 
       if (result.affectedRows > 0) {
-        return new Knjiga(
-          knjiga.artikal_id,
-          knjiga.naziv,
-          knjiga.cena,
-          knjiga.slika_url,
-          knjiga.korisnik_id,
-          knjiga.isbn,
-          knjiga.autor,
-          knjiga.broj_strana,
-          knjiga.korice,
-          knjiga.godina_izdanja,
-          knjiga.opis,
-          knjiga.goodreads_link
+        return new Book(
+          book.itemId,
+          book.name,
+          book.price,
+          book.imageUrl,
+          book.userId,
+          book.isbn,
+          book.author,
+          book.nmbrOfPages,
+          book.cover,
+          book.publicationYear,
+          book.description,
+          book.goodreads_link
         );
       } else {
-        return new Knjiga();
+        return new Book();
       }
     } catch {
-      return new Knjiga();
+      return new Book();
     }
   }
-  async azurirajKnjigu(knjiga: Knjiga): Promise<Knjiga> {
+  async update(book: Book): Promise<Book> {
     try {
       const query =
-        "UPDATE knjiga SET isbn = ?, autor = ?, broj_strana = ?, korice = ?, godina_izdanja = ?, opis = ?, goodreads_link = ? WHERE artikal_id = ?";
+        "UPDATE books SET isbn = ?, author = ?, nmbrOfPages = ?, cover = ?, publicationYear = ?, goodreads_link = ? WHERE itemId = ?";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
-        knjiga.isbn,
-        knjiga.autor,
-        knjiga.broj_strana,
-        knjiga.korice,
-        knjiga.godina_izdanja,
-        knjiga.opis,
-        knjiga.goodreads_link,
-        knjiga.artikal_id,
+        book.isbn,
+        book.author,
+        book.nmbrOfPages,
+        book.cover,
+        book.publicationYear,
+        book.goodreads_link,
+        book.itemId,
       ]);
 
       if (result.affectedRows > 0) {
-        return knjiga;
+        return book;
       } else {
-        return new Knjiga();
+        return new Book();
       }
     } catch {
-      return new Knjiga();
+      return new Book();
     }
   }
   // async obrisiKnjigu(artikal_id: number): Promise<boolean> {

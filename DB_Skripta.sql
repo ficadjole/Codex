@@ -21,7 +21,7 @@ CREATE TABLE items (
     price DECIMAL(10,2) NOT NULL,
     imageUrl TEXT,
     itemType ENUM('knjiga', 'aksesoar') NOT NULL,
-	descirption TEXT,
+	description TEXT,
     userId INT,
     dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE SET NULL
