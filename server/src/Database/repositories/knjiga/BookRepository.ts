@@ -4,6 +4,12 @@ import { IBookRepository } from "../../../Domain/repositories/IBookRepository";
 import { Book } from "../../../Domain/models/Book";
 
 export class BookRepository implements IBookRepository {
+  getById(itemId: number): Promise<Book> {
+    throw new Error("Method not implemented.");
+  }
+  getByAuthor(author: string): Promise<Book[]> {
+    throw new Error("Method not implemented.");
+  }
   async create(book: Book): Promise<Book> {
     try {
       const query =
@@ -76,7 +82,7 @@ export class BookRepository implements IBookRepository {
   //     return false;
   //   }
   // }
-  async getByKnjigaID(artikal_id: number): Promise<Knjiga> {
+  async getByKnjigaID(artikal_id: number): Promise<Book> {
     try {
       const query = "SELECT * FROM knjiga WHERE artikal_id = ?";
 
@@ -84,7 +90,7 @@ export class BookRepository implements IBookRepository {
 
       if (rows.length > 0) {
         const row = rows[0];
-        return new Knjiga(
+        return new Book(
           row.artikal_id,
           row.naziv,
           row.cena,
@@ -99,13 +105,13 @@ export class BookRepository implements IBookRepository {
           row.goodreads_link
         );
       } else {
-        return new Knjiga();
+        return new Book();
       }
     } catch {
-      return new Knjiga();
+      return new Book();
     }
   }
-  async getByAutor(autor: string): Promise<Knjiga[]> {
+  async getByAutor(autor: string): Promise<Book[]> {
     try {
       const query =
         "SELECT * FROM knjiga WHERE autor = ? ORDER BY godina_izdanja DESC";
@@ -114,7 +120,7 @@ export class BookRepository implements IBookRepository {
 
       return rows.map(
         (row) =>
-          new Knjiga(
+          new Book(
             row.artikal_id,
             row.naziv,
             row.cena,

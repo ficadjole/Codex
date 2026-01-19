@@ -2,5 +2,5 @@ import type { IAuthAPIService } from "../../../api_services/authApi/IAuthAPIServ
 
 export type AuthFormProps = {
   authApi: IAuthAPIService;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (token: string) => void;
 };

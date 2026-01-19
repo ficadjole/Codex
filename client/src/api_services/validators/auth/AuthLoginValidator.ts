@@ -1,28 +1,31 @@
-import type { RezultatValidacije } from "../../../types/validation/ValidationResult";
+import type { ValidationReusult } from "../../../types/validation/ValidationResult";
 
-export function validacijaPodatakaAuthPrijava(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
- var poruka: string = "";
+export function validateAuthLoginData(
+  username?: string,
+  password?: string
+): ValidationReusult {
+  let message: string = "";
 
-  // Validacija username-a
-  if (!korisnickoIme || korisnickoIme.trim() === "") {
-    poruka = "Username ne sme biti prazan.";
-  } else if (korisnickoIme.length < 3) {
-    poruka = "Username mora imati najmanje 3 karaktera.";
-  } else if (korisnickoIme.length > 15) {
-    poruka = "Username ne sme imati više od 15 karaktera.";
+  // Username validation
+  if (!username || username.trim() === "") {
+    message = "Username must not be empty.";
+  } else if (username.length < 3) {
+    message = "Username must have at least 3 characters.";
+  } else if (username.length > 15) {
+    message = "Username must not exceed 15 characters.";
   }
 
-  // Validacija password-a
-  if (!lozinka || lozinka.trim() === "") {
-    poruka = "Password ne sme biti prazan.";
-  } else if (lozinka.length < 3) {
-    poruka = "Password mora imati najmanje 3 karaktera.";
-  } else if (lozinka.length > 15) {
-    poruka = "Password ne sme imati više od 15 karaktera.";
+  // Password validation
+  if (!password || password.trim() === "") {
+    message = "Password must not be empty.";
+  } else if (password.length < 3) {
+    message = "Password must have at least 3 characters.";
+  } else if (password.length > 15) {
+    message = "Password must not exceed 15 characters.";
   }
 
   return {
-    uspesno: poruka.length === 0,
-    poruka,
+    success: message.length === 0,
+    message,
   };
 }

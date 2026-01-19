@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, type ReactNode } from 'react';
-import { ObrišiVrednostPoKljuču, PročitajVrednostPoKljuču, SačuvajVrednostPoKljuču } from '../../helpers/local_storage';
+import { DeleteValueByKey, ReadValueByKey, SaveValueByKey } from '../../helpers/local_storage';
 import { jwtDecode } from 'jwt-decode';
 import type { AuthContextType } from '../../types/auth/AuthContext';
 import type { JwtTokenClaims } from '../../types/auth/JwtTokenClaims';
@@ -44,11 +44,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const savedToken = PročitajVrednostPoKljuču("authToken");
+        const savedToken = ReadValueByKey("authToken");
 
         if (savedToken) {
             if (isTokenExpired(savedToken)) {
-                ObrišiVrednostPoKljuču("authToken");
+                DeleteValueByKey("authToken");
                 setIsLoading(false);
                 return;
             }
@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     role: claims.role
                 });
             } else {
-                ObrišiVrednostPoKljuču("authToken");
+                DeleteValueByKey("authToken");
             }
         }
 
@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 email: claims.email,
                 role: claims.role
             });
-            SačuvajVrednostPoKljuču("authToken", newToken);
+            SaveValueByKey("authToken", newToken);
         } else {
             console.error('Invalid or expired token');
         }
@@ -90,7 +90,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const logout = () => {
         setToken(null);
         setUser(null);
-        ObrišiVrednostPoKljuču("authToken");
+        DeleteValueByKey("authToken");
     };
 
     const isAuthenticated = !!user && !!token;

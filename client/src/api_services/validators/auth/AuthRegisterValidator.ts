@@ -1,38 +1,59 @@
-import type { RezultatValidacije } from "../../../types/validation/ValidationResult";
+import type { ValidationReusult } from "../../../types/validation/ValidationResult";
 
-export function validacijaPodatakaAuthRegistracija(
-    ime?: string,
-    prezime?: string,
-    email?: string,
-    korisnickoIme?: string,
-    lozinka?: string,
-    uloga?: string 
-): RezultatValidacije{
-    
-    if(!ime || !prezime || !email || !korisnickoIme || !lozinka || !uloga){
-        return { uspesno: false, poruka: "Sva polja su obavezna"};
-    }
+export function validateAuthRegistrationData(
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  username?: string,
+  password?: string,
+  userRole?: string
+): ValidationReusult {
 
-    if(ime.length < 3 || ime.length > 15)
-        return {uspesno: false, poruka: "Ime mora imati najmanje 3 a najvise 15 karaktera."};    
+  if (!firstName || !lastName || !email || !username || !password || !userRole) {
+    return { success: false, message: "All fields are required." };
+  }
 
-    if(prezime.length < 3 || prezime.length > 15) 
-        return {uspesno: false, poruka: "Prezime mora imati najmanje 3 a najvise 15 karaktera."};
+  if (firstName.length < 3 || firstName.length > 15) {
+    return {
+      success: false,
+      message: "First name must be between 3 and 15 characters."
+    };
+  }
 
-    if(lozinka.length < 3 || lozinka.length > 15)
-        return{ uspesno: false, poruka: "Lozinka mora imati najmanje 3 a najvise 15 karaktera."}
+  if (lastName.length < 3 || lastName.length > 15) {
+    return {
+      success: false,
+      message: "Last name must be between 3 and 15 characters."
+    };
+  }
 
-   if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-        return { uspesno: false, poruka: "Email nije validan."};
-    }
+  if (password.length < 3 || password.length > 15) {
+    return {
+      success: false,
+      message: "Password must be between 3 and 15 characters."
+    };
+  }
 
-    if(korisnickoIme.length < 3 || korisnickoIme.length > 15){
-        return { uspesno: false, poruka: "Korisničko ime mora imati najmanje 3 a najvise 15 karaktera."};
-    }
+  if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+    return {
+      success: false,
+      message: "Email is not valid."
+    };
+  }
 
-    if(!["kupac", "admin"].includes(uloga)){
-        return { uspesno: false, poruka: "Uloga nije validna."};
-    }
+  if (username.length < 3 || username.length > 15) {
+    return {
+      success: false,
+      message: "Username must be between 3 and 15 characters."
+    };
+  }
 
-    return {uspesno: true};
+  if (!["user", "admin"].includes(userRole)) {
+    return {
+      success: false,
+      message: "Role is not valid."
+    };
+  }
+
+  return { success: true };
 }

@@ -3,18 +3,10 @@ import cors from "cors";
 import { IAuthService } from "./Domain/services/auth/IAuthService";
 import { AuthService } from "./Services/auth/AuthService";
 import { AuthController } from "./WebAPI/controllers/AuthController";
-import { IArtikalRepository } from "./Domain/repositories/IItemRepository";
-import { ArtikalRepository } from "./Database/repositories/artikal/ItemRepository";
-import { KnjigaRepository } from "./Database/repositories/knjiga/BookRepository";
-import { IKnjigaRepository } from "./Domain/repositories/IBookRepository";
-import { IKnjigaKategorijaRepository } from "./Domain/repositories/IBookGenreRepository";
-import { KnjigaKategorijaRepository } from "./Database/repositories/knjigaKategorija/BookGenreRepository";
-import { IAksesoarRepository } from "./Domain/repositories/IAccessoryRepository";
-import { AksesoarRepository } from "./Database/repositories/aksesoar/AccesoryRepository";
+
 import { IArtikalService } from "./Domain/services/artikal/IArtikalService";
 import { ArtikalService } from "./Services/artikal/ArtikalService";
-import { IKategorijaRepository } from "./Domain/repositories/IGenreRepository";
-import { KategorijaRepository } from "./Database/repositories/kategorija/GenreRepository";
+
 import { ArtikalController } from "./WebAPI/controllers/ArtikalController";
 import { IUserService } from "./Domain/services/user/IUserService";
 import { KorisnikService } from "./Services/korisnik/KorisnikService";
@@ -33,6 +25,16 @@ import { KomentarService } from "./Services/komentar/KomentarService";
 import { KomentarController } from "./WebAPI/controllers/KomentarController";
 import { IUserRepository } from "./Domain/repositories/IUserRepository";
 import { UserRepository } from "./Database/repositories/UserRepository";
+import { IAccessoryRepository } from "./Domain/repositories/IAccessoryRepository";
+import { AccesoryRepository } from "./Database/repositories/aksesoar/AccesoryRepository";
+import { GenreRepository } from "./Database/repositories/kategorija/GenreRepository";
+import { IGenreRepository } from "./Domain/repositories/IGenreRepository";
+import { BookGenreRepository } from "./Database/repositories/knjigaKategorija/BookGenreRepository";
+import { IBookGenreRepository } from "./Domain/repositories/IBookGenreRepository";
+import { BookRepository } from "./Database/repositories/knjiga/BookRepository";
+import { IBookRepository } from "./Domain/repositories/IBookRepository";
+import { ItemRepository } from "./Database/repositories/artikal/ItemRepository";
+import { IItemRepository } from "./Domain/repositories/IItemRepository";
 
 require("dotenv").config();
 
@@ -49,12 +51,11 @@ const authController = new AuthController(authService);
 
 //Artikal
 
-const artikalRepository: IArtikalRepository = new ArtikalRepository();
-const knjigaRepository: IKnjigaRepository = new KnjigaRepository();
-const knjigaKategorijaRepository: IKnjigaKategorijaRepository =
-  new KnjigaKategorijaRepository();
-const kategorijaRepository: IKategorijaRepository = new KategorijaRepository();
-const aksesoarRepository: IAksesoarRepository = new AksesoarRepository();
+const artikalRepository: IItemRepository = new ItemRepository();
+const knjigaRepository: IBookRepository = new BookRepository();
+const knjigaKategorijaRepository: IBookGenreRepository = new BookGenreRepository();
+const kategorijaRepository: IGenreRepository = new GenreRepository();
+const aksesoarRepository: IAccessoryRepository = new AccesoryRepository();
 
 const artikalService: IArtikalService = new ArtikalService(
   artikalRepository,

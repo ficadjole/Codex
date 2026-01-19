@@ -1,4 +1,4 @@
 export interface UserLoginDto {
-   korisnikId: number;
-   korisnickoIme: string;
+   userId: number;
+   username: string;
 }

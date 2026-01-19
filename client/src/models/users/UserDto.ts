@@ -1,8 +1,8 @@
 export interface UserDto{
-    korisnikId      : number;
-    ime             : string;
-    prezime         : string;
+    userId          : number;
+    firstName       : string;
+    lastName        : string;
     email           : string;
-    korisnickoIme   : string;
-    uloga           : string;
+    username        : string;
+    userRole        : string;
 }

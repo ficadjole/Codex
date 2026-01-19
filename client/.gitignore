@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 package-lock.json
+
+# dotenv environment variables file
+.env
