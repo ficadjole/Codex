@@ -1,14 +1,10 @@
-import { ItemType } from "../enums/ItemType";
-
-export class Item {
+export class AccessoryDetailsDto {
   public constructor(
     public itemId: number = 0,
     public name: string = "",
     public price: number = 0,
     public imageUrl: string = "",
-    public type: ItemType = ItemType.BOOK,
     public description: string = "",
-    public userId: number = 0,
-    public createdAt?: Date
+    public content: string = ""
   ) {}
 }

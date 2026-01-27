@@ -1,18 +1,18 @@
-import { BlogPostDetaljiDto } from "../../DTOs/blogPost/BlogPostDetaljiDto";
+import { BlogPostDetailsDto } from "../../DTOs/blogPost/BlogPostDetailsDto";
 import { BlogPostDto } from "../../DTOs/blogPost/BlogPostListDto";
-import { TipBlogPosta } from "../../enums/TipBlogPosta";
+import { BlogPostType } from "../../enums/BlogPostType";
 import { BlogPost } from "../../models/BlogPost";
 
 export interface IBlogPostService {
-  dodajBlogPost(noviBlogPost: BlogPost): Promise<BlogPostDetaljiDto>;
+  addBlogPost(newBlogPost: BlogPost): Promise<BlogPostDetailsDto>;
 
-  izmeniBlogPost(izmenjeniBlogPost: BlogPost): Promise<BlogPostDetaljiDto>;
+  updateBlogPost(updatedBlogPost: BlogPost): Promise<BlogPostDetailsDto>;
 
-  obrisiBlogPost(blog_post_id: number): Promise<boolean>;
+  deleteBlogPost(blogPostId: number): Promise<boolean>;
 
-  getAllBlogPostovi(): Promise<BlogPostDto[]>;
+  getAllBlogPosts(): Promise<BlogPostDto[]>;
 
-  getBlogPostById(blog_post_id: number): Promise<BlogPostDetaljiDto>;
+  getBlogPostById(blogPostId: number): Promise<BlogPostDetailsDto>;
 
-  getBlogPostByTip(tipPosta: TipBlogPosta): Promise<BlogPostDto[]>;
+  getBlogPostsByType(postType: BlogPostType): Promise<BlogPostDto[]>;
 }

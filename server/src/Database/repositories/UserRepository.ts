@@ -7,7 +7,7 @@ export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
     try {
       const query =
-        "INSERT INTO users (firstName,lastName,email,username,passwordHash,userRole) VALUES (?,?,?,?,?,?)";
+        "INSERT INTO users (firstname,surname,email,username,passwordHash,userRole) VALUES (?,?,?,?,?,?)";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         user.firstName,

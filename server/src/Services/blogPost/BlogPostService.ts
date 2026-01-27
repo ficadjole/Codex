@@ -1,192 +1,175 @@
-import { ArtikalDto } from "../../Domain/DTOs/artikal/ArtikalDto";
-import { BlogPostDetaljiDto } from "../../Domain/DTOs/blogPost/BlogPostDetaljiDto";
+import { BlogPostDetailsDto } from "../../Domain/DTOs/blogPost/BlogPostDetailsDto";
 import { BlogPostDto } from "../../Domain/DTOs/blogPost/BlogPostListDto";
-import { TipBlogPosta } from "../../Domain/enums/TipBlogPosta";
+import { BlogPostType } from "../../Domain/enums/BlogPostType";
 import { BlogPost } from "../../Domain/models/BlogPost";
-import { IArtikalRepository } from "../../Domain/repositories/IItemRepository";
-import { IBlogPostArtikalRepository } from "../../Domain/repositories/IBlogPostArtikalRepository";
+import { IItemRepository } from "../../Domain/repositories/IItemRepository";
 import { IBlogPostRepository } from "../../Domain/repositories/IBlogPostRepository";
 import { IUserRepository } from "../../Domain/repositories/IUserRepository";
 import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostService";
+import { IBlogPostItemRepository } from "../../Domain/repositories/IBlogPostItemRepository";
+import { ItemDto } from "../../Domain/DTOs/artikal/ItemDto";
 
 export class BlogPostService implements IBlogPostService {
-  public constructor(
+  constructor(
     private blogPostRepository: IBlogPostRepository,
-    private blogPostArtikalRepository: IBlogPostArtikalRepository,
-    private artikalRepository: IArtikalRepository,
-    private korisnikRepository: IUserRepository
+    private blogPostItemRepository: IBlogPostItemRepository,
+    private itemRepository: IItemRepository,
+    private userRepository: IUserRepository
   ) {}
 
-  async dodajBlogPost(noviBlogPost: BlogPost): Promise<BlogPostDetaljiDto> {
-    const dodatBlogPost = await this.blogPostRepository.createBlogPost(
-      noviBlogPost
+  async addBlogPost(newBlogPost: BlogPost): Promise<BlogPostDetailsDto> {
+    const createdBlogPost = await this.blogPostRepository.createBlogPost(
+      newBlogPost
     );
 
-    if (dodatBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+    if (createdBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
-    //sada trebam dodati podatke u poveznu tabelu
-
-    for (var i = 0; i < noviBlogPost.artikal_id.length; i++) {
-      const dodatPoveznik =
-        await this.blogPostArtikalRepository.dodajBlogPostArtikal(
-          dodatBlogPost.blog_post_id,
-          noviBlogPost.artikal_id[i]
-        );
-
-      if (dodatPoveznik.artikal_id === 0 || dodatPoveznik.blog_post_id === 0) {
-        return new BlogPostDetaljiDto();
-      }
-    }
-
-    //ako je sve dobro proslo vracamo ceo dto nazad
-
-    return this.mapToDTO(dodatBlogPost, noviBlogPost.artikal_id);
-  }
-
-  async izmeniBlogPost(
-    izmenjeniBlogPost: BlogPost
-  ): Promise<BlogPostDetaljiDto> {
-    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
-      izmenjeniBlogPost.blog_post_id
-    );
-
-    if (postojeciBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
-
-    const azuriraniBlogPost = await this.blogPostRepository.updateBlogPost(
-      postojeciBlogPost.blog_post_id,
-      izmenjeniBlogPost
-    );
-
-    if (azuriraniBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
-
-    const blogPostArtikli =
-      await this.blogPostArtikalRepository.getAllPoBlogPostId(
-        postojeciBlogPost.blog_post_id
+    // Add entries in the linking table
+    for (let i = 0; i < newBlogPost.itemIds.length; i++) {
+      const link = await this.blogPostItemRepository.addBlogPostItem(
+        createdBlogPost.blogPostId,
+        newBlogPost.itemIds[i]
       );
 
-    //prvo cu obrisati sve pa cu azurirati
-
-    const obrisano = await this.blogPostArtikalRepository.obrisiSveArtikleBloga(
-      postojeciBlogPost.blog_post_id
-    );
-
-    if (izmenjeniBlogPost.artikal_id.length !== 0) {
-      for (var i = 0; i < izmenjeniBlogPost.artikal_id.length; i++) {
-        const dodato =
-          await this.blogPostArtikalRepository.dodajBlogPostArtikal(
-            izmenjeniBlogPost.blog_post_id,
-            izmenjeniBlogPost.artikal_id[i]
-          );
-
-        if (dodato.artikal_id === 0 || dodato.blog_post_id === 0) {
-          return new BlogPostDetaljiDto();
-        }
+      if (link.itemId === 0 || link.blogPostId === 0) {
+        return new BlogPostDetailsDto();
       }
     }
 
-    return this.mapToDTO(azuriraniBlogPost, izmenjeniBlogPost.artikal_id);
+    return this.mapToDTO(createdBlogPost, newBlogPost.itemIds);
   }
 
-  async obrisiBlogPost(blog_post_id: number): Promise<boolean> {
-    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
-      blog_post_id
+  async updateBlogPost(
+    updatedBlogPost: BlogPost
+  ): Promise<BlogPostDetailsDto> {
+    const existingBlogPost = await this.blogPostRepository.getBlogPostById(
+      updatedBlogPost.blogPostId
     );
 
-    if (postojeciBlogPost.blog_post_id === 0) return false;
+    if (existingBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
-    return await this.blogPostRepository.deleteBlogPost(blog_post_id);
+    const blogPostUpdated = await this.blogPostRepository.updateBlogPost(
+      existingBlogPost.blogPostId,
+      updatedBlogPost
+    );
+
+    if (blogPostUpdated.blogPostId === 0) return new BlogPostDetailsDto();
+
+    // Delete all existing links and update
+    await this.blogPostItemRepository.deleteAllItemsFromBlog(
+      existingBlogPost.blogPostId
+    );
+
+    for (let i = 0; i < updatedBlogPost.itemIds.length; i++) {
+      const link = await this.blogPostItemRepository.addBlogPostItem(
+        updatedBlogPost.blogPostId,
+        updatedBlogPost.itemIds[i]
+      );
+
+      if (link.itemId === 0 || link.blogPostId === 0) {
+        return new BlogPostDetailsDto();
+      }
+    }
+
+    return this.mapToDTO(blogPostUpdated, updatedBlogPost.itemIds);
   }
 
-  async getAllBlogPostovi(): Promise<BlogPostDto[]> {
-    const blogPostovi: BlogPost[] =
+  async deleteBlogPost(blogPostId: number): Promise<boolean> {
+    const existingBlogPost = await this.blogPostRepository.getBlogPostById(
+      blogPostId
+    );
+
+    if (existingBlogPost.blogPostId === 0) return false;
+
+    return this.blogPostRepository.deleteBlogPost(blogPostId);
+  }
+
+  async getAllBlogPosts(): Promise<BlogPostDto[]> {
+    const allBlogPosts: BlogPost[] =
       await this.blogPostRepository.getAllBlogPosts();
 
-    return blogPostovi.map(
+    return allBlogPosts.map(
       (blogPost) =>
         new BlogPostDto(
-          blogPost.blog_post_id,
-          blogPost.naslov,
-          blogPost.slika_url,
-          blogPost.sadrzaj,
-          blogPost.tipPosta,
-          blogPost.datum_objave
+          blogPost.blogPostId,
+          blogPost.title,
+          blogPost.imgUrl,
+          blogPost.content,
+          blogPost.postType,
+          blogPost.publishDate
         )
     );
   }
 
-  async getBlogPostById(blog_post_id: number): Promise<BlogPostDetaljiDto> {
-    const postojeciBlogPost = await this.blogPostRepository.getBlogPostById(
-      blog_post_id
+  async getBlogPostById(blogPostId: number): Promise<BlogPostDetailsDto> {
+    const existingBlogPost = await this.blogPostRepository.getBlogPostById(
+      blogPostId
     );
 
-    if (postojeciBlogPost.blog_post_id === 0) return new BlogPostDetaljiDto();
+    if (existingBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
-    const blogPostArtikli =
-      await this.blogPostArtikalRepository.getAllPoBlogPostId(blog_post_id);
+    const blogPostItems =
+      await this.blogPostItemRepository.getAllByBlogPostId(blogPostId);
 
-    const artikli: number[] = blogPostArtikli.map(
-      (artikal) => artikal.artikal_id
-    );
+    const itemIds: number[] = blogPostItems.map((item) => item.itemId);
 
-    return this.mapToDTO(postojeciBlogPost, artikli);
+    return this.mapToDTO(existingBlogPost, itemIds);
   }
 
-  async getBlogPostByTip(tipPosta: TipBlogPosta): Promise<BlogPostDto[]> {
-    const blogoviPoTipu: BlogPost[] =
-      await this.blogPostRepository.getBlogPostsPoTipu(tipPosta);
+  async getBlogPostsByType(postType: BlogPostType): Promise<BlogPostDto[]> {
+    const postsByType: BlogPost[] =
+      await this.blogPostRepository.getBlogPostsByType(postType);
 
-    return blogoviPoTipu.map(
+    return postsByType.map(
       (blogPost) =>
         new BlogPostDto(
-          blogPost.blog_post_id,
-          blogPost.naslov,
-          blogPost.slika_url,
-          blogPost.sadrzaj,
-          blogPost.tipPosta,
-          blogPost.datum_objave
+          blogPost.blogPostId,
+          blogPost.title,
+          blogPost.imgUrl,
+          blogPost.content,
+          blogPost.postType,
+          blogPost.publishDate
         )
     );
   }
 
   private async mapToDTO(
-    dodatBlogPost: BlogPost,
-    artikal_id: number[]
-  ): Promise<BlogPostDetaljiDto> {
-    const autor = await this.korisnikRepository.getById(dodatBlogPost.admin_id);
+    blogPost: BlogPost,
+    itemIds: number[]
+  ): Promise<BlogPostDetailsDto> {
+    const author = await this.userRepository.getById(blogPost.userId);
 
-    const artikli: ArtikalDto[] = [];
+    const items: ItemDto[] = [];
 
-    for (var i = 0; i < artikal_id.length; i++) {
-      const artikal = await this.artikalRepository.getByArtikalId(
-        artikal_id[i]
-      );
+    for (let i = 0; i < itemIds.length; i++) {
+      const item = await this.itemRepository.getById(itemIds[i]);
 
-      if (artikal.artikal_id !== 0) {
-        artikli.push(
-          new ArtikalDto(
-            artikal.artikal_id,
-            artikal.naziv,
-            artikal.cena,
-            artikal.slika_url,
-            artikal.tip,
-            artikal.datumKreiranja
+      if (item.itemId !== 0) {
+        items.push(
+          new ItemDto(
+            item.itemId,
+            item.name,
+            item.price,
+            item.imageUrl,
+            item.type,
+            item.createdAt
           )
         );
       }
     }
 
-    return new BlogPostDetaljiDto(
-      dodatBlogPost.blog_post_id,
-      dodatBlogPost.naslov,
-      dodatBlogPost.slika_url,
-      dodatBlogPost.sadrzaj,
-      dodatBlogPost.tipPosta,
-      dodatBlogPost.datum_objave,
-      artikli,
+    return new BlogPostDetailsDto(
+      blogPost.blogPostId,
+      blogPost.title,
+      blogPost.imgUrl,
+      blogPost.content,
+      blogPost.postType,
+      blogPost.publishDate,
+      items,
       {
-        autor_id: autor.userId,
-        ime: autor.username,
-        prezime: autor.lastName,
+        authorId: author.userId,
+        firstName: author.firstName,
+        lastName: author.lastName,
       }
     );
   }

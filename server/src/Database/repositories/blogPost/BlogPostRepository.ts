@@ -1,51 +1,48 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { TipBlogPosta } from "../../../Domain/enums/TipBlogPosta";
 import { BlogPost } from "../../../Domain/models/BlogPost";
 import { IBlogPostRepository } from "../../../Domain/repositories/IBlogPostRepository";
 import db from "../../connection/DbConnectionPool";
+import { BlogPostType } from "../../../Domain/enums/BlogPostType";
 
 export class BlogPostRepository implements IBlogPostRepository {
   async getAllBlogPosts(): Promise<BlogPost[]> {
     try {
-      const query = `SELECT * FROM blog_post`;
+      const query = `SELECT * FROM blogPosts`;
       const [rows] = await db.execute<RowDataPacket[]>(query);
 
-      if (rows.length > 0) {
-        return rows.map(
-          (row) =>
-            new BlogPost(
-              row.blog_post_id,
-              row.naslov,
-              row.slika_url,
-              row.sadrzaj,
-              row.tipPosta,
-              new Date(row.datum_objave),
-              row.admin_id
-            )
-        );
-      } else {
-        return [];
-      }
+      return rows.map(
+        (row) =>
+          new BlogPost(
+            row.blogPostId,
+            row.title,
+            row.imgUrl,
+            row.content,
+            row.blogPostType,
+            new Date(row.publicationYear),
+            row.userId
+          )
+      );
     } catch {
       return [];
     }
   }
+
   async getBlogPostById(id: number): Promise<BlogPost> {
     try {
-      const query = `SELECT * FROM blog_post WHERE blog_post_id = ?`;
+      const query = `SELECT * FROM blogPosts WHERE blogPostId = ?`;
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [id]);
 
       if (rows.length > 0) {
         const row = rows[0];
         return new BlogPost(
-          row.blog_post_id,
-          row.naslov,
-          row.slika_url,
-          row.sadrzaj,
-          row.tipPosta,
-          new Date(row.datum_objave),
-          row.korisnik_id
+          row.blogPostId,
+          row.title,
+          row.imgUrl,
+          row.content,
+          row.blogPostType,
+          new Date(row.publicationYear),
+          row.userId
         );
       } else {
         return new BlogPost();
@@ -54,53 +51,51 @@ export class BlogPostRepository implements IBlogPostRepository {
       return new BlogPost();
     }
   }
-  async getBlogPostsPoTipu(tip: TipBlogPosta): Promise<BlogPost[]> {
+
+  async getBlogPostsByType(type: BlogPostType): Promise<BlogPost[]> {
     try {
-      const query = `SELECT * FROM blog_post WHERE tip = ?`;
+      const query = `SELECT * FROM blogPosts WHERE blogPostType = ?`;
 
-      const [rows] = await db.execute<RowDataPacket[]>(query, [tip]);
+      const [rows] = await db.execute<RowDataPacket[]>(query, [type]);
 
-      if (rows.length > 0) {
-        return rows.map(
-          (row) =>
-            new BlogPost(
-              row.blog_post_id,
-              row.naslov,
-              row.slika_url,
-              row.sadrzaj,
-              row.tipPosta,
-              new Date(row.datum_objave),
-              row.admin_id
-            )
-        );
-      } else {
-        return [];
-      }
+      return rows.map(
+        (row) =>
+          new BlogPost(
+            row.blogPostId,
+            row.title,
+            row.imgUrl,
+            row.content,
+            row.blogPostType,
+            new Date(row.publicationYear),
+            row.userId
+          )
+      );
     } catch {
       return [];
     }
   }
+
   async createBlogPost(blogPost: BlogPost): Promise<BlogPost> {
     try {
-      const query = `INSERT INTO blog_post (naslov, slika_url, sadrzaj, tip, korisnik_id) VALUES (?, ?, ?, ?, ?)`;
+      const query = `INSERT INTO blogPosts (title, imgUrl, content, blogPostType, userId) VALUES (?, ?, ?, ?, ?)`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
-        blogPost.naslov,
-        blogPost.slika_url,
-        blogPost.sadrzaj,
-        blogPost.tipPosta,
-        blogPost.admin_id,
+        blogPost.title,
+        blogPost.imgUrl,
+        blogPost.content,
+        blogPost.postType,
+        blogPost.userId,
       ]);
 
       if (result.affectedRows > 0) {
         return new BlogPost(
           result.insertId,
-          blogPost.naslov,
-          blogPost.slika_url,
-          blogPost.sadrzaj,
-          blogPost.tipPosta,
-          blogPost.datum_objave,
-          blogPost.admin_id
+          blogPost.title,
+          blogPost.imgUrl,
+          blogPost.content,
+          blogPost.postType,
+          blogPost.publishDate,
+          blogPost.userId
         );
       } else {
         return new BlogPost();
@@ -110,28 +105,29 @@ export class BlogPostRepository implements IBlogPostRepository {
       return new BlogPost();
     }
   }
+
   async updateBlogPost(id: number, blogPost: any): Promise<BlogPost> {
     try {
-      const query = `UPDATE blog_post SET naslov = ?, slika_url = ?, sadrzaj = ?, tip = ?, korisnik_id = ? WHERE blog_post_id = ?`;
+      const query = `UPDATE blogPosts SET title = ?, imgUrl = ?, content = ?, blogPostType = ?, userId = ? WHERE blogPostId = ?`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [
-        blogPost.naslov,
-        blogPost.slika_url,
-        blogPost.sadrzaj,
-        blogPost.tipPosta,
-        blogPost.admin_id,
+        blogPost.title,
+        blogPost.imgUrl,
+        blogPost.content,
+        blogPost.postType,
+        blogPost.userId,
         id,
       ]);
 
       if (result.affectedRows > 0) {
         return new BlogPost(
           id,
-          blogPost.naslov,
-          blogPost.slika_url,
-          blogPost.sadrzaj,
-          blogPost.tipPosta,
-          blogPost.datum_objave,
-          blogPost.admin_id
+          blogPost.title,
+          blogPost.imgUrl,
+          blogPost.content,
+          blogPost.postType,
+          blogPost.publishDate,
+          blogPost.userId
         );
       } else {
         return new BlogPost();
@@ -140,9 +136,10 @@ export class BlogPostRepository implements IBlogPostRepository {
       return new BlogPost();
     }
   }
+
   async deleteBlogPost(id: number): Promise<boolean> {
     try {
-      const query = `DELETE FROM blog_post WHERE blog_post_id = ?`;
+      const query = `DELETE FROM blogPosts WHERE blogPostId = ?`;
 
       const [result] = await db.execute<ResultSetHeader>(query, [id]);
 

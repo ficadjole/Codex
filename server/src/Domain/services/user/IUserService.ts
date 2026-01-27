@@ -1,6 +1,6 @@
-import { KorisnikDto } from "../../DTOs/korisnik/KorisnikDto";
-import { Korisnik } from "../../models/User";
+import { UserDto } from "../../DTOs/user/UserDto";
+import { User } from "../../models/User";
 
 export interface IUserService {
-  azurirajPodatkeKorisnika(korisnik: Korisnik): Promise<KorisnikDto>;
+  updateUser(user: User): Promise<UserDto>;
 }

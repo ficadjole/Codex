@@ -1,40 +1,60 @@
 import express from "express";
 import cors from "cors";
+
+// Auth
 import { IAuthService } from "./Domain/services/auth/IAuthService";
 import { AuthService } from "./Services/auth/AuthService";
 import { AuthController } from "./WebAPI/controllers/AuthController";
 
-import { IArtikalService } from "./Domain/services/artikal/IArtikalService";
-import { ArtikalService } from "./Services/artikal/ArtikalService";
+// Item
+import { IItemService } from "./Domain/services/item/IItemService";
+import { ItemService } from "./Services/item/ItemService";
+import { ItemController } from "./WebAPI/controllers/ItemController";
 
-import { ArtikalController } from "./WebAPI/controllers/ArtikalController";
+// User
 import { IUserService } from "./Domain/services/user/IUserService";
-import { KorisnikService } from "./Services/korisnik/KorisnikService";
-import { KorisnikController } from "./WebAPI/controllers/KorisnikController";
+import { UserService } from "./Services/user/UserService";
+import { UserController } from "./WebAPI/controllers/UserController";
+
+// BlogPost
 import { IBlogPostRepository } from "./Domain/repositories/IBlogPostRepository";
 import { BlogPostRepository } from "./Database/repositories/blogPost/BlogPostRepository";
-import { IBlogPostArtikalRepository } from "./Domain/repositories/IBlogPostArtikalRepository";
-import { BlogPostArtikalRepository } from "./Database/repositories/blogPost/BlogPostArtikalRepository";
+import { IBlogPostItemRepository } from "./Domain/repositories/IBlogPostItemRepository";
+import { BlogPostItemRepository } from "./Database/repositories/blogPost/BlogPostItemRepository";
 import { IBlogPostService } from "./Domain/services/blogPost/IBlogPostService";
 import { BlogPostService } from "./Services/blogPost/BlogPostService";
 import { BlogPostController } from "./WebAPI/controllers/BlogPostController";
-import { IKomentarRepository } from "./Domain/repositories/IKomentarRepository";
-import { KomentarRepository } from "./Database/repositories/komentar/KomentarRepository";
-import { IKomentarService } from "./Domain/services/komentar/IKomentarService";
-import { KomentarService } from "./Services/komentar/KomentarService";
-import { KomentarController } from "./WebAPI/controllers/KomentarController";
+
+// Comment
+import { ICommentRepository } from "./Domain/repositories/ICommentRepository";
+import { CommentRepository } from "./Database/repositories/comment/CommentRepository";
+import { ICommentService } from "./Domain/services/comment/ICommentService";
+import { CommentService } from "./Services/comment/CommentService";
+import { CommentController } from "./WebAPI/controllers/CommentController";
+
+// User Repository
 import { IUserRepository } from "./Domain/repositories/IUserRepository";
 import { UserRepository } from "./Database/repositories/UserRepository";
+
+// Accessories
 import { IAccessoryRepository } from "./Domain/repositories/IAccessoryRepository";
-import { AccesoryRepository } from "./Database/repositories/aksesoar/AccesoryRepository";
-import { GenreRepository } from "./Database/repositories/kategorija/GenreRepository";
+import { AccessoryRepository } from "./Database/repositories/accessory/AccessoryRepository";
+
+// Genre
 import { IGenreRepository } from "./Domain/repositories/IGenreRepository";
-import { BookGenreRepository } from "./Database/repositories/knjigaKategorija/BookGenreRepository";
+import { GenreRepository } from "./Database/repositories/genre/GenreRepository";
+
+// BookGenre
 import { IBookGenreRepository } from "./Domain/repositories/IBookGenreRepository";
-import { BookRepository } from "./Database/repositories/knjiga/BookRepository";
+
+// Book
 import { IBookRepository } from "./Domain/repositories/IBookRepository";
-import { ItemRepository } from "./Database/repositories/artikal/ItemRepository";
+import { BookRepository } from "./Database/repositories/book/BookRepository";
+
+// Item
 import { IItemRepository } from "./Domain/repositories/IItemRepository";
+import { ItemRepository } from "./Database/repositories/item/ItemRepository";
+import { BookGenreRepository } from "./Database/repositories/bookGenre/BookGenreRepository";
 
 require("dotenv").config();
 
@@ -43,67 +63,64 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-//Korisnik
+// --- User & Auth Setup ---
 
 const userRepository: IUserRepository = new UserRepository();
+
 const authService: IAuthService = new AuthService(userRepository);
 const authController = new AuthController(authService);
 
-//Artikal
+const userService: IUserService = new UserService(userRepository);
+const userController = new UserController(userService);
 
-const artikalRepository: IItemRepository = new ItemRepository();
-const knjigaRepository: IBookRepository = new BookRepository();
-const knjigaKategorijaRepository: IBookGenreRepository = new BookGenreRepository();
-const kategorijaRepository: IGenreRepository = new GenreRepository();
-const aksesoarRepository: IAccessoryRepository = new AccesoryRepository();
+// --- Item Setup ---
 
-const artikalService: IArtikalService = new ArtikalService(
-  artikalRepository,
-  knjigaRepository,
-  kategorijaRepository,
-  knjigaKategorijaRepository,
-  aksesoarRepository
+const itemRepository: IItemRepository = new ItemRepository();
+const bookRepository: IBookRepository = new BookRepository();
+const bookGenreRepository: IBookGenreRepository = new BookGenreRepository();
+const genreRepository: IGenreRepository = new GenreRepository();
+const accessoryRepository: IAccessoryRepository = new AccessoryRepository();
+
+const itemService: IItemService = new ItemService(
+  itemRepository,
+  bookRepository,
+  genreRepository,
+  bookGenreRepository,
+  accessoryRepository
 );
 
-const artikalController = new ArtikalController(artikalService);
+const itemController = new ItemController(itemService);
 
-//Korisnik
+// --- BlogPost Setup ---
 
-const korisnikService: IUserService = new KorisnikService(userRepository);
-const korisnikController = new KorisnikController(korisnikService);
-
-//BlogPost
 const blogPostRepository: IBlogPostRepository = new BlogPostRepository();
-
-const blogPostArtikalRepository: IBlogPostArtikalRepository =
-  new BlogPostArtikalRepository();
+const blogPostItemRepository: IBlogPostItemRepository =
+  new BlogPostItemRepository();
 
 const blogPostService: IBlogPostService = new BlogPostService(
   blogPostRepository,
-  blogPostArtikalRepository,
-  artikalRepository,
+  blogPostItemRepository,
+  itemRepository,
   userRepository
 );
 
 const blogPostController = new BlogPostController(blogPostService);
 
-//Komentar
-const komentarRepository: IKomentarRepository = new KomentarRepository();
+// --- Comment Setup ---
 
-const komentarService: IKomentarService = new KomentarService(
-  komentarRepository,
+const commentRepository: ICommentRepository = new CommentRepository();
+const commentService: ICommentService = new CommentService(
+  commentRepository,
   userRepository
 );
+const commentController = new CommentController(commentService);
 
-const komentarController = new KomentarController(komentarService);
+// --- Routes ---
 
 app.use("/api/v1", authController.getRouter());
-
-app.use("/api/v1/artikal", artikalController.getRouter());
-
-app.use("/api/v1/korisnik", korisnikController.getRouter());
-
+app.use("/api/v1/item", itemController.getRouter());
+app.use("/api/v1/user", userController.getRouter());
 app.use("/api/v1/blogPost", blogPostController.getRouter());
+app.use("/api/v1/comment", commentController.getRouter());
 
-app.use("/api/v1/komentar", komentarController.getRouter());
 export default app;

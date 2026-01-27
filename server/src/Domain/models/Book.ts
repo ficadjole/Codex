@@ -14,7 +14,7 @@ export class Book extends Item {
     public cover: "meke" | "tvrde" = "meke",
     public publicationYear: number = 0,
     public description: string = "",
-    public goodreads_link = "",
+    public goodreadsLink = "",
     public genres?: number[] //ovo su nam zanrovi knjige koji ce se prolsedjivati zajedno sa njom
   ) {
     super(

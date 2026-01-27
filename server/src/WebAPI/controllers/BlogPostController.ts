@@ -1,15 +1,15 @@
 import { Router, Request, Response } from "express";
 import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostService";
+import { UserRole } from "../../Domain/enums/UserRole";
+import { BlogPostType } from "../../Domain/enums/BlogPostType";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
-import { UserRole } from "../../Domain/enums/UserRole";
-import { TipBlogPosta } from "../../Domain/enums/TipBlogPosta";
 
 export class BlogPostController {
   private router: Router;
   private blogPostService: IBlogPostService;
 
-  public constructor(blogPostService: IBlogPostService) {
+  constructor(blogPostService: IBlogPostService) {
     this.router = Router();
     this.blogPostService = blogPostService;
     this.initializeRoutes();
@@ -17,191 +17,190 @@ export class BlogPostController {
 
   private initializeRoutes(): void {
     this.router.post(
-      "/dodajBlogPost",
+      "/addBlogPost",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.dodajBlogPost.bind(this)
+      this.addBlogPost.bind(this)
     );
 
     this.router.put(
-      "/azurirajBlogPost/:blogPostId",
+      "/updateBlogPost/:blogPostId",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.azurirajBlogPost.bind(this)
+      this.updateBlogPost.bind(this)
     );
 
     this.router.delete(
-      "/obrisiBlogPost/:blogPostId",
+      "/deleteBlogPost/:blogPostId",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.obrisiBlogPost.bind(this)
+      this.deleteBlogPost.bind(this)
     );
 
-    this.router.get("/getAllBlogPosts", this.getAllBlogPostovi.bind(this));
+    this.router.get("/getAllBlogPosts", this.getAllBlogPosts.bind(this));
 
     this.router.get(
-      "/getArtikalById/:blogPostId",
+      "/getBlogPostById/:blogPostId",
       this.getBlogPostById.bind(this)
     );
 
     this.router.get(
-      "/getBlogPostByTip/:tipPosta",
-      this.getBlogPostByTip.bind(this)
+      "/getBlogPostsByType/:postType",
+      this.getBlogPostsByType.bind(this)
     );
   }
 
-  private async dodajBlogPost(req: Request, res: Response): Promise<void> {
+  private async addBlogPost(req: Request, res: Response): Promise<void> {
     try {
       const blogPost = req.body;
+      const addedBlogPost = await this.blogPostService.addBlogPost(blogPost);
 
-      const dodatBlogPost = await this.blogPostService.dodajBlogPost(blogPost);
-
-      if (dodatBlogPost.blog_post_id === 0) {
+      if (addedBlogPost.blogPostId === 0) {
         res.status(400).json({
           success: false,
-          message: "Dodavanje blog posta nije uspelo.",
+          message: "Failed to add blog post.",
         });
       } else {
-        res
-          .status(201)
-          .json({ success: true, message: "Blog post je uspesno dodat." });
+        res.status(201).json({
+          success: true,
+          message: "Blog post added successfully.",
+        });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru." });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
-  private async azurirajBlogPost(req: Request, res: Response): Promise<void> {
+  private async updateBlogPost(req: Request, res: Response): Promise<void> {
     try {
-      const blog_post_id = parseInt(req.params.blogPostId);
+      const blogPostId = parseInt(req.params.blogPostId);
+      const updatedBlogPost = req.body;
+      updatedBlogPost.blogPostId = blogPostId;
 
-      const noviBlogPost = req.body;
+      const result = await this.blogPostService.updateBlogPost(updatedBlogPost);
 
-      noviBlogPost.blog_post_id = blog_post_id;
-
-      const azuriranBlogPost = await this.blogPostService.izmeniBlogPost(
-        noviBlogPost
-      );
-
-      if (azuriranBlogPost.blog_post_id === 0) {
+      if (result.blogPostId === 0) {
         res.status(400).json({
           success: false,
-          message: "Azuriranje blog posta nije uspelo.",
+          message: "Failed to update blog post.",
         });
-        return;
       } else {
         res.status(200).json({
           success: true,
-          message: "Blog post je uspesno azuriran.",
-          data: azuriranBlogPost,
+          message: "Blog post updated successfully.",
+          data: result,
         });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru." });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
-  private async obrisiBlogPost(req: Request, res: Response): Promise<void> {
+  private async deleteBlogPost(req: Request, res: Response): Promise<void> {
     try {
-      const blog_post_id = parseInt(req.params.blogPostId);
+      const blogPostId = parseInt(req.params.blogPostId);
+      const deleted = await this.blogPostService.deleteBlogPost(blogPostId);
 
-      const obrisan = await this.blogPostService.obrisiBlogPost(blog_post_id);
-
-      if (obrisan) {
+      if (deleted) {
         res.status(200).json({
           success: true,
-          message: "Blog post je uspesno obrisan.",
+          message: "Blog post deleted successfully.",
         });
       } else {
         res.status(400).json({
           success: false,
-          message: "Brisanje blog posta nije uspelo.",
+          message: "Failed to delete blog post.",
         });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru." });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
-  private async getAllBlogPostovi(req: Request, res: Response): Promise<void> {
+  private async getAllBlogPosts(req: Request, res: Response): Promise<void> {
     try {
-      const sviBlogPostovi = await this.blogPostService.getAllBlogPostovi();
+      const allPosts = await this.blogPostService.getAllBlogPosts();
 
-      if (sviBlogPostovi.length > 0) {
+      if (allPosts.length > 0) {
         res.status(200).json({
           success: true,
-          message: "Uspesno ste ucitali sve blogove",
-          data: sviBlogPostovi,
+          message: "Successfully fetched all blog posts.",
+          data: allPosts,
         });
       } else {
         res.status(400).json({
           success: false,
-          message: "Dobavljanje svih blog postova nije uspelo",
+          message: "Failed to fetch blog posts.",
         });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru." });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
   private async getBlogPostById(req: Request, res: Response): Promise<void> {
     try {
-      const blog_post_id = parseInt(req.params.blogPostId);
+      const blogPostId = parseInt(req.params.blogPostId);
+      const blogPost = await this.blogPostService.getBlogPostById(blogPostId);
 
-      const blogPost = await this.blogPostService.getBlogPostById(blog_post_id);
-
-      if (blogPost.blog_post_id !== 0) {
+      if (blogPost.blogPostId !== 0) {
         res.status(200).json({
           success: true,
-          message: "Uspesno ste ucitali blog",
+          message: "Blog post fetched successfully.",
           data: blogPost,
         });
       } else {
         res.status(400).json({
           success: false,
-          message: "Ucitavanje blog posta nije uspelo",
+          message: "Failed to fetch blog post.",
         });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru." });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
-  private async getBlogPostByTip(req: Request, res: Response): Promise<void> {
+  private async getBlogPostsByType(req: Request, res: Response): Promise<void> {
     try {
-      const tipPosta =
-        req.params.tipPosta === TipBlogPosta.obavestenje.toString()
-          ? TipBlogPosta.obavestenje
-          : TipBlogPosta.zanimljivost;
+      const postType =
+        req.params.postType === BlogPostType.announcement.toString()
+          ? BlogPostType.announcement
+          : BlogPostType.interesting;
 
-      const blogPostovi = await this.blogPostService.getBlogPostByTip(tipPosta);
+      const posts = await this.blogPostService.getBlogPostsByType(postType);
 
-      if (blogPostovi.length > 0) {
+      if (posts.length > 0) {
         res.status(200).json({
           success: true,
-          message: "Uspesno ste ucitali blogove tipa",
-          data: blogPostovi,
+          message: `Successfully fetched blog posts of type ${postType}.`,
+          data: posts,
         });
       } else {
         res.status(400).json({
           success: false,
-          message: "Dobavljanje svih blog postova nije uspelo",
+          message: "Failed to fetch blog posts by type.",
         });
       }
     } catch {
-      res
-        .status(500)
-        .json({ success: false, message: "Doslo je do greske na serveru" });
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred.",
+      });
     }
   }
 
