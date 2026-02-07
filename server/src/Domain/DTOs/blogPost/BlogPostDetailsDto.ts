@@ -1,5 +1,5 @@
 import { BlogPostType } from "../../enums/BlogPostType";
-import { ItemDto } from "../artikal/ItemDto";
+import { ItemDto } from "../article/ItemDto";
 
 export class BlogPostDetailsDto {
   constructor(

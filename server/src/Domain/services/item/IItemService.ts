@@ -1,6 +1,6 @@
-import { AccessoryDetailsDto } from "../../DTOs/artikal/AccessoryDetailsDto";
-import { BookDetailsDto } from "../../DTOs/artikal/BookDetailsDto";
-import { ItemDto } from "../../DTOs/artikal/ItemDto";
+import { AccessoryDetailsDto } from "../../DTOs/article/AccessoryDetailsDto";
+import { BookDetailsDto } from "../../DTOs/article/BookDetailsDto";
+import { ItemDto } from "../../DTOs/article/ItemDto";
 import { ItemType } from "../../enums/ItemType";
 import { Item } from "../../models/Item";
 

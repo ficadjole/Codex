@@ -7,7 +7,7 @@ import { IBlogPostRepository } from "../../Domain/repositories/IBlogPostReposito
 import { IUserRepository } from "../../Domain/repositories/IUserRepository";
 import { IBlogPostService } from "../../Domain/services/blogPost/IBlogPostService";
 import { IBlogPostItemRepository } from "../../Domain/repositories/IBlogPostItemRepository";
-import { ItemDto } from "../../Domain/DTOs/artikal/ItemDto";
+import { ItemDto } from "../../Domain/DTOs/article/ItemDto";
 
 export class BlogPostService implements IBlogPostService {
   constructor(

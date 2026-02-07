@@ -1,6 +1,6 @@
+import type { UserDto } from "../../models/users/UserDto";
+
 export interface IUsersApiService {
-    // azurirajPodatkeKorisnika( token: string, korisnikId: number,
-    //     azuriranja: { username?: string; email?: string; password?: string; role?: string }
-    //   ): Promise<UserDto>;
-    //getUserById(token: string, userId: number): Promise<UserDto>;
+    updateUser(token: string, userId: number,  user: UserDto): Promise<UserDto>;
+    getUserById(token: string, userId: number): Promise<UserDto>;
 }

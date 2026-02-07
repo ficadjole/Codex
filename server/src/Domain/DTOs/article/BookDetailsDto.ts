@@ -1,4 +1,4 @@
-import { GenreDto } from "../kategorija/GenreDto";
+import { GenreDto } from "../genre/GenreDto";
 
 export class BookDetailsDto {
   public constructor(

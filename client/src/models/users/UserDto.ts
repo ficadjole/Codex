@@ -6,3 +6,12 @@ export interface UserDto{
     username        : string;
     userRole        : string;
 }
+
+export const emptyUser : UserDto = {
+    userId: 0,
+    firstName   : "",
+    lastName    : "",
+    username    : "",
+    email       : "",
+    userRole    : "",
+};
