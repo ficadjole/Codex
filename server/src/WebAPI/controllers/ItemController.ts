@@ -4,7 +4,6 @@ import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
 import { UserRole } from "../../Domain/enums/UserRole";
 
-
 export class ItemController {
   private router: Router;
   private service: IItemService;
@@ -16,22 +15,44 @@ export class ItemController {
   }
 
   private initializeRoutes(): void {
-    this.router.post("/addItem", authenticate, authorize(UserRole.ADMIN), this.addItem.bind(this));
-    this.router.put("/updateItem/:itemId", authenticate, authorize(UserRole.ADMIN), this.updateItem.bind(this));
-    this.router.delete("/deleteItem/:itemId", authenticate, authorize(UserRole.ADMIN), this.deleteItem.bind(this));
+    this.router.post(
+      "/addItem",
+      authenticate,
+      authorize(UserRole.ADMIN),
+      this.addItem.bind(this),
+    );
+    this.router.put(
+      "/updateItem/:itemId",
+      authenticate,
+      authorize(UserRole.ADMIN),
+      this.updateItem.bind(this),
+    );
+    this.router.delete(
+      "/deleteItem/:itemId",
+      authenticate,
+      authorize(UserRole.ADMIN),
+      this.deleteItem.bind(this),
+    );
 
-    this.router.get("/getItemById/:itemId", authenticate, this.getItemById.bind(this));
-    this.router.get("/getAllItems", authenticate, this.getAllItems.bind(this));
-    this.router.get("/getItemsByType/:type", authenticate, this.getItemsByType.bind(this));
-    this.router.get("/getBook/:itemId", authenticate, this.getBook.bind(this));
-    this.router.get("/getAccessory/:itemId", authenticate, this.getAccessory.bind(this));
+    this.router.get("/getItemById/:itemId", this.getItemById.bind(this));
+    this.router.get("/getAllItems", this.getAllItems.bind(this));
+    this.router.get("/getItemsByType/:type", this.getItemsByType.bind(this));
+    this.router.get("/getBook/:itemId", this.getBook.bind(this));
+    this.router.get("/getAccessory/:itemId", this.getAccessory.bind(this));
   }
 
   private async addItem(req: any, res: any) {
     try {
-      const result = await this.service.addItem(req.body);
-      if (result.itemId === 0) return res.status(400).json({ success: false, message: "Failed to add item." });
-      res.status(201).json({ success: true, message: "Item added successfully." });
+      const item = req.body;
+
+      const result = await this.service.addItem(item);
+      if (result.itemId === 0)
+        return res
+          .status(400)
+          .json({ success: false, message: "Failed to add item." });
+      res
+        .status(201)
+        .json({ success: true, message: "Item added successfully." });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }
@@ -42,8 +63,13 @@ export class ItemController {
       const item = req.body;
       item.itemId = parseInt(req.params.itemId);
       const result = await this.service.updateItem(item);
-      if (result.itemId === 0) return res.status(400).json({ success: false, message: "Failed to update item." });
-      res.status(200).json({ success: true, message: "Item updated successfully." });
+      if (result.itemId === 0)
+        return res
+          .status(400)
+          .json({ success: false, message: "Failed to update item." });
+      res
+        .status(200)
+        .json({ success: true, message: "Item updated successfully." });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }
@@ -53,8 +79,13 @@ export class ItemController {
     try {
       const itemId = parseInt(req.params.itemId);
       const result = await this.service.deleteItem(itemId);
-      if (!result) return res.status(400).json({ success: false, message: "Failed to delete item." });
-      res.status(200).json({ success: true, message: "Item deleted successfully." });
+      if (!result)
+        return res
+          .status(400)
+          .json({ success: false, message: "Failed to delete item." });
+      res
+        .status(200)
+        .json({ success: true, message: "Item deleted successfully." });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }
@@ -64,7 +95,10 @@ export class ItemController {
     try {
       const itemId = parseInt(req.params.itemId);
       const result = await this.service.getItemById(itemId);
-      if (result.itemId === 0) return res.status(404).json({ success: false, message: "Item not found." });
+      if (result.itemId === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Item not found." });
       res.status(200).json({ success: true, data: result });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
@@ -74,7 +108,10 @@ export class ItemController {
   private async getAllItems(req: any, res: any) {
     try {
       const result = await this.service.getAllItems();
-      if (result.length === 0) return res.status(404).json({ success: false, message: "No items available." });
+      if (result.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "No items available." });
       res.status(200).json({ success: true, data: result });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
@@ -85,7 +122,10 @@ export class ItemController {
     try {
       const type = req.params.type;
       const result = await this.service.getItemsByType(type);
-      if (result.length === 0) return res.status(404).json({ success: false, message: "No items of this type." });
+      if (result.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "No items of this type." });
       res.status(200).json({ success: true, data: result });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
@@ -97,12 +137,14 @@ export class ItemController {
       const itemId = parseInt(req.params.itemId);
       const item = await this.service.getItemById(itemId);
       const book = await this.service.getBook(itemId);
-
       book.name = item.name;
       book.price = item.price;
       book.imageUrl = item.imageUrl;
 
-      if (book.itemId === 0 || item.itemId === 0) return res.status(404).json({ success: false, message: "Book not found." });
+      if (book.itemId === 0 || item.itemId === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Book not found." });
       res.status(200).json({ success: true, data: book });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
@@ -119,7 +161,10 @@ export class ItemController {
       accessory.price = item.price;
       accessory.imageUrl = item.imageUrl;
 
-      if (accessory.itemId === 0 || item.itemId === 0) return res.status(404).json({ success: false, message: "Accessory not found." });
+      if (accessory.itemId === 0 || item.itemId === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Accessory not found." });
       res.status(200).json({ success: true, data: accessory });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });

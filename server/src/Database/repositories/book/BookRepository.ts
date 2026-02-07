@@ -4,12 +4,6 @@ import { IBookRepository } from "../../../Domain/repositories/IBookRepository";
 import { Book } from "../../../Domain/models/Book";
 
 export class BookRepository implements IBookRepository {
-  getById(itemId: number): Promise<Book> {
-    throw new Error("Method not implemented.");
-  }
-  getByAuthor(author: string): Promise<Book[]> {
-    throw new Error("Method not implemented.");
-  }
   async create(book: Book): Promise<Book> {
     try {
       const query =
@@ -38,7 +32,7 @@ export class BookRepository implements IBookRepository {
           book.cover,
           book.publicationYear,
           book.description,
-          book.goodreadsLink
+          book.goodreadsLink,
         );
       } else {
         return new Book();
@@ -82,36 +76,36 @@ export class BookRepository implements IBookRepository {
   //     return false;
   //   }
   // }
-  async getByKnjigaID(artikal_id: number): Promise<Book> {
+  async getById(artikal_id: number): Promise<Book> {
     try {
-      const query = "SELECT * FROM knjiga WHERE artikal_id = ?";
+      const query = "SELECT * FROM books WHERE itemId = ?";
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [artikal_id]);
 
       if (rows.length > 0) {
-        const row = rows[0];
+        const book = rows[0];
         return new Book(
-          row.artikal_id,
-          row.naziv,
-          row.cena,
-          row.slika_url,
-          row.korisnik_id,
-          row.isbn,
-          row.autor,
-          row.broj_strana,
-          row.korice,
-          row.godina_izdanja,
-          row.opis,
-          row.goodreadsLink
+          book.itemId,
+          book.name,
+          book.price,
+          book.imageUrl,
+          book.userId,
+          book.isbn,
+          book.author,
+          book.nmbrOfPages,
+          book.cover,
+          book.publicationYear,
+          book.description,
+          book.goodreadsLink,
         );
       } else {
         return new Book();
       }
-    } catch {
+    } catch (error) {
       return new Book();
     }
   }
-  async getByAutor(autor: string): Promise<Book[]> {
+  async getByAuthor(autor: string): Promise<Book[]> {
     try {
       const query =
         "SELECT * FROM knjiga WHERE autor = ? ORDER BY godina_izdanja DESC";
@@ -119,21 +113,21 @@ export class BookRepository implements IBookRepository {
       const [rows] = await db.execute<RowDataPacket[]>(query, [autor]);
 
       return rows.map(
-        (row) =>
+        (book) =>
           new Book(
-            row.artikal_id,
-            row.naziv,
-            row.cena,
-            row.slika_url,
-            row.korisnik_id,
-            row.isbn,
-            row.autor,
-            row.broj_strana,
-            row.korice,
-            row.godina_izdanja,
-            row.opis,
-            row.goodreadsLink
-          )
+            book.itemId,
+            book.name,
+            book.price,
+            book.imageUrl,
+            book.userId,
+            book.isbn,
+            book.author,
+            book.nmbrOfPages,
+            book.cover,
+            book.publicationYear,
+            book.description,
+            book.goodreadsLink,
+          ),
       );
     } catch {
       return [];

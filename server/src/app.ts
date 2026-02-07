@@ -55,6 +55,9 @@ import { BookRepository } from "./Database/repositories/book/BookRepository";
 import { IItemRepository } from "./Domain/repositories/IItemRepository";
 import { ItemRepository } from "./Database/repositories/item/ItemRepository";
 import { BookGenreRepository } from "./Database/repositories/bookGenre/BookGenreRepository";
+import { IGenreService } from "./Domain/services/genre/IGenreService";
+import { GenreService } from "./Services/genre/GenreService";
+import { GenreController } from "./WebAPI/controllers/GenreController";
 
 require("dotenv").config();
 
@@ -86,7 +89,7 @@ const itemService: IItemService = new ItemService(
   bookRepository,
   genreRepository,
   bookGenreRepository,
-  accessoryRepository
+  accessoryRepository,
 );
 
 const itemController = new ItemController(itemService);
@@ -101,7 +104,7 @@ const blogPostService: IBlogPostService = new BlogPostService(
   blogPostRepository,
   blogPostItemRepository,
   itemRepository,
-  userRepository
+  userRepository,
 );
 
 const blogPostController = new BlogPostController(blogPostService);
@@ -111,16 +114,20 @@ const blogPostController = new BlogPostController(blogPostService);
 const commentRepository: ICommentRepository = new CommentRepository();
 const commentService: ICommentService = new CommentService(
   commentRepository,
-  userRepository
+  userRepository,
 );
 const commentController = new CommentController(commentService);
 
 // --- Routes ---
+
+const genreService: IGenreService = new GenreService(genreRepository);
+const genreController = new GenreController(genreService);
 
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1/item", itemController.getRouter());
 app.use("/api/v1/user", userController.getRouter());
 app.use("/api/v1/blogPost", blogPostController.getRouter());
 app.use("/api/v1/comment", commentController.getRouter());
+app.use("/api/v1/genre", genreController.getRouter());
 
 export default app;

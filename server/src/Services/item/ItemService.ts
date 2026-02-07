@@ -18,7 +18,7 @@ export class ItemService implements IItemService {
     private bookRepository: IBookRepository,
     private genreRepository: IGenreRepository,
     private bookGenreRepository: IBookGenreRepository,
-    private accessoryRepository: IAccessoryRepository
+    private accessoryRepository: IAccessoryRepository,
   ) {}
 
   async addItem(item: Item): Promise<ItemDto> {
@@ -35,8 +35,10 @@ export class ItemService implements IItemService {
           for (const genreId of newBook.genres) {
             const existingGenre = await this.genreRepository.getById(genreId);
             if (existingGenre.genreId !== 0) {
-              const addedRelation =
-                await this.bookGenreRepository.create(newBook.itemId, genreId);
+              const addedRelation = await this.bookGenreRepository.create(
+                newBook.itemId,
+                genreId,
+              );
               if (addedRelation.genreId === 0) return new ItemDto();
             } else {
               return new ItemDto(); // Do not allow adding new genres via this endpoint
@@ -60,7 +62,7 @@ export class ItemService implements IItemService {
       newItem.price,
       newItem.imageUrl,
       newItem.type,
-      newItem.createdAt
+      newItem.createdAt,
     );
   }
 
@@ -75,12 +77,16 @@ export class ItemService implements IItemService {
       case ItemType.BOOK:
         const updatedBook = await this.bookRepository.update(item as Book);
         if (updatedBook.genres?.length) {
-          await this.bookGenreRepository.deleteGenresForBook(updatedBook.itemId);
+          await this.bookGenreRepository.deleteGenresForBook(
+            updatedBook.itemId,
+          );
           for (const genreId of updatedBook.genres) {
             const existingGenre = await this.genreRepository.getById(genreId);
             if (existingGenre.genreId !== 0) {
-              const addedRelation =
-                await this.bookGenreRepository.create(updatedBook.itemId, genreId);
+              const addedRelation = await this.bookGenreRepository.create(
+                updatedBook.itemId,
+                genreId,
+              );
               if (addedRelation.genreId === 0) return new ItemDto();
             } else {
               return new ItemDto();
@@ -90,8 +96,9 @@ export class ItemService implements IItemService {
         break;
 
       case ItemType.ACCESSORIES:
-        const updatedAccessory =
-          await this.accessoryRepository.update(item as Accessories);
+        const updatedAccessory = await this.accessoryRepository.update(
+          item as Accessories,
+        );
         if (updatedAccessory.itemId === 0) return new ItemDto();
         break;
     }
@@ -102,7 +109,7 @@ export class ItemService implements IItemService {
       updatedItem.price,
       updatedItem.imageUrl,
       updatedItem.type,
-      updatedItem.createdAt
+      updatedItem.createdAt,
     );
   }
 
@@ -123,7 +130,7 @@ export class ItemService implements IItemService {
       item.price,
       item.imageUrl,
       item.type,
-      item.createdAt
+      item.createdAt,
     );
   }
 
@@ -137,8 +144,8 @@ export class ItemService implements IItemService {
           item.price,
           item.imageUrl,
           item.type,
-          item.createdAt
-        )
+          item.createdAt,
+        ),
     );
   }
 
@@ -152,8 +159,8 @@ export class ItemService implements IItemService {
           item.price,
           item.imageUrl,
           item.type,
-          item.createdAt
-        )
+          item.createdAt,
+        ),
     );
   }
 
@@ -166,7 +173,7 @@ export class ItemService implements IItemService {
       bookGenres.map(async (bg) => {
         const genre = await this.genreRepository.getById(bg.genreId);
         return { genreId: genre.genreId, name: genre.name };
-      })
+      }),
     );
 
     return new BookDetailsDto(
@@ -180,7 +187,7 @@ export class ItemService implements IItemService {
       book.description,
       book.goodreadsLink,
       new Date(book.publicationYear, 0, 1),
-      genresDto
+      genresDto,
     );
   }
 
@@ -194,7 +201,7 @@ export class ItemService implements IItemService {
       accessory.price,
       accessory.imageUrl,
       accessory.description,
-      accessory.content
+      accessory.content,
     );
   }
 }

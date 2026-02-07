@@ -8,8 +8,7 @@ export class ItemRepository implements IItemRepository {
   async create(item: Item): Promise<Item> {
     try {
       const query =
-        "INSERT INTO items (itemName,price,imageUrl,itemType,description, userId) VALUES (?,?,?,?,?,?)";
-
+        "INSERT INTO items (itemName,price,imageUrl,itemType,descirption,userId) VALUES (?,?,?,?,?,?)";
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
@@ -28,12 +27,13 @@ export class ItemRepository implements IItemRepository {
           item.type,
           item.description,
           item.userId,
-          new Date()
+          new Date(),
         );
       } else {
         return new Item();
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
       return new Item();
     }
   }
@@ -77,7 +77,7 @@ export class ItemRepository implements IItemRepository {
           row.itemType,
           row.description,
           row.userId,
-          row.dateCreated
+          row.dateCreated,
         );
       } else {
         return new Item();
@@ -103,7 +103,7 @@ export class ItemRepository implements IItemRepository {
           row.itemType,
           row.description,
           row.userId,
-          row.dateCreated
+          row.dateCreated,
         );
       } else {
         return new Item();
@@ -128,8 +128,8 @@ export class ItemRepository implements IItemRepository {
             row.itemType,
             row.description,
             row.userId,
-            row.dateCreated
-          )
+            row.dateCreated,
+          ),
       );
     } catch {
       return [];
@@ -151,8 +151,8 @@ export class ItemRepository implements IItemRepository {
             row.itemType,
             row.description,
             row.userId,
-            row.dateCreated
-          )
+            row.dateCreated,
+          ),
       );
     } catch {
       return [];
