@@ -9,4 +9,10 @@ export interface IItemRepository {
   getById(itemId: number): Promise<Item>;
   getByType(type: ItemType): Promise<Item[]>;
   getAll(): Promise<Item[]>;
+  addDiscount(
+    itemId: number,
+    discountPercent: number,
+    discountFrom: Date,
+    discountTo: Date,
+  ): Promise<boolean>;
 }

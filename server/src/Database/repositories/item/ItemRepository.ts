@@ -8,7 +8,7 @@ export class ItemRepository implements IItemRepository {
   async create(item: Item): Promise<Item> {
     try {
       const query =
-        "INSERT INTO items (itemName,price,imageUrl,itemType,descirption,userId) VALUES (?,?,?,?,?,?)";
+        "INSERT INTO items (itemName,price,imageUrl,itemType,description,userId) VALUES (?,?,?,?,?,?)";
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
@@ -23,6 +23,9 @@ export class ItemRepository implements IItemRepository {
           result.insertId,
           item.name,
           item.price,
+          item.discountPercent,
+          item.discountFrom,
+          item.discountTo,
           item.imageUrl,
           item.type,
           item.description,
@@ -73,6 +76,9 @@ export class ItemRepository implements IItemRepository {
           row.itemId,
           row.itemName,
           row.price,
+          row.discountPercent,
+          row.discountFrom,
+          row.discountTo,
           row.imageUrl,
           row.itemType,
           row.description,
@@ -91,7 +97,6 @@ export class ItemRepository implements IItemRepository {
       const query = "SELECT * FROM items WHERE itemId = ?";
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [itemId]);
-
       if (rows.length > 0) {
         const row = rows[0];
 
@@ -99,6 +104,9 @@ export class ItemRepository implements IItemRepository {
           row.itemId,
           row.itemName,
           row.price,
+          row.discountPercent,
+          row.discountFrom,
+          row.discountTo,
           row.imageUrl,
           row.itemType,
           row.description,
@@ -124,6 +132,9 @@ export class ItemRepository implements IItemRepository {
             row.itemId,
             row.itemName,
             row.price,
+            row.discountPercent,
+            row.discountFrom,
+            row.discountTo,
             row.imageUrl,
             row.itemType,
             row.description,
@@ -140,13 +151,15 @@ export class ItemRepository implements IItemRepository {
       const query = "SELECT * FROM items ORDER BY itemId ASC";
 
       const [rows] = await db.execute<RowDataPacket[]>(query);
-
       return rows.map(
         (row) =>
           new Item(
             row.itemId,
             row.itemName,
             row.price,
+            row.discountPercent,
+            row.discountFrom,
+            row.discountTo,
             row.imageUrl,
             row.itemType,
             row.description,
@@ -165,6 +178,33 @@ export class ItemRepository implements IItemRepository {
       const [result] = await db.execute<ResultSetHeader>(query, [itemId]);
 
       return result.affectedRows > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  async addDiscount(
+    itemId: number,
+    discountPercent: number,
+    discountFrom: Date,
+    discountTo: Date,
+  ): Promise<boolean> {
+    try {
+      const query =
+        "UPDATE items SET discountPercent = ?, discountFrom = ?, discountTo=? WHERE itemId = ?";
+
+      const [result] = await db.execute<ResultSetHeader>(query, [
+        discountPercent,
+        discountFrom,
+        discountTo,
+        itemId,
+      ]);
+
+      if (result.affectedRows > 0) {
+        return true;
+      } else {
+        return false;
+      }
     } catch {
       return false;
     }

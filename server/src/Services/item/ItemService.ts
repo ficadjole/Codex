@@ -11,6 +11,7 @@ import { IBookGenreRepository } from "../../Domain/repositories/IBookGenreReposi
 import { IBookRepository } from "../../Domain/repositories/IBookRepository";
 import { IItemService } from "../../Domain/services/item/IItemService";
 import { Accessories } from "../../Domain/models/Accessories";
+import { getFinalPrice } from "../../Domain/helpers/DiscountHelpers";
 
 export class ItemService implements IItemService {
   constructor(
@@ -20,6 +21,29 @@ export class ItemService implements IItemService {
     private bookGenreRepository: IBookGenreRepository,
     private accessoryRepository: IAccessoryRepository,
   ) {}
+  async addDiscount(
+    itemId: number,
+    discountPercent: number,
+    discountFrom: Date,
+    discountTo: Date,
+  ): Promise<boolean> {
+    const itemExist = await this.itemRepository.getById(itemId);
+
+    if (itemExist.itemId === 0) return false;
+
+    const result = await this.itemRepository.addDiscount(
+      itemId,
+      discountPercent,
+      discountFrom,
+      discountTo,
+    );
+
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   async addItem(item: Item): Promise<ItemDto> {
     const newItem = await this.itemRepository.create(item);
@@ -60,8 +84,12 @@ export class ItemService implements IItemService {
       newItem.itemId,
       newItem.name,
       newItem.price,
+      newItem.discountPercent,
+      newItem.discountFrom,
+      newItem.discountTo,
       newItem.imageUrl,
       newItem.type,
+      newItem.description,
       newItem.createdAt,
     );
   }
@@ -107,8 +135,12 @@ export class ItemService implements IItemService {
       updatedItem.itemId,
       updatedItem.name,
       updatedItem.price,
+      updatedItem.discountPercent,
+      updatedItem.discountFrom,
+      updatedItem.discountTo,
       updatedItem.imageUrl,
       updatedItem.type,
+      updatedItem.description,
       updatedItem.createdAt,
     );
   }
@@ -122,14 +154,19 @@ export class ItemService implements IItemService {
 
   async getItemById(itemId: number): Promise<ItemDto> {
     const item = await this.itemRepository.getById(itemId);
+
     if (item.itemId === 0) return new ItemDto();
 
     return new ItemDto(
       item.itemId,
       item.name,
-      item.price,
+      getFinalPrice(item),
+      item.discountPercent,
+      item.discountFrom,
+      item.discountTo,
       item.imageUrl,
       item.type,
+      item.description,
       item.createdAt,
     );
   }
@@ -141,9 +178,13 @@ export class ItemService implements IItemService {
         new ItemDto(
           item.itemId,
           item.name,
-          item.price,
+          getFinalPrice(item),
+          item.discountPercent,
+          item.discountFrom,
+          item.discountTo,
           item.imageUrl,
           item.type,
+          item.description,
           item.createdAt,
         ),
     );
@@ -156,9 +197,13 @@ export class ItemService implements IItemService {
         new ItemDto(
           item.itemId,
           item.name,
-          item.price,
+          getFinalPrice(item),
+          item.discountPercent,
+          item.discountFrom,
+          item.discountTo,
           item.imageUrl,
           item.type,
+          item.description,
           item.createdAt,
         ),
     );
@@ -179,7 +224,10 @@ export class ItemService implements IItemService {
     return new BookDetailsDto(
       book.itemId,
       book.name,
-      book.price,
+      getFinalPrice(book),
+      book.discountPercent,
+      book.discountFrom,
+      book.discountTo,
       book.imageUrl,
       book.author,
       book.isbn,
@@ -194,11 +242,13 @@ export class ItemService implements IItemService {
   async getAccessory(itemId: number): Promise<AccessoryDetailsDto> {
     const accessory = await this.accessoryRepository.getById(itemId);
     if (accessory.itemId === 0) return new AccessoryDetailsDto();
-
     return new AccessoryDetailsDto(
       accessory.itemId,
       accessory.name,
-      accessory.price,
+      getFinalPrice(accessory),
+      accessory.discountPercent,
+      accessory.discountFrom,
+      accessory.discountTo,
       accessory.imageUrl,
       accessory.description,
       accessory.content,

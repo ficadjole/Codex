@@ -14,13 +14,12 @@ export class BlogPostService implements IBlogPostService {
     private blogPostRepository: IBlogPostRepository,
     private blogPostItemRepository: IBlogPostItemRepository,
     private itemRepository: IItemRepository,
-    private userRepository: IUserRepository
+    private userRepository: IUserRepository,
   ) {}
 
   async addBlogPost(newBlogPost: BlogPost): Promise<BlogPostDetailsDto> {
-    const createdBlogPost = await this.blogPostRepository.createBlogPost(
-      newBlogPost
-    );
+    const createdBlogPost =
+      await this.blogPostRepository.createBlogPost(newBlogPost);
 
     if (createdBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
@@ -28,7 +27,7 @@ export class BlogPostService implements IBlogPostService {
     for (let i = 0; i < newBlogPost.itemIds.length; i++) {
       const link = await this.blogPostItemRepository.addBlogPostItem(
         createdBlogPost.blogPostId,
-        newBlogPost.itemIds[i]
+        newBlogPost.itemIds[i],
       );
 
       if (link.itemId === 0 || link.blogPostId === 0) {
@@ -39,31 +38,29 @@ export class BlogPostService implements IBlogPostService {
     return this.mapToDTO(createdBlogPost, newBlogPost.itemIds);
   }
 
-  async updateBlogPost(
-    updatedBlogPost: BlogPost
-  ): Promise<BlogPostDetailsDto> {
+  async updateBlogPost(updatedBlogPost: BlogPost): Promise<BlogPostDetailsDto> {
     const existingBlogPost = await this.blogPostRepository.getBlogPostById(
-      updatedBlogPost.blogPostId
+      updatedBlogPost.blogPostId,
     );
 
     if (existingBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
     const blogPostUpdated = await this.blogPostRepository.updateBlogPost(
       existingBlogPost.blogPostId,
-      updatedBlogPost
+      updatedBlogPost,
     );
 
     if (blogPostUpdated.blogPostId === 0) return new BlogPostDetailsDto();
 
     // Delete all existing links and update
     await this.blogPostItemRepository.deleteAllItemsFromBlog(
-      existingBlogPost.blogPostId
+      existingBlogPost.blogPostId,
     );
 
     for (let i = 0; i < updatedBlogPost.itemIds.length; i++) {
       const link = await this.blogPostItemRepository.addBlogPostItem(
         updatedBlogPost.blogPostId,
-        updatedBlogPost.itemIds[i]
+        updatedBlogPost.itemIds[i],
       );
 
       if (link.itemId === 0 || link.blogPostId === 0) {
@@ -75,9 +72,8 @@ export class BlogPostService implements IBlogPostService {
   }
 
   async deleteBlogPost(blogPostId: number): Promise<boolean> {
-    const existingBlogPost = await this.blogPostRepository.getBlogPostById(
-      blogPostId
-    );
+    const existingBlogPost =
+      await this.blogPostRepository.getBlogPostById(blogPostId);
 
     if (existingBlogPost.blogPostId === 0) return false;
 
@@ -96,15 +92,14 @@ export class BlogPostService implements IBlogPostService {
           blogPost.imgUrl,
           blogPost.content,
           blogPost.postType,
-          blogPost.publishDate
-        )
+          blogPost.publishDate,
+        ),
     );
   }
 
   async getBlogPostById(blogPostId: number): Promise<BlogPostDetailsDto> {
-    const existingBlogPost = await this.blogPostRepository.getBlogPostById(
-      blogPostId
-    );
+    const existingBlogPost =
+      await this.blogPostRepository.getBlogPostById(blogPostId);
 
     if (existingBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
@@ -128,14 +123,14 @@ export class BlogPostService implements IBlogPostService {
           blogPost.imgUrl,
           blogPost.content,
           blogPost.postType,
-          blogPost.publishDate
-        )
+          blogPost.publishDate,
+        ),
     );
   }
 
   private async mapToDTO(
     blogPost: BlogPost,
-    itemIds: number[]
+    itemIds: number[],
   ): Promise<BlogPostDetailsDto> {
     const author = await this.userRepository.getById(blogPost.userId);
 
@@ -150,10 +145,14 @@ export class BlogPostService implements IBlogPostService {
             item.itemId,
             item.name,
             item.price,
+            item.discountPercent,
+            item.discountFrom,
+            item.discountTo,
             item.imageUrl,
             item.type,
-            item.createdAt
-          )
+            item.description,
+            item.createdAt,
+          ),
         );
       }
     }
@@ -170,7 +169,7 @@ export class BlogPostService implements IBlogPostService {
         authorId: author.userId,
         firstName: author.firstName,
         lastName: author.lastName,
-      }
+      },
     );
   }
 }

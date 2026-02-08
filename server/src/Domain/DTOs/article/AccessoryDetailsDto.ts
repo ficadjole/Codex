@@ -3,8 +3,11 @@ export class AccessoryDetailsDto {
     public itemId: number = 0,
     public name: string = "",
     public price: number = 0,
+    public discountPercent?: number,
+    public discountFrom?: Date,
+    public discountTo?: Date,
     public imageUrl: string = "",
     public description: string = "",
-    public content: string = ""
+    public content: string = "",
   ) {}
 }

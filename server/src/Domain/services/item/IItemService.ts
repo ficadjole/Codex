@@ -13,4 +13,10 @@ export interface IItemService {
   getItemsByType(type: ItemType): Promise<ItemDto[]>;
   getBook(itemId: number): Promise<BookDetailsDto>;
   getAccessory(itemId: number): Promise<AccessoryDetailsDto>;
+  addDiscount(
+    itemId: number,
+    discountPercent: number,
+    discountFrom: Date,
+    discountTo: Date,
+  ): Promise<boolean>;
 }

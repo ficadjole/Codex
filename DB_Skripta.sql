@@ -19,6 +19,9 @@ CREATE TABLE items (
     itemId INT AUTO_INCREMENT PRIMARY KEY,
     itemName VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    discountPercent DECIMAL(5,2) DEFAULT NULL,
+    discountFrom DATE DEFAULT NULL,
+    discountTo DATE DEFAULT NULL,
     imageUrl TEXT,
     itemType ENUM('knjiga', 'aksesoar') NOT NULL,
 	description TEXT,
@@ -37,7 +40,7 @@ CREATE TABLE books (
     nmbrOfPages INT,
     cover ENUM('meke', 'tvrde'),
     publicationYear YEAR,
-    goodreads_link VARCHAR(255),
+    goodreadsLink VARCHAR(255),
     FOREIGN KEY (itemId) REFERENCES items(itemId) ON DELETE CASCADE
 );
 
@@ -127,20 +130,21 @@ CREATE TABLE orders (
   postalCode varchar(20) DEFAULT NULL,
   note text,
   KEY userId (userId),
-  CONSTRAINT narudzbina_ibfk_1 FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE SET NULL
+  CONSTRAINT orders_ibfk_1 FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE SET NULL
 );
 
 CREATE TABLE orderItems (
     orderId INT,
     itemId INT,
-    kolicina INT NOT NULL,
-    quantity DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL,
+    price decimal(10,2) NOT NULL,
+    discountPercent decimal(10,2) DEFAULT NULL,
     PRIMARY KEY (orderId, itemId),
     FOREIGN KEY (orderId) REFERENCES orders(orderId) ON DELETE CASCADE,
     FOREIGN KEY (itemId) REFERENCES items(itemId) ON DELETE CASCADE
 );
 
-CREATE TABLE transaction (
+CREATE TABLE paymentTransaction (
     transactionId INT AUTO_INCREMENT PRIMARY KEY,
     orderId INT NOT NULL,
     gateway_transakcija_id VARCHAR(255),

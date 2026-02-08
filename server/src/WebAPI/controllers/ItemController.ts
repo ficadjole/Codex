@@ -1,8 +1,9 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { IItemService } from "../../Domain/services/item/IItemService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
 import { UserRole } from "../../Domain/enums/UserRole";
+import { ItemType } from "../../Domain/enums/ItemType";
 
 export class ItemController {
   private router: Router;
@@ -39,9 +40,10 @@ export class ItemController {
     this.router.get("/getItemsByType/:type", this.getItemsByType.bind(this));
     this.router.get("/getBook/:itemId", this.getBook.bind(this));
     this.router.get("/getAccessory/:itemId", this.getAccessory.bind(this));
+    this.router.put("/addDiscount/:itemId", this.addDiscount.bind(this));
   }
 
-  private async addItem(req: any, res: any) {
+  private async addItem(req: Request, res: Response) {
     try {
       const item = req.body;
 
@@ -58,10 +60,10 @@ export class ItemController {
     }
   }
 
-  private async updateItem(req: any, res: any) {
+  private async updateItem(req: Request, res: Response) {
     try {
       const item = req.body;
-      item.itemId = parseInt(req.params.itemId);
+      item.itemId = parseInt(req.params.itemId as string, 10);
       const result = await this.service.updateItem(item);
       if (result.itemId === 0)
         return res
@@ -75,7 +77,7 @@ export class ItemController {
     }
   }
 
-  private async deleteItem(req: any, res: any) {
+  private async deleteItem(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
       const result = await this.service.deleteItem(itemId);
@@ -91,7 +93,7 @@ export class ItemController {
     }
   }
 
-  private async getItemById(req: any, res: any) {
+  private async getItemById(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
       const result = await this.service.getItemById(itemId);
@@ -105,7 +107,7 @@ export class ItemController {
     }
   }
 
-  private async getAllItems(req: any, res: any) {
+  private async getAllItems(req: Request, res: Response) {
     try {
       const result = await this.service.getAllItems();
       if (result.length === 0)
@@ -118,10 +120,22 @@ export class ItemController {
     }
   }
 
-  private async getItemsByType(req: any, res: any) {
+  private async getItemsByType(req: Request, res: Response) {
     try {
       const type = req.params.type;
-      const result = await this.service.getItemsByType(type);
+      var itemType: ItemType;
+      if (type === "knjiga") {
+        itemType = ItemType.BOOK;
+      } else if (type === "aksesoar") {
+        itemType = ItemType.ACCESSORIES;
+      } else {
+        res
+          .status(404)
+          .json({ success: false, message: "Input type is not valid" });
+        return;
+      }
+
+      const result = await this.service.getItemsByType(itemType!);
       if (result.length === 0)
         return res
           .status(404)
@@ -132,14 +146,16 @@ export class ItemController {
     }
   }
 
-  private async getBook(req: any, res: any) {
+  private async getBook(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
       const item = await this.service.getItemById(itemId);
+
       const book = await this.service.getBook(itemId);
       book.name = item.name;
       book.price = item.price;
       book.imageUrl = item.imageUrl;
+      book.description = item.description;
 
       if (book.itemId === 0 || item.itemId === 0)
         return res
@@ -151,21 +167,59 @@ export class ItemController {
     }
   }
 
-  private async getAccessory(req: any, res: any) {
+  private async getAccessory(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
       const item = await this.service.getItemById(itemId);
       const accessory = await this.service.getAccessory(itemId);
-
       accessory.name = item.name;
       accessory.price = item.price;
       accessory.imageUrl = item.imageUrl;
-
+      accessory.description = item.description;
       if (accessory.itemId === 0 || item.itemId === 0)
         return res
           .status(404)
           .json({ success: false, message: "Accessory not found." });
       res.status(200).json({ success: true, data: accessory });
+    } catch {
+      res.status(500).json({ success: false, message: "Server error." });
+    }
+  }
+
+  private async addDiscount(req: Request, res: Response): Promise<void> {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      const { discountPercent, discountFrom, discountTo } = req.body;
+
+      if (isNaN(itemId)) {
+        res.status(400).json({ message: "The passed itemId is not a number" });
+        return;
+      }
+
+      if (isNaN(discountPercent)) {
+        res
+          .status(400)
+          .json({ message: "The passed discountPercent is not a number" });
+        return;
+      }
+
+      const result = await this.service.addDiscount(
+        itemId,
+        discountPercent,
+        discountFrom,
+        discountTo,
+      );
+
+      if (result) {
+        res
+          .status(200)
+          .json({ success: true, message: "Discount succefuly applied" });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Adding discount was not succesfull",
+        });
+      }
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }

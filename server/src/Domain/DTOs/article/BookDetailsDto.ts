@@ -5,6 +5,9 @@ export class BookDetailsDto {
     public itemId: number = 0,
     public name: string = "",
     public price: number = 0,
+    public discountPercent?: number,
+    public discountFrom?: Date,
+    public discountTo?: Date,
     public imageUrl: string = "",
     public author: string = "",
     public isbn: string = "",
@@ -12,6 +15,6 @@ export class BookDetailsDto {
     public description: string = "",
     public goodreadsLink: string = "",
     public publicationDate: Date = new Date(),
-    public genres: GenreDto[] = []
+    public genres: GenreDto[] = [],
   ) {}
 }

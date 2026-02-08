@@ -5,9 +5,13 @@ export class ItemDto {
     public itemId: number = 0,
     public name: string = "",
     public price: number = 0,
+    public discountPercent?: number,
+    public discountFrom?: Date,
+    public discountTo?: Date,
     public imageUrl: string = "",
     public type?: ItemType,
-    public createdAt: Date = new Date()
+    public description: string = "",
+    public createdAt: Date = new Date(),
   ) {}
 }
 

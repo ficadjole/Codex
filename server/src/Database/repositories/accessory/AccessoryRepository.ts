@@ -19,10 +19,13 @@ export class AccessoryRepository implements IAccessoryRepository {
           accesory.itemId,
           accesory.name,
           accesory.price,
+          accesory.discountPercent,
+          accesory.discountFrom,
+          accesory.discountTo,
           accesory.imageUrl,
           accesory.userId,
           accesory.description,
-          accesory.content
+          accesory.content,
         );
       } else {
         return new Accessories();
@@ -67,17 +70,19 @@ export class AccessoryRepository implements IAccessoryRepository {
       const query = "SELECT * FROM accessories WHERE itemId = ?";
 
       const [rows] = await db.execute<any[]>(query, [itemId]);
-
       if (rows.length > 0) {
         const row = rows[0];
         return new Accessories(
           row.itemId,
           row.name,
           row.price,
+          row.discountPercent,
+          row.discountFrom,
+          row.discountTo,
           row.imageUrl,
           row.userId,
           row.description,
-          row.content
+          row.content,
         );
       } else {
         return new Accessories();
