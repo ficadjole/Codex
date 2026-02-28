@@ -1,9 +1,13 @@
 export interface ItemDto {
-    itemId      
-    :       number,
-    name        :       string,
-    price       :       number,
-    imageUrl    : string,
-    public type?: ItemType,
-    public createdAt: Date = new Date()
+    itemId          :   number,
+    name            :   string,
+    price           :   number,
+    discountPercent ?:  number,
+    discountFrom    ?:  string,
+    discountTo      ?:  string,
+    imageUrl        :   string,
+    type            :   string,
+    description     :   string,
+    userId          :   number,
+    createdAt       ?:  string,
 }

@@ -1,5 +1,5 @@
 export type JwtTokenClaims = {
-    userId: number;
+    id: number;
     username: string;
     email:string;
     userRole: string;

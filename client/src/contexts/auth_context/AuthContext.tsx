@@ -11,12 +11,12 @@ const decodeJWT = (token: string): JwtTokenClaims | null => {
     try {
         const decoded = jwtDecode<JwtTokenClaims>(token);
         console.log(decoded)
-        if (decoded.id && decoded.username && decoded.role) {
+        if (decoded.id && decoded.username && decoded.userRole) {
             return {
                 id: decoded.id,
                 username: decoded.username,
                 email: decoded.email,
-                role: decoded.role
+                userRole: decoded.userRole
             };
         }
 
@@ -57,10 +57,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (claims) {
                 setToken(savedToken);
                 setUser({
-                    id: claims.id,
+                    userId: claims.id,
                     username: claims.username,
                     email: claims.email,
-                    role: claims.role
+                    userRole: claims.userRole
                 });
             } else {
                 DeleteValueByKey("authToken");
@@ -76,10 +76,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (claims && !isTokenExpired(newToken)) {
             setToken(newToken);
             setUser({
-                id: claims.id,
+                userId: claims.id,
                 username: claims.username,
                 email: claims.email,
-                role: claims.role
+                userRole: claims.userRole
             });
             SaveValueByKey("authToken", newToken);
         } else {
