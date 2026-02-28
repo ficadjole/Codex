@@ -6,6 +6,9 @@ This project is a web application for the Codex association, combining an online
 - [Filip Velemir](https://github.com/ficadjole)
 - [Katarina Kalauz](https://github.com/kalauzkatarina) 
 
+## UI design FIGMA
+https://www.figma.com/design/5VdtonvPGOx5zftFj4WNd7/Codex?node-id=33-20
+
 ## Features
 
 ### Admin
@@ -31,22 +34,3 @@ This project is a web application for the Codex association, combining an online
 ## Data Storage
 - Product and blog data are stored in [specify format: JSON/Database/etc.]
 - Sample data included for demonstration purposes
-
-## Technologies Used
-- HTML5
-- CSS3
-- JavaScript
-- [Any frameworks/libraries used]
-
-## How to Run the Application
-1. Clone the repository:  
-   ```bash
-   git clone https://github.com/yourusername/Codex
-   ```
-2. Open the project in a local development server (e.g., VS Code Live Server, WAMP, XAMPP)
-
-3. Navigate to:
-```bash
-http://localhost:/index.html
-```
-4. Use the web interface to explore the application
