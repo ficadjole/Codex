@@ -19,16 +19,14 @@ export default function LoginPage({ authApi }: LoginPageProps) {
   const { login } = authContext;
 
   const handleLoginSuccess = (token: string) => {
-    login(token);      // 🔥 OVO JE KLJUČNO
+    login(token);
     navigate("/");
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
-      <AuthForm
-        authApi={authApi}
-        onLoginSuccess={handleLoginSuccess}
-      />
-    </div>
+    <AuthForm
+      authApi={authApi}
+      onLoginSuccess={handleLoginSuccess}
+    />
   );
 }
