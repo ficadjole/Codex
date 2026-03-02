@@ -4,121 +4,116 @@ import { CreateOrderDto } from "../../Domain/DTOs/order/CreateOrderDto";
 import { OrderStatus } from "../../Domain/enums/OrderStatus";
 import { Order } from "../../Domain/models/Order";
 import { OrderItem } from "../../Domain/models/OrderItem";
+import { IItemRepository } from "../../Domain/repositories/IItemRepository";
 import { IOrderRepository } from "../../Domain/repositories/IOrderRepository";
 import { IOrderService } from "../../Domain/services/order/IOrderService";
 
 export class OrderService implements IOrderService {
-    constructor(private orderRepository: IOrderRepository) { }
+  constructor(
+    private orderRepository: IOrderRepository,
+    private itemRepository: IItemRepository,
+  ) {}
 
-    async createOrder(userId: number, dto: CreateOrderDto): Promise<Order> {
+  async createOrder(userId: number, dto: CreateOrderDto): Promise<Order> {
+    const connection = await db.getConnection();
 
-        const connection = await db.getConnection();
+    try {
+      await connection.beginTransaction();
 
-        try {
-            await connection.beginTransaction();
+      const order = new Order(
+        null,
+        userId,
+        new Date(),
+        OrderStatus.NA_CEKANJU,
+        0,
+        dto.firstname,
+        dto.lastname,
+        dto.email,
+        dto.telephone || null,
+        dto.city,
+        dto.streat,
+        dto.streatNumber || null,
+        dto.postalCode || null,
+        dto.note || null,
+      );
+      const createdOrder = await this.orderRepository.create(order);
 
-            const order = new Order(
-                null,
-                userId,
-                new Date(),
-                OrderStatus.NA_CEKANJU,
-                0,
-                dto.firstname,
-                dto.lastname,
-                dto.email,
-                dto.telephone || null,
-                dto.city,
-                dto.streat,
-                dto.streatNumber || null,
-                dto.postalCode || null,
-                dto.note || null
-            );
+      if (!createdOrder.orderId) {
+        throw new Error("Order creation failed");
+      }
 
-            // 1️⃣ Kreiramo order
-            const createdOrder = await this.orderRepository.create(order);
+      let total = 0;
 
-            if (!createdOrder.orderId) {
-                throw new Error("Order creation failed");
-            }
+      //dodajemo stavke porudzbine
+      for (const item of dto.items) {
+        const dbItem = await this.itemRepository.getById(item.itemId);
 
-            let total = 0;
-
-            const itemRepository = new ItemRepository();
-
-            // 2️⃣ Dodajemo stavke
-            for (const item of dto.items) {
-
-                const dbItem = await itemRepository.getById(item.itemId);
-
-                if (!dbItem || dbItem.itemId === null) {
-                    throw new Error("Item does not exist");
-                }
-
-                const price = dbItem.price;
-
-                total += price * item.quantity;
-
-                const success = await this.orderRepository.addOrderItem(
-                    new OrderItem(
-                        createdOrder.orderId,
-                        item.itemId,
-                        item.quantity,
-                        price,
-                        null
-                    )
-                );
-
-                if (!success) {
-                    throw new Error("Failed to insert order item");
-                }
-            }
-
-            // 3️⃣ Update total price
-            const updated = await this.orderRepository.updateTotalPrice(
-                createdOrder.orderId,
-                total
-            );
-
-            if (!updated) {
-                throw new Error("Failed to update total price");
-            }
-
-            await connection.commit();
-
-            createdOrder.totalPrice = total;
-
-            return createdOrder;
-
-        } catch (error) {
-
-            await connection.rollback();
-            return new Order();
-
-        } finally {
-            connection.release();
+        if (!dbItem || dbItem.itemId === null) {
+          throw new Error("Item does not exist");
         }
-    }
 
-    async getUserOrders(userId: number): Promise<Order[]> {
-        return this.orderRepository.getByUserId(userId);
-    }
+        const price = dbItem.price;
 
-    async getOrderById(orderId: number): Promise<Order | null> {
-        return this.orderRepository.getById(orderId);
-    }
+        total += price * item.quantity;
 
-    async changeStatus(orderId: number, status: string): Promise<boolean> {
-        return this.orderRepository.updateStatus(orderId, status);
-    }
+        const success = await this.orderRepository.addOrderItem(
+          new OrderItem(
+            createdOrder.orderId,
+            item.itemId,
+            item.quantity,
+            price,
+            null,
+          ),
+        );
 
-    async getAllOrders(): Promise<Order[]> {
-        return await this.orderRepository.getAll();
-    }
+        if (!success) {
+          throw new Error("Failed to insert order item");
+        }
+      }
 
-    async deleteOrder(orderId: number): Promise<boolean> {
-        const exists = await this.orderRepository.exists(orderId);
-        if (!exists) return false;
+      //azuriramo polje total price nakon sto smo dodali sve proizvode
+      const updated = await this.orderRepository.updateTotalPrice(
+        createdOrder.orderId,
+        total,
+      );
 
-        return await this.orderRepository.delete(orderId);
+      if (!updated) {
+        throw new Error("Failed to update total price");
+      }
+
+      await connection.commit();
+
+      createdOrder.totalPrice = total;
+
+      return createdOrder;
+    } catch (error) {
+      await connection.rollback(); //u slucaju greske u bilo kom delu keriranja ordera radi rollback i sve brise iz baze
+      return new Order();
+    } finally {
+      connection.release();
     }
+  }
+
+  async getUserOrders(userId: number): Promise<Order[]> {
+    return this.orderRepository.getByUserId(userId);
+  }
+
+  async getOrderById(orderId: number): Promise<Order | null> {
+    return this.orderRepository.getById(orderId);
+  }
+
+  async changeStatus(orderId: number, status: string): Promise<boolean> {
+    return this.orderRepository.updateStatus(orderId, status);
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return await this.orderRepository.getAll();
+  }
+
+  async deleteOrder(orderId: number): Promise<boolean> {
+    const exists = await this.orderRepository.exists(orderId);
+    if (!exists) return false;
+
+    return await this.orderRepository.delete(orderId);
+  }
 }

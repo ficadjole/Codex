@@ -101,7 +101,6 @@ export class BlogPostRepository implements IBlogPostRepository {
         return new BlogPost();
       }
     } catch (error) {
-      console.log(error);
       return new BlogPost();
     }
   }

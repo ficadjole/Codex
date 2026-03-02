@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { UserRole } from "../../../Domain/enums/UserRole";
 
 interface JwtPayload {
-  userId: number;
+  id: number;
   username: string;
   userRole: UserRole;
 }
@@ -19,7 +19,7 @@ declare global {
 export const authenticate = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const authHeader = req.headers.authorization;
 
@@ -29,11 +29,10 @@ export const authenticate = (
   }
 
   const token = authHeader.split(" ")[1];
-
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET ?? ""
+      process.env.JWT_SECRET ?? "",
     ) as JwtPayload;
 
     req.user = decoded; // postavlja korisnika na req

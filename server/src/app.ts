@@ -58,6 +58,11 @@ import { BookGenreRepository } from "./Database/repositories/bookGenre/BookGenre
 import { IGenreService } from "./Domain/services/genre/IGenreService";
 import { GenreService } from "./Services/genre/GenreService";
 import { GenreController } from "./WebAPI/controllers/GenreController";
+import { IOrderRepository } from "./Domain/repositories/IOrderRepository";
+import { OrderRepository } from "./Database/repositories/order/OrderRepository";
+import { IOrderService } from "./Domain/services/order/IOrderService";
+import { OrderService } from "./Services/order/OrderService";
+import { OrderController } from "./WebAPI/controllers/OrderController";
 
 require("dotenv").config();
 
@@ -123,11 +128,21 @@ const commentController = new CommentController(commentService);
 const genreService: IGenreService = new GenreService(genreRepository);
 const genreController = new GenreController(genreService);
 
+// --- Orders ---
+
+const orderRepository: IOrderRepository = new OrderRepository();
+const orderService: IOrderService = new OrderService(
+  orderRepository,
+  itemRepository,
+);
+const orderController = new OrderController(orderService);
+
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1/item", itemController.getRouter());
 app.use("/api/v1/user", userController.getRouter());
 app.use("/api/v1/blogPost", blogPostController.getRouter());
 app.use("/api/v1/comment", commentController.getRouter());
 app.use("/api/v1/genre", genreController.getRouter());
+app.use("/api/v1/order", orderController.getRouter());
 
 export default app;
