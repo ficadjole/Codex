@@ -14,16 +14,18 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-16">
 
-          <div>
-            <h2 className="text-2xl text-[#EAF4EF] mb-2 tracking-wide">
-              DEKATON
-            </h2>
+          <div className="flex flex-col items-start">
+            <img
+              src="/dekaton logo.png"
+              alt="Dekaton logo"
+              className="h-12 object-contain mb-2"
+            />
 
             <p className="text-xs text-[#6F9E8E] mb-4">
               Izdavač: Codex
             </p>
 
-            <p className="max-w-sm leading-relaxed text-sm">
+            <p className="leading-relaxed text-sm">
               Zvanična stranica fantastične sage.
             </p>
           </div>

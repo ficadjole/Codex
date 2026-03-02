@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/useAuthHook";
 
 import { FiSearch, FiShoppingCart, FiHeart } from "react-icons/fi";
@@ -14,6 +14,7 @@ export default function Header() {
     const [showMenu, setShowMenu] = useState(false);
 
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -41,27 +42,20 @@ export default function Header() {
     return (
         <header
             className="w-full sticky top-0 z-50
+                        h-20
                         bg-gradient-to-r from-[#0C1618] via-[#152A2E] to-[#0C1618]
                         border-b border-[#1F3337]
                         px-8 py-4 flex items-center justify-between
                         shadow-[0_4px_20px_rgba(40,98,58,0.15)]"
         >
             <div className="flex items-center gap-4">
-                <img
-                    src="/Simbol1.png"
-                    alt="Dekaton logo"
-                    className="h-12 brightness-0 invert drop-shadow-[0_0_8px_rgba(63,138,75,0.6)]"
-                />
-
                 <Link
-                    to="/"
-                    className="text-3xl uppercase tracking-[0.2em]
-                        font-[Cinzel]
-                        text-[#BFC9CA]
-                        hover:text-[#3F8A4B]
-                        transition duration-300"
-                >
-                    DEKATON
+                    to="/">
+                    <img
+                        src="/dekaton logo.png"
+                        alt="Dekaton logo"
+                        className="h-15 object-contain mx-7"
+                    />
                 </Link>
             </div>
 
@@ -75,6 +69,12 @@ export default function Header() {
                 <Link to="/news" className="hover:text-[#3F8A4B] transition">
                     Novosti
                 </Link>
+
+                {isAuthenticated && user?.userRole === "admin" && (
+                    <Link to="/admin/orders" className="hover:text-[#3F8A4B] transition">
+                        Narudžbine
+                    </Link>
+                )}
             </nav>
 
             <div className="flex items-center gap-7 relative">
@@ -118,7 +118,7 @@ export default function Header() {
                 {!isAuthenticated ? (
                     <Link
                         to="/login"
-                        className="flex items-center gap-2 text-[#9DB7AA] hover:text-[#3F8A4B] transition"
+                        className="flex items-center gap-2 text-[#9DB7AA] hover:text-[#3F8A4B] transition text-[16px]"
                     >
                         <HiOutlineUser size={20} />
                         Login
@@ -127,7 +127,7 @@ export default function Header() {
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => setShowMenu(!showMenu)}
-                            className="flex items-center gap-2 text-[#3F8A4B] font-medium hover:text-white transition"
+                            className="flex items-center gap-2 text-[#3F8A4B] font-medium hover:text-white transition text-[16px]"
                         >
                             {user?.username}
                             <ChevronDown
@@ -154,21 +154,24 @@ export default function Header() {
                                 Profil
                             </Link>
 
-                            <Link
-                                to="/orders"
-                                className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]"
-                            >
-                                Narudžbine
-                            </Link>
+                            {user?.userRole !== "admin" && (
+                                <Link
+                                    to="/orders"
+                                    className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]"
+                                >
+                                    Narudžbine
+                                </Link>
+                            )}
 
                             <button
                                 onClick={() => {
                                     setShowMenu(false);
                                     logout();
+                                    navigate("/");
                                 }}
                                 className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#1F3337]"
                             >
-                                Logout
+                                Log out
                             </button>
                         </div>
                     </div>
