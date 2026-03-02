@@ -18,3 +18,31 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
+// import Header from "./Header";
+// import Footer from "./Footer";
+
+// interface LayoutProps {
+//   children: React.ReactNode;
+// }
+
+// export default function Layout({ children }: LayoutProps) {
+//   return (
+//     <div
+//       className="
+//       min-h-screen 
+//       flex flex-col 
+//       text-[#EAF4EF]
+//       bg-[radial-gradient(circle_at_center,_#132226_0%,_#0C1618_70%)]
+//       "
+//     >
+//       <Header />
+
+//       <main className="flex-1 w-full">
+//         {children}
+//       </main>
+
+//       <Footer />
+//     </div>
+//   );
+// }

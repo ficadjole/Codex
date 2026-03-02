@@ -4,11 +4,13 @@ import HomePage from './pages/HomePage';
 import { authApi } from './api_services/authApi/AuthAPIService';
 import Layout from './components/layout/Layout';
 import LoginPage from './pages/LoginPage';
+import ScrollToTop from './components/layout/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <ScrollToTop />
        <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />

@@ -47,9 +47,6 @@ const positions = [
       <section className="px-8 py-16">
         <div className="max-w-6xl mx-auto">
 
-          <h2 className="uppercase text-sm tracking-widest text-[#9DB7AA] mb-8">
-            Knjige
-          </h2>
 
           <div className="flex items-center gap-6">
             
@@ -61,7 +58,13 @@ const positions = [
               {[1, 2, 3, 4, 5].map((item) => (
                 <div
                   key={item}
-                  className="w-44 h-60 bg-[#1A2E33] rounded-xl hover:scale-105 transition duration-300"
+                  className="w-44 h-60 
+                            bg-gradient-to-b from-[#1A2E33] to-[#142326] 
+                            rounded-xl 
+                            shadow-[0_10px_25px_rgba(0,0,0,0.5)] 
+                            hover:scale-105 
+                            hover:shadow-[0_15px_35px_rgba(0,0,0,0.7)] 
+                            transition duration-300"
                 />
               ))}
             </div>
