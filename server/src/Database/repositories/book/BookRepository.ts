@@ -27,7 +27,6 @@ export class BookRepository implements IBookRepository {
           book.discountPercent,
           book.discountFrom,
           book.discountTo,
-          book.imageUrl,
           book.userId,
           book.isbn,
           book.author,
@@ -68,17 +67,7 @@ export class BookRepository implements IBookRepository {
       return new Book();
     }
   }
-  // async obrisiKnjigu(artikal_id: number): Promise<boolean> {
-  //   try {
-  //     const query = "DELETE FROM knjiga WHERE artikal_id = ?";
 
-  //     const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
-
-  //     return result.affectedRows > 0;
-  //   } catch {
-  //     return false;
-  //   }
-  // }
   async getById(artikal_id: number): Promise<Book> {
     try {
       const query = "SELECT * FROM books WHERE itemId = ?";
@@ -94,7 +83,6 @@ export class BookRepository implements IBookRepository {
           book.discountPercent,
           book.discountFrom,
           book.discountTo,
-          book.imageUrl,
           book.userId,
           book.isbn,
           book.author,
@@ -127,7 +115,6 @@ export class BookRepository implements IBookRepository {
             book.discountPercent,
             book.discountFrom,
             book.discountTo,
-            book.imageUrl,
             book.userId,
             book.isbn,
             book.author,

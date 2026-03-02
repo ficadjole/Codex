@@ -148,7 +148,6 @@ export class BlogPostService implements IBlogPostService {
             item.discountPercent,
             item.discountFrom,
             item.discountTo,
-            item.imageUrl,
             item.type,
             item.description,
             item.createdAt,

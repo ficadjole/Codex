@@ -8,11 +8,10 @@ export class ItemRepository implements IItemRepository {
   async create(item: Item): Promise<Item> {
     try {
       const query =
-        "INSERT INTO items (itemName,price,imageUrl,itemType,description,userId) VALUES (?,?,?,?,?,?)";
+        "INSERT INTO items (itemName,price,itemType,description,userId) VALUES (?,?,?,?,?,?)";
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
-        item.imageUrl,
         item.type,
         item.description,
         item.userId,
@@ -26,7 +25,6 @@ export class ItemRepository implements IItemRepository {
           item.discountPercent,
           item.discountFrom,
           item.discountTo,
-          item.imageUrl,
           item.type,
           item.description,
           item.userId,
@@ -43,12 +41,11 @@ export class ItemRepository implements IItemRepository {
   async update(item: Item): Promise<Item> {
     try {
       const query =
-        "UPDATE items SET itemName = ?,price = ?,imageUrl = ?,description = ?,itemType = ? WHERE itemId = ?";
+        "UPDATE items SET itemName = ?,price = ?,description = ?,itemType = ? WHERE itemId = ?";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
-        item.imageUrl,
         item.description,
         item.type,
         item.itemId,
@@ -79,7 +76,6 @@ export class ItemRepository implements IItemRepository {
           row.discountPercent,
           row.discountFrom,
           row.discountTo,
-          row.imageUrl,
           row.itemType,
           row.description,
           row.userId,
@@ -107,7 +103,6 @@ export class ItemRepository implements IItemRepository {
           row.discountPercent,
           row.discountFrom,
           row.discountTo,
-          row.imageUrl,
           row.itemType,
           row.description,
           row.userId,
@@ -135,7 +130,6 @@ export class ItemRepository implements IItemRepository {
             row.discountPercent,
             row.discountFrom,
             row.discountTo,
-            row.imageUrl,
             row.itemType,
             row.description,
             row.userId,
@@ -160,7 +154,6 @@ export class ItemRepository implements IItemRepository {
             row.discountPercent,
             row.discountFrom,
             row.discountTo,
-            row.imageUrl,
             row.itemType,
             row.description,
             row.userId,

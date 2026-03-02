@@ -8,7 +8,6 @@ export class Item {
     public discountPercent?: number,
     public discountFrom?: Date,
     public discountTo?: Date,
-    public imageUrl: string = "",
     public type: ItemType = ItemType.BOOK,
     public description: string = "",
     public userId: number = 0,

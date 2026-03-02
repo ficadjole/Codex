@@ -154,7 +154,6 @@ export class ItemController {
       const book = await this.service.getBook(itemId);
       book.name = item.name;
       book.price = item.price;
-      book.imageUrl = item.imageUrl;
       book.description = item.description;
 
       if (book.itemId === 0 || item.itemId === 0)
@@ -174,7 +173,6 @@ export class ItemController {
       const accessory = await this.service.getAccessory(itemId);
       accessory.name = item.name;
       accessory.price = item.price;
-      accessory.imageUrl = item.imageUrl;
       accessory.description = item.description;
       if (accessory.itemId === 0 || item.itemId === 0)
         return res

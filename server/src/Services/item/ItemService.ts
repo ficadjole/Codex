@@ -12,6 +12,7 @@ import { IBookRepository } from "../../Domain/repositories/IBookRepository";
 import { IItemService } from "../../Domain/services/item/IItemService";
 import { Accessories } from "../../Domain/models/Accessories";
 import { getFinalPrice } from "../../Domain/helpers/DiscountHelpers";
+import { IItemImageRepository } from "../../Domain/repositories/IItemImageRepository";
 
 export class ItemService implements IItemService {
   constructor(
@@ -20,6 +21,7 @@ export class ItemService implements IItemService {
     private genreRepository: IGenreRepository,
     private bookGenreRepository: IBookGenreRepository,
     private accessoryRepository: IAccessoryRepository,
+    private itemImageRepository: IItemImageRepository,
   ) {}
   async addDiscount(
     itemId: number,
@@ -80,6 +82,10 @@ export class ItemService implements IItemService {
         break;
     }
 
+    const primaryImage = await this.itemImageRepository.getPrimaryImage(
+      newItem.itemId,
+    );
+
     return new ItemDto(
       newItem.itemId,
       newItem.name,
@@ -87,10 +93,10 @@ export class ItemService implements IItemService {
       newItem.discountPercent,
       newItem.discountFrom,
       newItem.discountTo,
-      newItem.imageUrl,
       newItem.type,
       newItem.description,
       newItem.createdAt,
+      primaryImage.imageUrl,
     );
   }
 
@@ -138,7 +144,6 @@ export class ItemService implements IItemService {
       updatedItem.discountPercent,
       updatedItem.discountFrom,
       updatedItem.discountTo,
-      updatedItem.imageUrl,
       updatedItem.type,
       updatedItem.description,
       updatedItem.createdAt,
@@ -164,7 +169,6 @@ export class ItemService implements IItemService {
       item.discountPercent,
       item.discountFrom,
       item.discountTo,
-      item.imageUrl,
       item.type,
       item.description,
       item.createdAt,
@@ -182,7 +186,6 @@ export class ItemService implements IItemService {
           item.discountPercent,
           item.discountFrom,
           item.discountTo,
-          item.imageUrl,
           item.type,
           item.description,
           item.createdAt,
@@ -201,7 +204,6 @@ export class ItemService implements IItemService {
           item.discountPercent,
           item.discountFrom,
           item.discountTo,
-          item.imageUrl,
           item.type,
           item.description,
           item.createdAt,
@@ -221,6 +223,10 @@ export class ItemService implements IItemService {
       }),
     );
 
+    const images = await this.itemImageRepository.getByItemId(itemId);
+
+    const imagesUrls = images.map((img) => img.imageUrl);
+
     return new BookDetailsDto(
       book.itemId,
       book.name,
@@ -228,7 +234,6 @@ export class ItemService implements IItemService {
       book.discountPercent,
       book.discountFrom,
       book.discountTo,
-      book.imageUrl,
       book.author,
       book.isbn,
       book.nmbrOfPages,
@@ -236,12 +241,18 @@ export class ItemService implements IItemService {
       book.goodreadsLink,
       new Date(book.publicationYear, 0, 1),
       genresDto,
+      imagesUrls,
     );
   }
 
   async getAccessory(itemId: number): Promise<AccessoryDetailsDto> {
     const accessory = await this.accessoryRepository.getById(itemId);
     if (accessory.itemId === 0) return new AccessoryDetailsDto();
+
+    const images = await this.itemImageRepository.getByItemId(itemId);
+
+    const imagesUrls = images.map((img) => img.imageUrl);
+
     return new AccessoryDetailsDto(
       accessory.itemId,
       accessory.name,
@@ -249,9 +260,9 @@ export class ItemService implements IItemService {
       accessory.discountPercent,
       accessory.discountFrom,
       accessory.discountTo,
-      accessory.imageUrl,
       accessory.description,
       accessory.content,
+      imagesUrls,
     );
   }
 }

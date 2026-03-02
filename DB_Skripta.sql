@@ -22,7 +22,6 @@ CREATE TABLE items (
     discountPercent DECIMAL(5,2) DEFAULT NULL,
     discountFrom DATE DEFAULT NULL,
     discountTo DATE DEFAULT NULL,
-    imageUrl TEXT,
     itemType ENUM('knjiga', 'aksesoar') NOT NULL,
 	description TEXT,
     userId INT,
@@ -50,6 +49,18 @@ CREATE TABLE books (
 CREATE TABLE accessories (
     itemId INT PRIMARY KEY,
     content TEXT,
+    FOREIGN KEY (itemId) REFERENCES items(itemId) ON DELETE CASCADE
+);
+
+-- ========================================
+-- SLIKE ARTIKLA
+-- ========================================
+CREATE TABLE ItemImages(
+    imageId INT AUTO_INCREMENT PRIMARY KEY,
+    itemId INT NOT NULL,
+    imageUrl VARCHAR(512) NOT NULL,
+    isPrimary BOOLEAN DEFAULT FALSE,
+    sortOrder INT DEFAULT 0,
     FOREIGN KEY (itemId) REFERENCES items(itemId) ON DELETE CASCADE
 );
 
