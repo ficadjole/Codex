@@ -16,7 +16,7 @@ export class OrderController {
 
   private initializeRoutes(): void {
     // Kreiranje narudžbine (ulogovan korisnik)
-    this.router.post("/createOrder", authenticate, this.createOrder.bind(this));
+    this.router.post("/createOrder", this.createOrder.bind(this));
 
     // Sve moje narudžbine
     this.router.get("/getMyOrders", authenticate, this.getMyOrders.bind(this));
@@ -55,16 +55,10 @@ export class OrderController {
 
   private async createOrder(req: Request, res: Response) {
     try {
-      const userId = req.user?.id; // iz tokena
+      const userId = req.user?.id; // iz tokena ako ga nema saljemo undefined tj null sto je okej jer nam to baza podrzava
       const orderData = req.body;
-      if (!userId) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
 
-      const result = await this.service.createOrder(userId, orderData);
+      const result = await this.service.createOrder(userId!, orderData);
 
       if (result.orderId === null)
         return res

@@ -7,10 +7,10 @@ export interface CreateOrderDto {
   firstname: string;
   lastname: string;
   email: string;
-  telephone?: string;
+  telephone: string;
   city: string;
   streat: string;
-  streatNumber?: string;
-  postalCode?: string;
+  streatNumber: string;
+  postalCode: string;
   note?: string;
 }

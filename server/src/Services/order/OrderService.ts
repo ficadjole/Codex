@@ -29,11 +29,11 @@ export class OrderService implements IOrderService {
         dto.firstname,
         dto.lastname,
         dto.email,
-        dto.telephone || null,
+        dto.telephone,
         dto.city,
         dto.streat,
-        dto.streatNumber || null,
-        dto.postalCode || null,
+        dto.streatNumber,
+        dto.postalCode,
         dto.note || null,
       );
       const createdOrder = await this.orderRepository.create(order);
