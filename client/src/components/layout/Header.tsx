@@ -154,6 +154,13 @@ export default function Header() {
                                 Profil
                             </Link>
 
+                            <Link
+                                to="/orders"
+                                className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]"
+                            >
+                                Narudžbine
+                            </Link>
+
                             <button
                                 onClick={() => {
                                     setShowMenu(false);
