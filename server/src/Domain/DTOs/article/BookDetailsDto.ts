@@ -8,7 +8,6 @@ export class BookDetailsDto {
     public discountPercent?: number,
     public discountFrom?: Date,
     public discountTo?: Date,
-    public imageUrl: string = "",
     public author: string = "",
     public isbn: string = "",
     public pages: number = 0,
@@ -16,5 +15,6 @@ export class BookDetailsDto {
     public goodreadsLink: string = "",
     public publicationDate: Date = new Date(),
     public genres: GenreDto[] = [],
+    public images: string[] = [],
   ) {}
 }

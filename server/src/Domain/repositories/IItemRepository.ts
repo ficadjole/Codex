@@ -1,5 +1,6 @@
 import { ItemType } from "../enums/ItemType";
 import { Item } from "../models/Item";
+import { ItemWithPrimaryImage } from "../models/ItemWithPrimaryImage";
 
 export interface IItemRepository {
   create(item: Item): Promise<Item>;
@@ -7,8 +8,8 @@ export interface IItemRepository {
   delete(itemId: number): Promise<boolean>;
   getByName(name: string): Promise<Item>;
   getById(itemId: number): Promise<Item>;
-  getByType(type: ItemType): Promise<Item[]>;
-  getAll(): Promise<Item[]>;
+  getByType(type: ItemType): Promise<ItemWithPrimaryImage[]>;
+  getAll(): Promise<ItemWithPrimaryImage[]>;
   addDiscount(
     itemId: number,
     discountPercent: number,

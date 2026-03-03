@@ -8,10 +8,10 @@ export class ItemDto {
     public discountPercent?: number,
     public discountFrom?: Date,
     public discountTo?: Date,
-    public imageUrl: string = "",
     public type?: ItemType,
     public description: string = "",
     public createdAt: Date = new Date(),
+    public primaryImageUrl: string = "",
   ) {}
 }
 

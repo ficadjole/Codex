@@ -3,16 +3,16 @@ import { IItemRepository } from "../../../Domain/repositories/IItemRepository";
 import db from "../../connection/DbConnectionPool";
 import { Item } from "../../../Domain/models/Item";
 import { ItemType } from "../../../Domain/enums/ItemType";
+import { ItemWithPrimaryImage } from "../../../Domain/models/ItemWithPrimaryImage";
 
 export class ItemRepository implements IItemRepository {
   async create(item: Item): Promise<Item> {
     try {
       const query =
-        "INSERT INTO items (itemName,price,imageUrl,itemType,description,userId) VALUES (?,?,?,?,?,?)";
+        "INSERT INTO items (itemName,price,itemType,description,userId) VALUES (?,?,?,?,?)";
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
-        item.imageUrl,
         item.type,
         item.description,
         item.userId,
@@ -26,7 +26,6 @@ export class ItemRepository implements IItemRepository {
           item.discountPercent,
           item.discountFrom,
           item.discountTo,
-          item.imageUrl,
           item.type,
           item.description,
           item.userId,
@@ -43,12 +42,11 @@ export class ItemRepository implements IItemRepository {
   async update(item: Item): Promise<Item> {
     try {
       const query =
-        "UPDATE items SET itemName = ?,price = ?,imageUrl = ?,description = ?,itemType = ? WHERE itemId = ?";
+        "UPDATE items SET itemName = ?,price = ?,description = ?,itemType = ? WHERE itemId = ?";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         item.name,
         item.price,
-        item.imageUrl,
         item.description,
         item.type,
         item.itemId,
@@ -79,7 +77,6 @@ export class ItemRepository implements IItemRepository {
           row.discountPercent,
           row.discountFrom,
           row.discountTo,
-          row.imageUrl,
           row.itemType,
           row.description,
           row.userId,
@@ -107,7 +104,6 @@ export class ItemRepository implements IItemRepository {
           row.discountPercent,
           row.discountFrom,
           row.discountTo,
-          row.imageUrl,
           row.itemType,
           row.description,
           row.userId,
@@ -120,54 +116,87 @@ export class ItemRepository implements IItemRepository {
       return new Item();
     }
   }
-  async getByType(itemType: ItemType): Promise<Item[]> {
+  async getByType(itemType: ItemType): Promise<ItemWithPrimaryImage[]> {
     try {
-      const query = "SELECT * FROM items WHERE itemType = ?";
+      const query = `
+        SELECT 
+          i.itemId,
+          i.itemName,
+          i.price,
+          i.discountPercent,
+          i.discountFrom,
+          i.discountTo,
+          i.itemType,
+          i.description,
+          i.dateCreated,
+          img.imageUrl AS primaryImageUrl
+        FROM items i
+        LEFT JOIN itemImages img
+          ON i.itemId = img.itemId AND img.isPrimary = TRUE
+        WHERE i.itemType = ?
+      `;
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [itemType]);
 
       return rows.map(
         (row) =>
-          new Item(
+          new ItemWithPrimaryImage(
             row.itemId,
             row.itemName,
             row.price,
             row.discountPercent,
             row.discountFrom,
             row.discountTo,
-            row.imageUrl,
             row.itemType,
             row.description,
             row.userId,
             row.dateCreated,
+            row.primaryImageUrl,
           ),
       );
-    } catch {
+    } catch (error) {
+      console.log(error);
       return [];
     }
   }
-  async getAll(): Promise<Item[]> {
+  async getAll(): Promise<ItemWithPrimaryImage[]> {
     try {
-      const query = "SELECT * FROM items ORDER BY itemId ASC";
-
+      const query = `
+        SELECT 
+          i.itemId,
+          i.itemName,
+          i.price,
+          i.discountPercent,
+          i.discountFrom,
+          i.discountTo,
+          i.itemType,
+          i.description,
+          i.dateCreated,
+          img.imageUrl AS primaryImageUrl
+        FROM items i
+        LEFT JOIN itemImages img
+          ON i.itemId = img.itemId AND img.isPrimary = TRUE
+        ORDER BY itemId ASC
+      `;
       const [rows] = await db.execute<RowDataPacket[]>(query);
       return rows.map(
         (row) =>
-          new Item(
+          new ItemWithPrimaryImage(
             row.itemId,
             row.itemName,
             row.price,
             row.discountPercent,
             row.discountFrom,
             row.discountTo,
-            row.imageUrl,
             row.itemType,
             row.description,
             row.userId,
             row.dateCreated,
+            row.primaryImageUrl,
           ),
       );
-    } catch {
+    } catch(error) {
+      console.log(error);
       return [];
     }
   }

@@ -1,7 +1,7 @@
 import { ItemType } from "../enums/ItemType";
 
-export class Item {
-  public constructor(
+export class ItemWithPrimaryImage {
+  constructor(
     public itemId: number = 0,
     public name: string = "",
     public price: number = 0,
@@ -12,5 +12,6 @@ export class Item {
     public description: string = "",
     public userId: number = 0,
     public createdAt?: Date,
+    public primaryImageUrl: string = "",
   ) {}
 }
