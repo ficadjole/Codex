@@ -55,6 +55,7 @@ export class ItemService implements IItemService {
       case ItemType.BOOK:
         const newBook = { ...(item as Book), itemId: newItem.itemId };
         const addedBook = await this.bookRepository.create(newBook);
+        
         if (addedBook.itemId === 0) return new ItemDto();
 
         if (newBook.genres?.length) {
@@ -159,7 +160,6 @@ export class ItemService implements IItemService {
 
   async getItemById(itemId: number): Promise<ItemDto> {
     const item = await this.itemRepository.getById(itemId);
-
     if (item.itemId === 0) return new ItemDto();
 
     return new ItemDto(
@@ -189,6 +189,7 @@ export class ItemService implements IItemService {
           item.type,
           item.description,
           item.createdAt,
+          item.primaryImageUrl,
         ),
     );
   }
@@ -207,6 +208,7 @@ export class ItemService implements IItemService {
           item.type,
           item.description,
           item.createdAt,
+          item.primaryImageUrl,
         ),
     );
   }

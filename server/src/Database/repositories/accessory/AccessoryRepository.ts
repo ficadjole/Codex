@@ -51,19 +51,7 @@ export class AccessoryRepository implements IAccessoryRepository {
       return new Accessories();
     }
   }
-  // async obrisiAksesoar(artikal_id: number): Promise<boolean> {
-  //   try {
-  //     const query = "DELETE FROM aksesoar WHERE artikal_id = ?";
 
-  //     const [result] = await db.execute<ResultSetHeader>(query, [artikal_id]);
-  //     console.log("Rezultat brisanja aksesoara: ", result);
-  //     return result.affectedRows > 0;
-  //   } catch (error) {
-  //     console.error("Greska pri brisanju aksesoara:", error);
-
-  //     return false;
-  //   }
-  // }
   async getById(itemId: number): Promise<Accessories> {
     try {
       const query = "SELECT * FROM accessories WHERE itemId = ?";

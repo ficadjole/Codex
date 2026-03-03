@@ -1,0 +1,17 @@
+import { ItemType } from "../enums/ItemType";
+
+export class ItemWithPrimaryImage {
+  constructor(
+    public itemId: number = 0,
+    public name: string = "",
+    public price: number = 0,
+    public discountPercent?: number,
+    public discountFrom?: Date,
+    public discountTo?: Date,
+    public type: ItemType = ItemType.BOOK,
+    public description: string = "",
+    public userId: number = 0,
+    public createdAt?: Date,
+    public primaryImageUrl: string = "",
+  ) {}
+}

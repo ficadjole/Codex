@@ -63,6 +63,11 @@ import { OrderRepository } from "./Database/repositories/order/OrderRepository";
 import { IOrderService } from "./Domain/services/order/IOrderService";
 import { OrderService } from "./Services/order/OrderService";
 import { OrderController } from "./WebAPI/controllers/OrderController";
+import { IItemImageRepository } from "./Domain/repositories/IItemImageRepository";
+import { ItemImageRepository } from "./Database/repositories/itemImage/ItemImageRepository";
+import { IItemImageService } from "./Domain/services/itemImage/IItemImageService";
+import { ItemImageService } from "./Services/itemImage/ItemImageService";
+import { ItemImageController } from "./WebAPI/controllers/ItemImageController";
 
 require("dotenv").config();
 
@@ -84,6 +89,7 @@ const userController = new UserController(userService);
 // --- Item Setup ---
 
 const itemRepository: IItemRepository = new ItemRepository();
+const itemImageRepository: IItemImageRepository = new ItemImageRepository();
 const bookRepository: IBookRepository = new BookRepository();
 const bookGenreRepository: IBookGenreRepository = new BookGenreRepository();
 const genreRepository: IGenreRepository = new GenreRepository();
@@ -95,9 +101,17 @@ const itemService: IItemService = new ItemService(
   genreRepository,
   bookGenreRepository,
   accessoryRepository,
+  itemImageRepository,
 );
 
 const itemController = new ItemController(itemService);
+
+// --- ItemImage Setup ---
+
+const itemImageService: IItemImageService = new ItemImageService(
+  itemImageRepository,
+);
+const itemImageController = new ItemImageController(itemImageService);
 
 // --- BlogPost Setup ---
 
@@ -139,6 +153,7 @@ const orderController = new OrderController(orderService);
 
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1/item", itemController.getRouter());
+app.use("/api/v1/itemImages", itemImageController.getRouter());
 app.use("/api/v1/user", userController.getRouter());
 app.use("/api/v1/blogPost", blogPostController.getRouter());
 app.use("/api/v1/comment", commentController.getRouter());
