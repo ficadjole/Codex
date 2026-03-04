@@ -3,6 +3,7 @@ import { IOrderService } from "../../Domain/services/order/IOrderService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
 import { authorize } from "../middlewere/authorization/AuthorizeMiddleware";
 import { UserRole } from "../../Domain/enums/UserRole";
+import { optionalAuth } from "../middlewere/authentification/OptionalAuthMiddleware";
 
 export class OrderController {
   private router: Router;
@@ -16,7 +17,7 @@ export class OrderController {
 
   private initializeRoutes(): void {
     // Kreiranje narudžbine (ulogovan korisnik)
-    this.router.post("/createOrder", authenticate, this.createOrder.bind(this));
+    this.router.post("/createOrder", optionalAuth, this.createOrder.bind(this));
 
     // Sve moje narudžbine
     this.router.get("/getMyOrders", authenticate, this.getMyOrders.bind(this));
