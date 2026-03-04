@@ -70,7 +70,7 @@ export default function Header() {
                         <img
                             src="/dekaton logo.png"
                             alt="Dekaton logo"
-                            className="h-10 md:h-14 object-contain"
+                            className="h-10 md:h-14 object-contain mx-6"
                         />
                     </Link>
                 </div>
@@ -199,9 +199,9 @@ export default function Header() {
                 {/* Panel */}
                 <div
                     className={`absolute left-0 top-0 h-full w-64 bg-[#142326]
-            border-r border-[#1F3337] p-6
-            transform transition-transform duration-300
-            ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
+                                border-r border-[#1F3337] p-6
+                                transform transition-transform duration-300
+                                ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
                 >
                     <div className="flex justify-between items-center mb-8">
                         <span className="text-lg font-semibold">Meni</span>

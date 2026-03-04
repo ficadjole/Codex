@@ -6,5 +6,6 @@ export interface IOrderApiService {
     getMyOrders(token: string): Promise<OrderResponseDto[]>;
     getOrderById(token: string, orderId: number): Promise<OrderResponseDto>;
     getFullDetails(orderId: number, token: string): Promise<OrderDetailsResponseDto>;
+    changeStatus(token: string, orderId: number, status: string): Promise<boolean>;
     deleteOrder(token: string, orderId: number): Promise<boolean>;
 }

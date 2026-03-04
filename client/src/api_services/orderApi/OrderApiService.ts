@@ -5,7 +5,7 @@ import type { OrderDetailsResponseDto } from "../../models/order/OrderDetailsRes
 
 const API_URL: string = import.meta.env.VITE_API_URL + "order";
 
-export const orderApi :  IOrderApiService = {
+export const orderApi: IOrderApiService = {
 
     async getAllOrders(token: string): Promise<OrderResponseDto[]> {
         try {
@@ -56,6 +56,24 @@ export const orderApi :  IOrderApiService = {
         } catch (error) {
             console.error("Error fetching order details:", error);
             return {} as OrderDetailsResponseDto;
+        }
+    },
+    async changeStatus(
+        token: string,
+        orderId: number,
+        status: string
+    ): Promise<boolean> {
+        try {
+            await axios.put(
+                `${API_URL}/changeStatus/${orderId}`,
+                { status },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            return true;
+        } catch {
+            return false;
         }
     },
     async deleteOrder(token: string, orderId: number): Promise<boolean> {

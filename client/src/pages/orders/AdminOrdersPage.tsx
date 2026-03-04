@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/auth/useAuthHook";
 
 export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
   const [orders, setOrders] = useState<OrderResponseDto[]>([]);
+  const [statusFilter, setStatusFilter] = useState("sve");
   const navigate = useNavigate();
   const { token } = useAuth();
 
@@ -20,11 +21,32 @@ export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
     setOrders(data);
   };
 
+  const filteredOrders =
+    statusFilter === "sve"
+      ? orders
+      : orders.filter((o) => o.orderStatus === statusFilter);
+
   return (
     <div className="px-4 sm:px-8 md:px-12 py-8">
       <h1 className="text-2xl sm:text-3xl font-semibold mb-8">
         Sve narudžbine
       </h1>
+
+      <div className="mb-6 flex items-center gap-4">
+        <label className="text-sm text-[#9DB7AA]">Filtriraj po statusu:</label>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="bg-[#142326] border border-[#1F3337] rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="sve">Sve</option>
+          <option value="na_cekanju">Na čekanju</option>
+          <option value="placeno">Plaćeno</option>
+          <option value="poslato">Poslato</option>
+          <option value="otkazano">Otkazano</option>
+        </select>
+      </div>
 
       <div className="bg-[#142326] rounded-2xl shadow-xl border border-[#1F3337] overflow-x-auto w-300">
         <table className="min-w-[700px] w-full text-sm text-center">
@@ -39,7 +61,7 @@ export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
           </thead>
 
           <tbody>
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <tr
                 key={order.orderId}
                 onClick={() =>
@@ -53,8 +75,40 @@ export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
                 <td className="px-6 py-4">
                   {order.firstname} {order.lastname}
                 </td>
-                <td className="px-6 py-4">
-                  {order.orderStatus}
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <select
+                    value={order.orderStatus}
+                    onChange={async (e) => {
+                      if (!token) return;
+
+                      const newStatus = e.target.value;
+
+                      const success = await orderApi.changeStatus(
+                        token,
+                        order.orderId,
+                        newStatus
+                      );
+
+                      if (success) {
+                        setOrders((prev) =>
+                          prev.map((o) =>
+                            o.orderId === order.orderId
+                              ? { ...o, orderStatus: newStatus }
+                              : o
+                          )
+                        );
+                      }
+                    }}
+                    className="bg-[#142326] border border-[#1F3337] rounded px-2 py-1 text-sm"
+                  >
+                    <option value="na_cekanju">Na čekanju</option>
+                    <option value="placeno">Plaćeno</option>
+                    <option value="poslato">Poslato</option>
+                    <option value="otkazano">Otkazano</option>
+                  </select>
                 </td>
                 <td className="px-6 py-4 font-semibold text-[#3F8A4B]">
                   {order.totalPrice} RSD
