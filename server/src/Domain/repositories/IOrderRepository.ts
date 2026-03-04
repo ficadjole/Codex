@@ -19,4 +19,5 @@ export interface IOrderRepository {
     total: number,
     connection?: PoolConnection,
   ): Promise<boolean>;
+  getOrderItems(orderId: number): Promise<OrderItem[]>;
 }

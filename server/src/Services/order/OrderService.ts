@@ -1,6 +1,7 @@
 import db from "../../Database/connection/DbConnectionPool";
 import { ItemRepository } from "../../Database/repositories/item/ItemRepository";
 import { CreateOrderDto } from "../../Domain/DTOs/order/CreateOrderDto";
+import { OrderDetailsDto } from "../../Domain/DTOs/order/OrderDetailsDto";
 import { OrderStatus } from "../../Domain/enums/OrderStatus";
 import { Order } from "../../Domain/models/Order";
 import { OrderItem } from "../../Domain/models/OrderItem";
@@ -12,7 +13,7 @@ export class OrderService implements IOrderService {
   constructor(
     private orderRepository: IOrderRepository,
     private itemRepository: IItemRepository,
-  ) {}
+  ) { }
 
   async createOrder(userId: number, dto: CreateOrderDto): Promise<Order> {
     const connection = await db.getConnection();
@@ -115,5 +116,20 @@ export class OrderService implements IOrderService {
     if (!exists) return false;
 
     return await this.orderRepository.delete(orderId);
+  }
+
+  async getFullOrderDetails(orderId: number): Promise<OrderDetailsDto> {
+    const order = await this.orderRepository.getById(orderId);
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    const items = await this.orderRepository.getOrderItems(orderId);
+
+    return {
+      order,
+      items
+    };
   }
 }

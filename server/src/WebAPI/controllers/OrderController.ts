@@ -6,196 +6,262 @@ import { UserRole } from "../../Domain/enums/UserRole";
 import { optionalAuth } from "../middlewere/authentification/OptionalAuthMiddleware";
 
 export class OrderController {
-  private router: Router;
-  private service: IOrderService;
+    private router: Router;
+    private service: IOrderService;
 
-  constructor(service: IOrderService) {
-    this.router = Router();
-    this.service = service;
-    this.initializeRoutes();
-  }
-
-  private initializeRoutes(): void {
-    // Kreiranje narudžbine (ulogovan korisnik)
-    this.router.post("/createOrder", optionalAuth, this.createOrder.bind(this));
-
-    // Sve moje narudžbine
-    this.router.get("/getMyOrders", authenticate, this.getMyOrders.bind(this));
-
-    // Jedna narudžbina po ID
-    this.router.get(
-      "/getOrderById/:orderId",
-      authenticate,
-      this.getOrderById.bind(this),
-    );
-
-    // Admin – sve narudžbine
-    this.router.get(
-      "/getAllOrders",
-      authenticate,
-      authorize(UserRole.ADMIN),
-      this.getAllOrders.bind(this),
-    );
-
-    // Admin – promena statusa
-    this.router.put(
-      "/changeStatus/:orderId",
-      authenticate,
-      authorize(UserRole.ADMIN),
-      this.changeStatus.bind(this),
-    );
-
-    // Brisanje (admin)
-    this.router.delete(
-      "/deleteOrder/:orderId",
-      authenticate,
-      authorize(UserRole.ADMIN),
-      this.deleteOrder.bind(this),
-    );
-  }
-
-  private async createOrder(req: Request, res: Response) {
-    try {
-      const userId = req.user?.id; // iz tokena ako ga nema saljemo undefined tj null sto je okej jer nam to baza podrzava
-      const orderData = req.body;
-      const result = await this.service.createOrder(userId!, orderData);
-
-      if (result.orderId === null)
-        return res
-          .status(400)
-          .json({ success: false, message: "Failed to create order." });
-
-      res
-        .status(201)
-        .json({ success: true, message: "Order created successfully." });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+    constructor(service: IOrderService) {
+        this.router = Router();
+        this.service = service;
+        this.initializeRoutes();
     }
-  }
 
-  private async getMyOrders(req: Request, res: Response) {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-      const result = await this.service.getUserOrders(userId);
+    private initializeRoutes(): void {
+        // Kreiranje narudžbine (ulogovan korisnik)
+        this.router.post("/createOrder", optionalAuth, this.createOrder.bind(this));
 
-      if (result.length === 0)
-        return res
-          .status(404)
-          .json({ success: false, message: "No orders found." });
+        // Sve moje narudžbine
+        this.router.get("/getMyOrders", authenticate, this.getMyOrders.bind(this));
 
-      res.status(200).json({ success: true, data: result });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+        // Jedna narudžbina po ID
+        this.router.get(
+            "/getOrderById/:orderId",
+            authenticate,
+            this.getOrderById.bind(this),
+        );
+
+        this.router.get(
+            "/getFullDetails/:orderId",
+            authenticate,
+            this.getFullOrderDetails.bind(this)
+        );
+
+        // Admin – sve narudžbine
+        this.router.get(
+            "/getAllOrders",
+            authenticate,
+            authorize(UserRole.ADMIN),
+            this.getAllOrders.bind(this),
+        );
+
+        // Admin – promena statusa
+        this.router.put(
+            "/changeStatus/:orderId",
+            authenticate,
+            authorize(UserRole.ADMIN),
+            this.changeStatus.bind(this),
+        );
+
+        // Brisanje (admin)
+        this.router.delete(
+            "/deleteOrder/:orderId",
+            authenticate,
+            authorize(UserRole.ADMIN),
+            this.deleteOrder.bind(this),
+        );
     }
-  }
 
-  private async getOrderById(req: Request, res: Response) {
-    try {
-      const orderId = parseInt(req.params.orderId);
-      const user = req.user;
+    private async createOrder(req: Request, res: Response) {
+        try {
+            const userId = req.user?.id; // iz tokena ako ga nema saljemo undefined tj null sto je okej jer nam to baza podrzava
+            const orderData = req.body;
+            const result = await this.service.createOrder(userId!, orderData);
 
-      if (user === undefined) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
+            if (result.orderId === null)
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Failed to create order." });
 
-      if (isNaN(orderId))
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid orderId." });
-
-      const order = await this.service.getOrderById(orderId);
-
-      if (!order)
-        return res
-          .status(404)
-          .json({ success: false, message: "Order not found." });
-
-      // Ako nije admin i nije vlasnik narudžbine
-      if (user.userRole !== UserRole.ADMIN && order.userId !== user.id) {
-        return res.status(403).json({
-          success: false,
-          message: "You are not allowed to view this order.",
-        });
-      }
-
-      res.status(200).json({ success: true, data: order });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+            res
+                .status(201)
+                .json({ success: true, message: "Order created successfully." });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
     }
-  }
 
-  private async getAllOrders(req: Request, res: Response) {
-    try {
-      const result = await this.service.getAllOrders();
+    private async getMyOrders(req: Request, res: Response) {
+        try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
+            const result = await this.service.getUserOrders(userId);
 
-      if (result.length === 0)
-        return res
-          .status(404)
-          .json({ success: false, message: "No orders available." });
+            if (result.length === 0)
+                return res
+                    .status(404)
+                    .json({ success: false, message: "No orders found." });
 
-      res.status(200).json({ success: true, data: result });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+            res.status(200).json({ success: true, data: result });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
     }
-  }
 
-  private async changeStatus(req: Request, res: Response) {
-    try {
-      const orderId = parseInt(req.params.orderId);
-      const { status } = req.body;
+    private async getOrderById(req: Request, res: Response) {
+        try {
+            const orderId = parseInt(req.params.orderId);
+            const user = req.user;
 
-      if (isNaN(orderId))
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid orderId." });
+            if (user === undefined) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+            }
 
-      const result = await this.service.changeStatus(orderId, status);
+            if (isNaN(orderId))
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Invalid orderId." });
 
-      if (!result)
-        return res
-          .status(400)
-          .json({ success: false, message: "Failed to update status." });
+            const order = await this.service.getOrderById(orderId);
 
-      res.status(200).json({ success: true, message: "Order status updated." });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+            if (!order)
+                return res
+                    .status(404)
+                    .json({ success: false, message: "Order not found." });
+
+            // Ako nije admin i nije vlasnik narudžbine
+            if (user.userRole !== UserRole.ADMIN && order.userId !== user.id) {
+                return res.status(403).json({
+                    success: false,
+                    message: "You are not allowed to view this order.",
+                });
+            }
+
+            res.status(200).json({ success: true, data: order });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
     }
-  }
 
-  private async deleteOrder(req: Request, res: Response) {
-    try {
-      const orderId = parseInt(req.params.orderId);
+    private async getFullOrderDetails(
+        req: Request,
+        res: Response
+    ): Promise<void> {
+        try {
+            const orderId = parseInt(req.params.orderId as string, 10);
 
-      if (isNaN(orderId))
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid orderId." });
+            if (isNaN(orderId)) {
+                res.status(400).json({
+                    success: false,
+                    message: "Invalid orderId.",
+                });
+                return;
+            }
 
-      const result = await this.service.deleteOrder(orderId);
+            const user = req.user;
 
-      if (!result)
-        return res
-          .status(400)
-          .json({ success: false, message: "Failed to delete order." });
+            if (!user) {
+                res.status(401).json({
+                    success: false,
+                    message: "Unauthorized",
+                });
+                return;
+            }
 
-      res
-        .status(200)
-        .json({ success: true, message: "Order deleted successfully." });
-    } catch {
-      res.status(500).json({ success: false, message: "Server error." });
+            const result = await this.service.getFullOrderDetails(orderId);
+
+            if (!result || !result.order) {
+                res.status(404).json({
+                    success: false,
+                    message: "Order not found.",
+                });
+                return;
+            }
+
+            if (
+                user.userRole !== UserRole.ADMIN &&
+                result.order.userId !== user.id
+            ) {
+                res.status(403).json({
+                    success: false,
+                    message: "You are not allowed to view this order.",
+                });
+                return;
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Order details fetched successfully.",
+                data: result,
+            });
+        } catch {
+            res.status(500).json({
+                success: false,
+                message: "Server error occurred.",
+            });
+        }
     }
-  }
 
-  public getRouter(): Router {
-    return this.router;
-  }
+
+    private async getAllOrders(req: Request, res: Response) {
+        try {
+            const result = await this.service.getAllOrders();
+
+            if (result.length === 0)
+                return res
+                    .status(404)
+                    .json({ success: false, message: "No orders available." });
+
+            res.status(200).json({ success: true, data: result });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
+    }
+
+    private async changeStatus(req: Request, res: Response) {
+        try {
+            const orderId = parseInt(req.params.orderId);
+            const { status } = req.body;
+
+            if (isNaN(orderId))
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Invalid orderId." });
+
+            const result = await this.service.changeStatus(orderId, status);
+
+            if (!result)
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Failed to update status." });
+
+            res.status(200).json({ success: true, message: "Order status updated." });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
+    }
+
+    private async deleteOrder(req: Request, res: Response) {
+        try {
+            const orderId = parseInt(req.params.orderId);
+
+            if (isNaN(orderId))
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Invalid orderId." });
+
+            const result = await this.service.deleteOrder(orderId);
+
+            if (!result)
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Failed to delete order." });
+
+            res
+                .status(200)
+                .json({ success: true, message: "Order deleted successfully." });
+        } catch {
+            res.status(500).json({ success: false, message: "Server error." });
+        }
+    }
+
+    public getRouter(): Router {
+        return this.router;
+    }
 }

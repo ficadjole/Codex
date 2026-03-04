@@ -1,7 +1,9 @@
 export interface OrderItemDto {
+  orderId: number;
   itemId: number;
   quantity: number;
   price: number;
+  discountPercent: number | null;
 }
 
 export interface OrderResponseDto {
@@ -9,7 +11,7 @@ export interface OrderResponseDto {
   userId: number;
   orderStatus: string;
   totalPrice: number;
-  createdAt: string;
+  orderDate: string;
 
   firstname: string;
   lastname: string;
