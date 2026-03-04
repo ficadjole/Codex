@@ -5,9 +5,8 @@ export interface ItemDto {
     discountPercent ?:  number,
     discountFrom    ?:  string,
     discountTo      ?:  string,
-    imageUrl        :   string,
     type            :   string,
     description     :   string,
-    userId          :   number,
     createdAt       ?:  string,
+    primaryImageUrl :   string
 }

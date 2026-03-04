@@ -160,13 +160,15 @@ export default function Header() {
                                     >
                                         Profil
                                     </Link>
+                                    {isAuthenticated && user?.userRole !== "admin" && (
 
-                                    <Link
-                                        to="/orders"
-                                        className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]"
-                                    >
-                                        Narudžbine
-                                    </Link>
+                                        <Link
+                                            to="/orders"
+                                            className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]"
+                                        >
+                                            Narudžbine
+                                        </Link>
+                                    )}
 
                                     <button
                                         onClick={() => {
@@ -210,9 +212,9 @@ export default function Header() {
                             className="md:hidden text-[#9DB7AA] hover:text-white transition relative z-50"
                         ><FiX
                                 size={22}
-                                
+
                             /></button>
-                        
+
                     </div>
 
                     <div className="flex flex-col gap-6 text-[#9DB7AA] uppercase text-sm">

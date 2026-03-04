@@ -40,7 +40,7 @@ export class ItemController {
     this.router.get("/getItemsByType/:type", this.getItemsByType.bind(this));
     this.router.get("/getBook/:itemId", this.getBook.bind(this));
     this.router.get("/getAccessory/:itemId", this.getAccessory.bind(this));
-    this.router.put("/addDiscount/:itemId", this.addDiscount.bind(this));
+    this.router.put("/addDiscount/:itemId", authenticate, authorize(UserRole.ADMIN), this.addDiscount.bind(this));
   }
 
   private async addItem(req: Request, res: Response) {

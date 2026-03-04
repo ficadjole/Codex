@@ -20,6 +20,37 @@ export default function UserOrdersPage({ orderApi }: OrderApiProps) {
     setOrders(data);
   };
 
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "na_cekanju":
+        return {
+          label: "Na čekanju",
+          className: "bg-yellow-500/20 text-yellow-400",
+        };
+      case "poslato":
+        return {
+          label: "Poslato",
+          className: "bg-green-500/20 text-green-400",
+        };
+      case "otkazano":
+        return {
+          label: "Otkazano",
+          className: "bg-red-500/20 text-red-400",
+        };
+      case "isporuceno":
+        return {
+          label: "Isporučeno",
+          className: "bg-blue-500/20 text-blue-400",
+        };
+      default:
+        return {
+          label: status,
+          className: "bg-gray-500/20 text-gray-400",
+        };
+    }
+  };
+
+
   return (
     <div className="min-h-screen px-4 sm:px-8 md:px-12 py-8">
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-10">
@@ -32,7 +63,7 @@ export default function UserOrdersPage({ orderApi }: OrderApiProps) {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-220">
-          {orders.map((order) => (
+          {orders.map((order) => ( 
             <div
               key={order.orderId}
               onClick={() => navigate(`/orders/${order.orderId}`)}
@@ -43,8 +74,8 @@ export default function UserOrdersPage({ orderApi }: OrderApiProps) {
                   #{order.orderId}
                 </h2>
 
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
-                  {order.orderStatus}
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusConfig(order.orderStatus).className}`}>
+                  {getStatusConfig(order.orderStatus).label}
                 </span>
               </div>
 

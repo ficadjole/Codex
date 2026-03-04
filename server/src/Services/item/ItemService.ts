@@ -97,7 +97,7 @@ export class ItemService implements IItemService {
       newItem.type,
       newItem.description,
       newItem.createdAt,
-      primaryImage.imageUrl,
+      primaryImage?.imageUrl ?? "",
     );
   }
 

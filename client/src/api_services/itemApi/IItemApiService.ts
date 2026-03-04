@@ -5,6 +5,8 @@ export interface IItemApiService {
   getAllItems(): Promise<ItemDto[]>;
   getItemById(itemId: number): Promise<ItemDto>;
   getItemsByType(type: string): Promise<ItemDto[]>;
+  getBook(itemId: number): Promise<ItemDto>;
+  getAccessory(itemId: number): Promise<ItemDto>;
 
   // ADMIN (requires token)
   addItem(token: string, item: ItemDto): Promise<boolean>;
