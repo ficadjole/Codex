@@ -34,11 +34,11 @@ const positions = [
         <div className="absolute inset-0 bg-gradient-to-b from-[#0C1618]/80 via-[#0C1618]/50 to-[#0C1618]" />
 
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-          <h1 className="text-5xl font-[Cinzel] tracking-[0.2em] mb-6">
+          <h1 className="text-5xl opacity-80 tracking-[0.2em] mb-6">
             DOBRODOŠLI U SVET DEKATONA
           </h1>
 
-          <p className="max-w-2xl text-[#9DB7AA]">
+          <p className="max-w-2xl opacity-85 text-[#9DB7AA]">
             Epska saga. Početak rata. Svet u kojem se granice brišu.
           </p>
         </div>
