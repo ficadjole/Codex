@@ -16,7 +16,7 @@ export class OrderController {
 
   private initializeRoutes(): void {
     // Kreiranje narudžbine (ulogovan korisnik)
-    this.router.post("/createOrder", this.createOrder.bind(this));
+    this.router.post("/createOrder", authenticate, this.createOrder.bind(this));
 
     // Sve moje narudžbine
     this.router.get("/getMyOrders", authenticate, this.getMyOrders.bind(this));
@@ -57,7 +57,6 @@ export class OrderController {
     try {
       const userId = req.user?.id; // iz tokena ako ga nema saljemo undefined tj null sto je okej jer nam to baza podrzava
       const orderData = req.body;
-
       const result = await this.service.createOrder(userId!, orderData);
 
       if (result.orderId === null)
