@@ -20,39 +20,41 @@ export class BlogPostController {
       "/addBlogPost",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.addBlogPost.bind(this)
+      this.addBlogPost.bind(this),
     );
 
     this.router.put(
       "/updateBlogPost/:blogPostId",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.updateBlogPost.bind(this)
+      this.updateBlogPost.bind(this),
     );
 
     this.router.delete(
       "/deleteBlogPost/:blogPostId",
       authenticate,
       authorize(UserRole.ADMIN),
-      this.deleteBlogPost.bind(this)
+      this.deleteBlogPost.bind(this),
     );
 
     this.router.get("/getAllBlogPosts", this.getAllBlogPosts.bind(this));
 
     this.router.get(
       "/getBlogPostById/:blogPostId",
-      this.getBlogPostById.bind(this)
+      this.getBlogPostById.bind(this),
     );
 
     this.router.get(
       "/getBlogPostsByType/:postType",
-      this.getBlogPostsByType.bind(this)
+      this.getBlogPostsByType.bind(this),
     );
   }
 
   private async addBlogPost(req: Request, res: Response): Promise<void> {
     try {
       const blogPost = req.body;
+      const userId = req.user?.id;
+      blogPost.userId = userId;
       const addedBlogPost = await this.blogPostService.addBlogPost(blogPost);
 
       if (addedBlogPost.blogPostId === 0) {
@@ -77,9 +79,18 @@ export class BlogPostController {
   private async updateBlogPost(req: Request, res: Response): Promise<void> {
     try {
       const blogPostId = parseInt(req.params.blogPostId);
+      const userId = req.user?.id;
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
       const updatedBlogPost = req.body;
       updatedBlogPost.blogPostId = blogPostId;
-
+      updatedBlogPost.userId = userId;
       const result = await this.blogPostService.updateBlogPost(updatedBlogPost);
 
       if (result.blogPostId === 0) {

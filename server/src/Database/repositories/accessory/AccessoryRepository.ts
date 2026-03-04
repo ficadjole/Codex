@@ -1,5 +1,4 @@
-import { ResultSetHeader } from "mysql2";
-
+import { ResultSetHeader , RowDataPacket} from "mysql2";
 import db from "../../connection/DbConnectionPool";
 import { IAccessoryRepository } from "../../../Domain/repositories/IAccessoryRepository";
 import { Accessories } from "../../../Domain/models/Accessories";
@@ -56,7 +55,7 @@ export class AccessoryRepository implements IAccessoryRepository {
     try {
       const query = "SELECT * FROM accessories WHERE itemId = ?";
 
-      const [rows] = await db.execute<any[]>(query, [itemId]);
+      const [rows] = await db.execute<RowDataPacket[]>(query, [itemId]);
       if (rows.length > 0) {
         const row = rows[0];
         return new Accessories(

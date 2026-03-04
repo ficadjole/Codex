@@ -195,11 +195,56 @@ export class ItemRepository implements IItemRepository {
             row.primaryImageUrl,
           ),
       );
-    } catch(error) {
+    } catch (error) {
       console.log(error);
       return [];
     }
   }
+
+  async getByIds(itemIds: number[]): Promise<ItemWithPrimaryImage[]> {
+    try {
+      const query = `
+        SELECT 
+          i.itemId,
+          i.itemName,
+          i.price,
+          i.discountPercent,
+          i.discountFrom,
+          i.discountTo,
+          i.itemType,
+          i.description,
+          i.dateCreated,
+          img.imageUrl AS primaryImageUrl
+        FROM items i
+        LEFT JOIN itemImages img
+          ON i.itemId = img.itemId AND img.isPrimary = TRUE
+        WHERE i.itemId IN (?)
+        ORDER BY itemId ASC
+      `;
+      
+      const [rows] = await db.execute<RowDataPacket[]>(query, itemIds);
+      return rows.map(
+        (row) =>
+          new ItemWithPrimaryImage(
+            row.itemId,
+            row.itemName,
+            row.price,
+            row.discountPercent,
+            row.discountFrom,
+            row.discountTo,
+            row.itemType,
+            row.description,
+            row.userId,
+            row.dateCreated,
+            row.primaryImageUrl,
+          ),
+      );
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
   async delete(itemId: number): Promise<boolean> {
     try {
       const query = "DELETE FROM items WHERE itemId = ?";

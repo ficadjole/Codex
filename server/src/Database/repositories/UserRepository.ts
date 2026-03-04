@@ -27,7 +27,7 @@ export class UserRepository implements IUserRepository {
           user.username,
           user.passwordHash,
           user.userRole,
-          new Date()
+          new Date(),
         );
       } else {
         return new User();
@@ -41,23 +41,23 @@ export class UserRepository implements IUserRepository {
       const query = "SELECT * FROM users WHERE userId = ?";
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [userId]);
-
+      
       if (rows.length > 0) {
         const row = rows[0];
 
         return new User(
           row.userId,
-          row.firstName,
-          row.lastName,
+          row.firstname,
+          row.surname,
           row.email,
           row.username,
           row.passwordHash,
-          row.userRole
+          row.userRole,
         );
       } else {
         return new User();
       }
-    } catch {
+    } catch (error) {
       return new User();
     }
   }
@@ -71,12 +71,12 @@ export class UserRepository implements IUserRepository {
         const row = rows[0];
         return new User(
           row.userId,
-          row.firstName,
-          row.lastName,
+          row.firstname,
+          row.surname,
           row.email,
           row.username,
           row.passwordHash,
-          row.userRole
+          row.userRole,
         );
       } else {
         return new User();
@@ -97,12 +97,12 @@ export class UserRepository implements IUserRepository {
 
         return new User(
           row.userId,
-          row.firstName,
-          row.lastName,
+          row.lastname,
+          row.surname,
           row.email,
           row.username,
           row.passwordHash,
-          row.userRole
+          row.userRole,
         );
       } else {
         return new User();
@@ -122,13 +122,13 @@ export class UserRepository implements IUserRepository {
         (row) =>
           new User(
             row.userId,
-            row.firstName,
-            row.lastName,
+            row.firstname,
+            row.surname,
             row.email,
             row.username,
             row.passwordHash,
-            row.userRole
-          )
+            row.userRole,
+          ),
       );
     } catch {
       return [];

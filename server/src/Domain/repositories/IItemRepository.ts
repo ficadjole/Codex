@@ -8,6 +8,7 @@ export interface IItemRepository {
   delete(itemId: number): Promise<boolean>;
   getByName(name: string): Promise<Item>;
   getById(itemId: number): Promise<Item>;
+  getByIds(itemIds:number[]) : Promise<ItemWithPrimaryImage[]>
   getByType(type: ItemType): Promise<ItemWithPrimaryImage[]>;
   getAll(): Promise<ItemWithPrimaryImage[]>;
   addDiscount(

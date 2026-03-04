@@ -12,10 +12,10 @@ export class ItemImageRepository implements IItemImageRepository {
 
     if (image.isPrimary) {
       await db.execute(
-        "UPDATE itemImages SET isPrimary = FALSE WHERE itemId = ?",
+        "UPDATE itemImages SET isPrimary = FALSE WHERE itemId = ? AND isPrimary = TRUE",
         [image.itemId],
       );
-    }//postavljamo sve ostale slike tog itema na false.
+    } //postavljamo sve ostale slike tog itema na false.
 
     const [result] = await db.execute<ResultSetHeader>(query, [
       image.itemId,
