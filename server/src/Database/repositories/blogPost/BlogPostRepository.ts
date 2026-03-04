@@ -19,8 +19,8 @@ export class BlogPostRepository implements IBlogPostRepository {
             row.content,
             row.blogPostType,
             new Date(row.publicationYear),
-            row.userId
-          )
+            row.userId,
+          ),
       );
     } catch {
       return [];
@@ -42,7 +42,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           row.content,
           row.blogPostType,
           new Date(row.publicationYear),
-          row.userId
+          row.userId,
         );
       } else {
         return new BlogPost();
@@ -67,8 +67,8 @@ export class BlogPostRepository implements IBlogPostRepository {
             row.content,
             row.blogPostType,
             new Date(row.publicationYear),
-            row.userId
-          )
+            row.userId,
+          ),
       );
     } catch {
       return [];
@@ -95,7 +95,7 @@ export class BlogPostRepository implements IBlogPostRepository {
           blogPost.content,
           blogPost.postType,
           blogPost.publishDate,
-          blogPost.userId
+          blogPost.userId,
         );
       } else {
         return new BlogPost();
@@ -105,10 +105,9 @@ export class BlogPostRepository implements IBlogPostRepository {
     }
   }
 
-  async updateBlogPost(id: number, blogPost: any): Promise<BlogPost> {
+  async updateBlogPost(id: number, blogPost: BlogPost): Promise<BlogPost> {
     try {
       const query = `UPDATE blogPosts SET title = ?, imgUrl = ?, content = ?, blogPostType = ?, userId = ? WHERE blogPostId = ?`;
-
       const [result] = await db.execute<ResultSetHeader>(query, [
         blogPost.title,
         blogPost.imgUrl,
@@ -126,12 +125,13 @@ export class BlogPostRepository implements IBlogPostRepository {
           blogPost.content,
           blogPost.postType,
           blogPost.publishDate,
-          blogPost.userId
+          blogPost.userId,
         );
       } else {
         return new BlogPost();
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
       return new BlogPost();
     }
   }

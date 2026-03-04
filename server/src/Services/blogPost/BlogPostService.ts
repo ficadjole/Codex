@@ -20,7 +20,6 @@ export class BlogPostService implements IBlogPostService {
   async addBlogPost(newBlogPost: BlogPost): Promise<BlogPostDetailsDto> {
     const createdBlogPost =
       await this.blogPostRepository.createBlogPost(newBlogPost);
-
     if (createdBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
     // Add entries in the linking table
@@ -42,7 +41,6 @@ export class BlogPostService implements IBlogPostService {
     const existingBlogPost = await this.blogPostRepository.getBlogPostById(
       updatedBlogPost.blogPostId,
     );
-
     if (existingBlogPost.blogPostId === 0) return new BlogPostDetailsDto();
 
     const blogPostUpdated = await this.blogPostRepository.updateBlogPost(
@@ -133,28 +131,22 @@ export class BlogPostService implements IBlogPostService {
     itemIds: number[],
   ): Promise<BlogPostDetailsDto> {
     const author = await this.userRepository.getById(blogPost.userId);
-
-    const items: ItemDto[] = [];
-
-    for (let i = 0; i < itemIds.length; i++) {
-      const item = await this.itemRepository.getById(itemIds[i]);
-
-      if (item.itemId !== 0) {
-        items.push(
-          new ItemDto(
-            item.itemId,
-            item.name,
-            item.price,
-            item.discountPercent,
-            item.discountFrom,
-            item.discountTo,
-            item.type,
-            item.description,
-            item.createdAt,
-          ),
-        );
-      }
-    }
+    const itemsWithImage = await this.itemRepository.getByIds(itemIds);
+    const items: ItemDto[] = itemsWithImage.map(
+      (item) =>
+        new ItemDto(
+          item.itemId,
+          item.name,
+          item.price,
+          item.discountPercent,
+          item.discountFrom,
+          item.discountTo,
+          item.type,
+          item.description,
+          item.createdAt,
+          item.primaryImageUrl,
+        ),
+    );
 
     return new BlogPostDetailsDto(
       blogPost.blogPostId,
