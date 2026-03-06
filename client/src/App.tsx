@@ -9,21 +9,30 @@ import UserOrdersPage from './pages/orders/UserOrdersPage';
 import AdminOrdersPage from './pages/orders/AdminOrdersPage';
 import { orderApi } from "./api_services/orderApi/OrderApiService";
 import OrderDetailsPage from './pages/orders/OrderDetailsPage';
+import AdminAddItem from './pages/admin/AdminAddItem';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminItems from './pages/admin/AdminItems';
+import AdminLayout from './components/layout/AdminLayout';
 
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-      <ScrollToTop />
-       <Layout>
+        <ScrollToTop />
+        <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage authApi={authApi} />} />
-            <Route path="/orders" element={<UserOrdersPage orderApi={orderApi}/>} />
-            <Route path="/admin/orders" element={<AdminOrdersPage orderApi={orderApi}/>}/>
-            <Route path="/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />}/>
-            <Route path="/admin/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />}/>
+            <Route path="/orders" element={<UserOrdersPage orderApi={orderApi} />} />
+            <Route path="/admin/orders" element={<AdminOrdersPage orderApi={orderApi} />} />
+            <Route path="/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />} />
+            <Route path="/admin/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="items" element={<AdminItems />} />
+              <Route path="items/add" element={<AdminAddItem />} />
+            </Route>
           </Routes>
         </Layout>
       </BrowserRouter>

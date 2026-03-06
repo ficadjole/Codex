@@ -1,5 +1,5 @@
 export interface ItemDto {
-    itemId          :   number,
+    itemId          ?:   number,
     name            :   string,
     price           :   number,
     discountPercent ?:  number,

@@ -3,3 +3,19 @@
 body {
   font-family: 'Cinzel', serif;
 }
+
+.input{
+  @apply w-full p-3 rounded-lg bg-[#0F1C1F] border border-[#1F3337];
+}
+
+.card{
+  @apply bg-[#142326] rounded-2xl border border-[#1F3337] shadow-xl p-8;
+}
+
+.btn-primary{
+  @apply w-full bg-[#3F8A4B] hover:bg-[#4fa55c] transition p-3 rounded-lg font-medium;
+}
+
+.btn-secondary{
+  @apply bg-[#1F3337] hover:bg-[#2a444a] transition px-4 py-2 rounded-lg;
+}

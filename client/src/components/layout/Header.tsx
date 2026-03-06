@@ -170,6 +170,16 @@ export default function Header() {
                                         </Link>
                                     )}
 
+
+                                    {isAuthenticated && user?.userRole === "admin" && (
+
+                                        
+                                        <Link to="/admin" className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]">
+                                        Admin
+                                    </Link>
+                                        )
+                                    }
+
                                     <button
                                         onClick={() => {
                                             logout();

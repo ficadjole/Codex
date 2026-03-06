@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { itemApi } from "../api_services/itemApi/ItemApiService";
+import ItemCarousel from "../components/items/ItemCarousel";
+import type { ItemDto } from "../models/item/ItemDto";
 
 export default function Home() {
 const positions = [
@@ -12,6 +15,8 @@ const positions = [
 ];
 
   const [positionIndex, setPositionIndex] = useState(0);
+  const [books, setBooks] = useState<ItemDto[]>([]);
+  const [accessories, setAccessories] = useState<ItemDto[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +24,19 @@ const positions = [
     }, 10000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const items = await itemApi.getAllItems();
+
+      const books = items.filter(i => i.type === "knjiga");
+      const accessories = items.filter(i => i.type === "aksesoar");
+
+      setBooks(books);
+      setAccessories(accessories);
+    };
+    loadItems();
   }, []);
 
   return (
@@ -45,36 +63,21 @@ const positions = [
       </section>
 
       <section className="px-8 py-16">
-        <div className="max-w-6xl mx-auto">
+        <h2 className="text-xl mb-8">KNJIGE</h2>
 
+        <ItemCarousel
+          items={books}
+          visibleCount={4}
+        />
+      </section>
 
-          <div className="flex items-center gap-6">
-            
-            <button className="text-3xl text-[#9DB7AA] hover:text-white transition">
-              {"<"}
-            </button>
+      <section className="px-8 py-16">
+        <h2 className="text-xl mb-8">AKSESOARI</h2>
 
-            <div className="flex gap-6">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <div
-                  key={item}
-                  className="w-44 h-60 
-                            bg-gradient-to-b from-[#1A2E33] to-[#142326] 
-                            rounded-xl 
-                            shadow-[0_10px_25px_rgba(0,0,0,0.5)] 
-                            hover:scale-105 
-                            hover:shadow-[0_15px_35px_rgba(0,0,0,0.7)] 
-                            transition duration-300"
-                />
-              ))}
-            </div>
-
-            <button className="text-3xl text-[#9DB7AA] hover:text-white transition">
-              {">"}
-            </button>
-
-          </div>
-        </div>
+        <ItemCarousel
+          items={accessories}
+          visibleCount={5}
+        />
       </section>
 
     </div>

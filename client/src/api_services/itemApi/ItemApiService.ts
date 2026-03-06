@@ -1,6 +1,9 @@
 import axios from "axios";
 import type { IItemApiService } from "./IItemApiService";
 import type { ItemDto } from "../../models/item/ItemDto";
+import type { BookDetailsDto } from "../../models/item/BookDetailsDto";
+import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto";
+import type { BookCreateDto } from "../../models/item/BookCreateDto";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "item";
 
@@ -54,22 +57,32 @@ export const itemApi: IItemApiService = {
       return {} as ItemDto;
     }
   },
-  async addItem(token: string, item: ItemDto): Promise<boolean> {
+  async addItem(
+    token: string,
+    item: ItemDto | BookCreateDto | AccessoryDetailsDto
+  ): Promise<number> {
+
     try {
-      await axios.post(`${API_URL}/addItem`, item, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return true;
+
+      const res = await axios.post(
+        `${API_URL}/addItem`,
+        item,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      return res.data.data.itemId
+
     } catch (error) {
-      console.error("Error adding item:", error);
-      return false;
+
+      console.error("Error adding item:", error)
+      return 0
+
     }
   },
-
   async updateItem(
     token: string,
     itemId: number,
-    item: ItemDto
+    item: ItemDto | BookDetailsDto | AccessoryDetailsDto
   ): Promise<boolean> {
     try {
       await axios.put(`${API_URL}/updateItem/${itemId}`, item, {
