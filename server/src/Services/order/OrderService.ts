@@ -10,6 +10,7 @@ import { IItemRepository } from "../../Domain/repositories/IItemRepository";
 import { IOrderRepository } from "../../Domain/repositories/IOrderRepository";
 import { IOrderService } from "../../Domain/services/order/IOrderService";
 import { eventBus } from "../../Events/EventBus";
+import { MapToOrderCreatedEvent } from "../../Events/Payloads/MapToOrderCreatedEvent";
 
 export class OrderService implements IOrderService {
   constructor(
@@ -67,7 +68,7 @@ export class OrderService implements IOrderService {
             item.itemId,
             item.quantity,
             price,
-            null,
+            dbItem.discountPercent ?? 0,
           ),
         );
 
@@ -91,10 +92,10 @@ export class OrderService implements IOrderService {
       await connection.commit();
 
       createdOrder.totalPrice = total;
-      eventBus.emit("order.created", {
-        createdOrder,
-        orderItems
-      });
+
+      const data = MapToOrderCreatedEvent(createdOrder, dto, orderItems, total);
+
+      eventBus.emit("order.created", data);
 
       return createdOrder;
     } catch (error) {

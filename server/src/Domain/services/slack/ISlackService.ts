@@ -1,6 +1,5 @@
-import { Item } from "../../models/Item";
-import { Order } from "../../models/Order";
+import { OrderCreatedEvent } from "../../../Events/Payloads/OrderCreatedEvent";
 
 export interface ISlackService {
-  sendNewNotification(order: Order, items: Item[]): Promise<void>;
+  sendNewNotification(data: OrderCreatedEvent): Promise<void>;
 }
