@@ -17,6 +17,7 @@ export class Book extends Item {
     public publicationYear: number = 0,
     public description: string = "",
     public goodreadsLink = "",
+    public pdfUrl: string = "",
     public genres?: number[], //ovo su nam zanrovi knjige koji ce se prolsedjivati zajedno sa njom
   ) {
     super(

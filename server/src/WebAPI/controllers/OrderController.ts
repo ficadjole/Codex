@@ -70,10 +70,11 @@ export class OrderController {
                 return res
                     .status(400)
                     .json({ success: false, message: "Failed to create order." });
+                    
+            
+            
 
-            res
-                .status(201)
-                .json({ success: true, message: "Order created successfully." });
+            res.status(201).json({ success: true, message: "Order created successfully." });
         } catch {
             res.status(500).json({ success: false, message: "Server error." });
         }

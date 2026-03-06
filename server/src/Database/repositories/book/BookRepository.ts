@@ -7,7 +7,7 @@ export class BookRepository implements IBookRepository {
   async create(book: Book): Promise<Book> {
     try {
       const query =
-        "INSERT INTO books (itemId,isbn,author,nmbrOfPages,cover,publicationYear,goodreadsLink) VALUES (?,?,?,?,?,?,?)";
+        "INSERT INTO books (itemId,isbn,author,nmbrOfPages,cover,publicationYear,goodreadsLink,pdfUrl) VALUES (?,?,?,?,?,?,?,?)";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         book.itemId,
@@ -17,6 +17,7 @@ export class BookRepository implements IBookRepository {
         book.cover,
         book.publicationYear,
         book.goodreadsLink,
+        book.pdfUrl,
       ]);
 
       if (result.affectedRows > 0) {
@@ -35,6 +36,7 @@ export class BookRepository implements IBookRepository {
           book.publicationYear,
           book.description,
           book.goodreadsLink,
+          book.pdfUrl,
         );
       } else {
         return new Book();
@@ -92,6 +94,7 @@ export class BookRepository implements IBookRepository {
           book.publicationYear,
           book.description,
           book.goodreadsLink,
+          book.pdfUrl,
         );
       } else {
         return new Book();
@@ -124,6 +127,7 @@ export class BookRepository implements IBookRepository {
             book.publicationYear,
             book.description,
             book.goodreadsLink,
+            book.pdfUrl,
           ),
       );
     } catch {

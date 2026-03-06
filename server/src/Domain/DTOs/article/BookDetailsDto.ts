@@ -13,6 +13,7 @@ export class BookDetailsDto {
     public pages: number = 0,
     public description: string = "",
     public goodreadsLink: string = "",
+    public pdfUrl: string = "",
     public cover: string = "",
     public publicationDate: number = 0,
     public genres: GenreDto[] = [],

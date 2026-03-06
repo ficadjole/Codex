@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-
+import "./Listeners/OrderListener";
 // Auth
 import { IAuthService } from "./Domain/services/auth/IAuthService";
 import { AuthService } from "./Services/auth/AuthService";

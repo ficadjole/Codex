@@ -3,17 +3,19 @@ import { ItemRepository } from "../../Database/repositories/item/ItemRepository"
 import { CreateOrderDto } from "../../Domain/DTOs/order/CreateOrderDto";
 import { OrderDetailsDto } from "../../Domain/DTOs/order/OrderDetailsDto";
 import { OrderStatus } from "../../Domain/enums/OrderStatus";
+import { Item } from "../../Domain/models/Item";
 import { Order } from "../../Domain/models/Order";
 import { OrderItem } from "../../Domain/models/OrderItem";
 import { IItemRepository } from "../../Domain/repositories/IItemRepository";
 import { IOrderRepository } from "../../Domain/repositories/IOrderRepository";
 import { IOrderService } from "../../Domain/services/order/IOrderService";
+import { eventBus } from "../../Events/EventBus";
 
 export class OrderService implements IOrderService {
   constructor(
     private orderRepository: IOrderRepository,
     private itemRepository: IItemRepository,
-  ) { }
+  ) {}
 
   async createOrder(userId: number, dto: CreateOrderDto): Promise<Order> {
     const connection = await db.getConnection();
@@ -45,6 +47,8 @@ export class OrderService implements IOrderService {
 
       let total = 0;
 
+      let orderItems: Item[] = [];
+
       //dodajemo stavke porudzbine
       for (const item of dto.items) {
         const dbItem = await this.itemRepository.getById(item.itemId);
@@ -67,6 +71,8 @@ export class OrderService implements IOrderService {
           ),
         );
 
+        orderItems.push(dbItem);
+
         if (!success) {
           throw new Error("Failed to insert order item");
         }
@@ -85,6 +91,10 @@ export class OrderService implements IOrderService {
       await connection.commit();
 
       createdOrder.totalPrice = total;
+      eventBus.emit("order.created", {
+        createdOrder,
+        orderItems
+      });
 
       return createdOrder;
     } catch (error) {
@@ -129,7 +139,7 @@ export class OrderService implements IOrderService {
 
     return {
       order,
-      items
+      items,
     };
   }
 }
