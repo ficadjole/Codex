@@ -86,12 +86,6 @@ export default function Header() {
                     <Link to="/news" className="hover:text-[#3F8A4B] transition">
                         Novosti
                     </Link>
-
-                    {isAuthenticated && user?.userRole === "admin" && (
-                        <Link to="/admin/orders" className="hover:text-[#3F8A4B] transition">
-                            Narudžbine
-                        </Link>
-                    )}
                 </nav>
 
                 {/* RIGHT SIDE */}
@@ -175,7 +169,7 @@ export default function Header() {
 
                                         
                                         <Link to="/admin" className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]">
-                                        Admin
+                                        Admin panel
                                     </Link>
                                         )
                                     }
@@ -237,15 +231,6 @@ export default function Header() {
                         <Link to="/news" onClick={() => setMobileOpen(false)}>
                             Novosti
                         </Link>
-
-                        {isAuthenticated && user?.userRole === "admin" && (
-                            <Link
-                                to="/admin/orders"
-                                onClick={() => setMobileOpen(false)}
-                            >
-                                Narudžbine
-                            </Link>
-                        )}
                     </div>
                 </div>
             </div>
