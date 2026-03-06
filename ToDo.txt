@@ -1,1 +1,4 @@
-Proveri da li ti treba itemId kada dodajes knjigu ili je suvisan
+Dodati slike i pdf na R2 CloudFlare
+Dodati PDF pregled knjige
+Dodati Resend slanje mejlova kupcu prilikom kupovine artikla ili prijave na aplikaciju
+Dodati Slack slanje notifikacije o kupovini

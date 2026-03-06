@@ -241,7 +241,8 @@ export class ItemService implements IItemService {
       book.nmbrOfPages,
       book.description,
       book.goodreadsLink,
-      new Date(book.publicationYear, 0, 1),
+      book.cover,
+      book.publicationYear,
       genresDto,
       imagesUrls,
     );
