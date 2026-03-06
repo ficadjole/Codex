@@ -241,6 +241,7 @@ export class ItemService implements IItemService {
       book.nmbrOfPages,
       book.description,
       book.goodreadsLink,
+      book.cover,
       book.publicationYear,
       genresDto,
       imagesUrls,
