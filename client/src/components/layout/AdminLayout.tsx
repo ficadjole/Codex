@@ -1,38 +1,58 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 export default function AdminLayout() {
 
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `px-3 py-2 rounded-md transition
+     hover:bg-[#1F3337] hover:text-[#9DB7AA]
+     ${isActive ? "bg-[#1F3337] text-[#9DB7AA]" : ""}`;
+
   return (
 
-    <div className="flex min-h-screen bg-[#0E1A1E] text-white">
+    <div className="h-screen text-white flex items-center justify-center">
 
-      <aside className="w-60 bg-[#152529] p-6">
+      {/* GLAVNI ADMIN PANEL */}
+      <div className="w-[1400px] h-[90vh] bg-[#0F1C1F] rounded-xl border border-[#1F3337] flex overflow-hidden">
 
-        <h2 className="text-xl font-bold mb-10">
-          Admin Panel
-        </h2>
+        {/* SIDEBAR */}
+        <aside className="w-64 bg-[#152529] p-6 flex flex-col">
 
-        <nav className="flex flex-col gap-4">
+          <h2 className="text-xl font-bold mb-6">
+            Admin Panel
+          </h2>
 
-          <Link to="/admin">
-            Dashboard
-          </Link>
+          <hr className="border-[#1F3A40] mb-6" />
 
-          <Link to="/admin/items">
-            Items
-          </Link>
+          <nav className="flex flex-col gap-2 text-sm">
 
-          <Link to="/admin/orders">
-            Orders
-          </Link>
+            <NavLink to="/admin/orders" className={linkClass}>
+              Narudžbine
+            </NavLink>
 
-        </nav>
+            <NavLink to="/admin/items" end className={linkClass}>
+              Artikli
+            </NavLink>
 
-      </aside>
+            <NavLink to="/admin/items/add" className={linkClass}>
+              Dodaj artikal
+            </NavLink>
 
-      <main className="flex-1 p-10">
-        <Outlet />
-      </main>
+            <NavLink to="/admin/genres" className={linkClass}>
+              Žanrovi
+            </NavLink>
+
+          </nav>
+
+        </aside>
+
+        {/* CONTENT */}
+        <main className="flex-1 overflow-y-auto p-8">
+
+          <Outlet />
+
+        </main>
+
+      </div>
 
     </div>
 
