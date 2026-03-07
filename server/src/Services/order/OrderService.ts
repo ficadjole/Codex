@@ -3,6 +3,7 @@ import { ItemRepository } from "../../Database/repositories/item/ItemRepository"
 import { CreateOrderDto } from "../../Domain/DTOs/order/CreateOrderDto";
 import { OrderDetailsDto } from "../../Domain/DTOs/order/OrderDetailsDto";
 import { OrderStatus } from "../../Domain/enums/OrderStatus";
+import { getFinalPrice } from "../../Domain/helpers/DiscountHelpers";
 import { Item } from "../../Domain/models/Item";
 import { Order } from "../../Domain/models/Order";
 import { OrderItem } from "../../Domain/models/OrderItem";
@@ -57,6 +58,8 @@ export class OrderService implements IOrderService {
         if (!dbItem || dbItem.itemId === null) {
           throw new Error("Item does not exist");
         }
+
+        dbItem.price = getFinalPrice(dbItem);
 
         const price = dbItem.price;
 
