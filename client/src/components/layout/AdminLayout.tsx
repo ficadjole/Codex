@@ -9,10 +9,10 @@ export default function AdminLayout() {
 
   return (
 
-    <div className="h-screen text-white flex items-center justify-center">
+    <div className="min-h-screen text-white flex justify-center py-10">
 
       {/* GLAVNI ADMIN PANEL */}
-      <div className="w-[1400px] h-[90vh] bg-[#0F1C1F] rounded-xl border border-[#1F3337] flex overflow-hidden">
+      <div className="w-[1400px] bg-[#0F1C1F] rounded-xl border border-[#1F3337] flex ">
 
         {/* SIDEBAR */}
         <aside className="w-64 bg-[#152529] p-6 flex flex-col">
@@ -46,7 +46,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* CONTENT */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 p-8">
 
           <Outlet />
 

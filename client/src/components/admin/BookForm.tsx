@@ -1,12 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ImageUploader from "./ImageUploader"
-import { itemApi } from "../../api_services/itemApi/ItemApiService"
 import { useAuth } from "../../hooks/auth/useAuthHook"
 import axios from "axios"
 import type { BookCreateDto } from "../../models/item/BookCreateDto"
 import { itemImageApi } from "../../api_services/itemImageApi/ItemImageApiService"
+import type { GenreDto } from "../../models/genre/GenreDto"
+import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
 
-export default function BookForm() {
+export default function BookForm({ genreApi, itemApi }: AdminApiProps) {
 
   const { token } = useAuth()
 
@@ -22,6 +23,7 @@ export default function BookForm() {
   const [discountPercent, setDiscountPercent] = useState<number>(0)
   const [discountFrom, setDiscountFrom] = useState<string>("")
   const [discountTo, setDiscountTo] = useState<string>("")
+  const [genres, setGenres] = useState<GenreDto[]>([]);
 
   const [images, setImages] = useState<File[]>([])
   const [primary, setPrimary] = useState<number>(0)
@@ -106,6 +108,28 @@ export default function BookForm() {
 
     }
   }
+
+  useEffect(() => {
+    async function loadGenres() {
+      const data = await genreApi.getAll()
+      setGenres(data)
+    }
+    loadGenres()
+  }, [])
+
+  function toggleGenre(id: number) {
+    setGenreIds(prev => {
+
+      if (prev.includes(id)) {
+        return prev.filter(g => g !== id)
+      }
+
+      return [...prev, id]
+
+    })
+
+  }
+
   return (
     <div className="grid lg:grid-cols-3 gap-10">
 
@@ -173,6 +197,39 @@ export default function BookForm() {
           className="input"
           onChange={e => setPublicationDate(Number(e.target.value))}
         />
+
+        <div className="space-y-3">
+
+          <p className="font-medium">
+            Žanrovi
+          </p>
+
+          <div className="grid grid-cols-2 gap-2">
+
+            {genres.map(g => (
+
+              <label
+                key={g.genreId}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+
+                <input
+                  type="checkbox"
+                  checked={genreIds.includes(g.genreId)}
+                  onChange={() => toggleGenre(g.genreId)}
+                />
+
+                <span>
+                  {g.name}
+                </span>
+
+              </label>
+
+            ))}
+
+          </div>
+
+        </div>
 
       </div>
 

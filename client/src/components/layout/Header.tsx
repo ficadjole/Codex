@@ -168,7 +168,7 @@ export default function Header() {
                                     {isAuthenticated && user?.userRole === "admin" && (
 
                                         
-                                        <Link to="/admin" className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]">
+                                        <Link to="/admin/orders" className="block px-4 py-2 text-sm text-[#9DB7AA] hover:bg-[#1F3337]">
                                         Admin panel
                                     </Link>
                                         )

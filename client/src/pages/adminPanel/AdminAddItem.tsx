@@ -1,8 +1,10 @@
 import { useState } from "react"
 import BookForm from "../../components/admin/BookForm"
 import AccessoryForm from "../../components/admin/AccessoryForm"
+import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
 
-export default function AdminAddItem(){
+
+export default function AdminAddItem({genreApi, itemApi} : AdminApiProps){
 
 const [type,setType] = useState("knjiga")
 
@@ -29,7 +31,7 @@ className="bg-[#142326] border border-[#1F3337] rounded-lg p-3"
 
 </div>
 
-{type==="knjiga" && <BookForm/>}
+{type==="knjiga" && <BookForm genreApi={genreApi} itemApi={itemApi}/>}
 {type==="aksesoar" && <AccessoryForm/>}
 
 </div>
