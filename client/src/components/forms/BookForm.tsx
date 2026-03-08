@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import ImageUploader from "../bookForm/ImageUploader"
+import ImageUploader from "./ImageUploader"
 import { useAuth } from "../../hooks/auth/useAuthHook"
 import type { BookCreateDto } from "../../models/item/BookCreateDto"
 import type { GenreDto } from "../../models/genre/GenreDto"
 import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
 import PdfUploader from "../bookForm/PdfUploader"
 import BookDetailsCard from "../bookForm/BookDetailsCard"
-import DiscountCard from "../bookForm/DiscountCard"
+import DiscountCard from "./DiscountCard"
 
 export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiProps) {
   const { token } = useAuth()
@@ -56,7 +56,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
         discountTo: discountTo ?? null,
       }
 
-      const id = await itemApi.addItem(token, book)
+      const id = await itemApi.addBook(token, book)
 
       if (!id) {
         alert("Greška pri dodavanju knjige")

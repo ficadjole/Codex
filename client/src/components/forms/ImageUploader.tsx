@@ -52,7 +52,7 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
         Klikni na sliku da je postaviš kao glavnu (primary).
       </p>
 
-      <label className="btn-primary cursor-pointer text-center block">
+      <label className="btn-secondary cursor-pointer text-center block">
         Dodaj slike
         <input
           type="file"

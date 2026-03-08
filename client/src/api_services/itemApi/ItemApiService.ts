@@ -4,6 +4,7 @@ import type { ItemDto } from "../../models/item/ItemDto";
 import type { BookDetailsDto } from "../../models/item/BookDetailsDto";
 import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto";
 import type { BookCreateDto } from "../../models/item/BookCreateDto";
+import type { AccessoryCreateDto } from "../../models/item/AccessoryCreateDto";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "item";
 
@@ -57,7 +58,7 @@ export const itemApi: IItemApiService = {
       return {} as AccessoryDetailsDto;
     }
   },
-  async addItem(
+  async addBook(
     token: string,
     book: BookCreateDto
   ): Promise<number> {
@@ -78,11 +79,32 @@ export const itemApi: IItemApiService = {
       return res.data?.data?.itemId ?? 0
 
     } catch (error) {
-
       console.error("Error adding item:", error)
       return 0
-
     }
+  },
+  async addAccessory(
+    token: string,
+    accessory: AccessoryCreateDto
+  ): Promise<number> {
+    try {
+      const payload = {
+        ...accessory,
+        type: "aksesoar"
+      }
+      const res = await axios.post(
+        `${API_URL}/addItem`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      return res.data?.data?.itemId ?? 0
+      
+    } catch (error) {
+      console.error("Error adding accessory:", error)
+      return 0
+    }
+
   },
   async updateItem(
     token: string,

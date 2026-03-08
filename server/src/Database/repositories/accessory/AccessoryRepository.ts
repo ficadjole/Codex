@@ -34,7 +34,7 @@ export class AccessoryRepository implements IAccessoryRepository {
   }
   async update(accesory: Accessories): Promise<Accessories> {
     try {
-      const query = "UPDATE accessories SET conent = ? WHERE itemId = ?";
+      const query = "UPDATE accessories SET content = ? WHERE itemId = ?";
 
       const [result] = await db.execute<ResultSetHeader>(query, [
         accesory.content,

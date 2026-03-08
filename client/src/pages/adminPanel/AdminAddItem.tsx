@@ -33,7 +33,7 @@ className="bg-[#142326] border border-[#1F3337] rounded-lg p-3"
 </div>
 
 {type==="knjiga" && <BookForm genreApi={genreApi} itemApi={itemApi} itemImageApi={itemImageApi}/>}
-{type==="aksesoar" && <AccessoryForm/>}
+{type==="aksesoar" && <AccessoryForm itemApi={itemApi} itemImageApi={itemImageApi}/>}
 
 </div>
 
