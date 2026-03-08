@@ -38,39 +38,44 @@ export const itemApi: IItemApiService = {
       return [];
     }
   },
-  async getBook(itemId: number): Promise<ItemDto> {
+  async getBook(itemId: number): Promise<BookDetailsDto> {
     try {
       const res = await axios.get(`${API_URL}/getBook/${itemId}`);
       return res.data.data;
     } catch (error) {
       console.error("Error fetching book:", error);
-      return {} as ItemDto;
+      return {} as BookDetailsDto;
     }
   },
 
-  async getAccessory(itemId: number): Promise<ItemDto> {
+  async getAccessory(itemId: number): Promise<AccessoryDetailsDto> {
     try {
       const res = await axios.get(`${API_URL}/getAccessory/${itemId}`);
       return res.data.data;
     } catch (error) {
       console.error("Error fetching accessory:", error);
-      return {} as ItemDto;
+      return {} as AccessoryDetailsDto;
     }
   },
   async addItem(
     token: string,
-    item: ItemDto | BookCreateDto | AccessoryDetailsDto
+    book: BookCreateDto
   ): Promise<number> {
 
     try {
 
+      const payload = {
+        ...book,
+        type: "knjiga"
+      }
+
       const res = await axios.post(
         `${API_URL}/addItem`,
-        item,
+        payload,
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
-      return res.data.data.itemId
+      return res.data?.data?.itemId ?? 0
 
     } catch (error) {
 

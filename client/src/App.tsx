@@ -15,6 +15,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import GenreAdminPanel from './pages/adminPanel/GenreAdminPanel';
 import { genreApi } from './api_services/genreApi/GenreApiSevice';
 import { itemApi } from './api_services/itemApi/ItemApiService';
+import { itemImageApi } from './api_services/itemImageApi/ItemImageApiService';
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="items" element={<AdminItems />} />
               <Route path="/admin/orders" element={<AdminOrdersPage orderApi={orderApi} />} />
-              <Route path="items/add" element={<AdminAddItem genreApi={genreApi} itemApi={itemApi} />} />
+              <Route path="items/add" element={<AdminAddItem genreApi={genreApi} itemApi={itemApi} itemImageApi={itemImageApi}/>} />
               <Route path="orders" element={<AdminOrdersPage orderApi={orderApi} />} />
               <Route path="genres" element={<GenreAdminPanel genreApi={genreApi} />} />
             </Route>

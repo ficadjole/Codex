@@ -1,7 +1,5 @@
 export interface ItemImageCreateDto {
-
-  imageUrl: string
-  isPrimary: boolean
-  sortOrder: number
-
+  imageUrl      : string
+  isPrimary     : boolean
+  sortOrder     : number
 }

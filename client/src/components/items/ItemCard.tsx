@@ -1,11 +1,6 @@
-import type { ItemDto } from "../../models/item/ItemDto";
+import type { ItemCardProps } from "../../types/props/item_props/ItemCardProps";
 
-interface Props {
-  item: ItemDto;
-  author?: string;
-}
-
-export default function ItemCard({ item, author }: Props) {
+export default function ItemCard({ item, author }: ItemCardProps) {
   return (
     <div
       className="

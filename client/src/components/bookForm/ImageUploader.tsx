@@ -1,10 +1,7 @@
 import { useState } from "react"
+import type { ImageUploaderProps } from "../../types/props/admin_add_item_props/ImageUploaderProps"
 
-type Props = {
-  onChange: (files: File[], primaryIndex: number | null) => void
-}
-
-export default function ImageUploader({ onChange }: Props) {
+export default function ImageUploader({ onChange }: ImageUploaderProps) {
 
   const [images, setImages] = useState<File[]>([])
   const [primary, setPrimary] = useState<number | null>(null)
@@ -28,10 +25,8 @@ export default function ImageUploader({ onChange }: Props) {
   }
 
   function selectPrimary(index: number) {
-
     setPrimary(index)
     onChange(images, index)
-
   }
 
   function removeImage(index: number) {
@@ -45,10 +40,8 @@ export default function ImageUploader({ onChange }: Props) {
     if (primary === index) {
       newPrimary = null
     }
-
     setPrimary(newPrimary)
     onChange(newImages, newPrimary)
-
   }
 
   return (

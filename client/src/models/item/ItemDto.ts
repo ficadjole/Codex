@@ -1,3 +1,5 @@
+export type ItemType = "knjiga" | "aksesoar"
+
 export interface ItemDto {
     itemId          ?:   number,
     name            :   string,
@@ -5,7 +7,7 @@ export interface ItemDto {
     discountPercent ?:  number,
     discountFrom    ?:  string,
     discountTo      ?:  string,
-    type            :   string,
+    type            :   ItemType,
     description     :   string,
     createdAt       ?:  string,
     primaryImageUrl :   string

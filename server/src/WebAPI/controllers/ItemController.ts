@@ -45,8 +45,10 @@ export class ItemController {
 
   private async addItem(req: Request, res: Response) {
     try {
-      const item = req.body;
-
+      const item = {
+        ...req.body,
+        userId: req.user?.id
+      }
       const result = await this.service.addItem(item);
       if (result.itemId === 0)
         return res
@@ -54,7 +56,7 @@ export class ItemController {
           .json({ success: false, message: "Failed to add item." });
       res
         .status(201)
-        .json({ success: true, message: "Item added successfully." });
+        .json({ success: true, message: "Item added successfully.", data: result });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }

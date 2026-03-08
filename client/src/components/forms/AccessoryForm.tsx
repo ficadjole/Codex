@@ -1,5 +1,5 @@
 import { useState } from "react"
-import ImageUploader from "./ImageUploader"
+import ImageUploader from "../bookForm/ImageUploader"
 
 export default function AccessoryForm(){
 

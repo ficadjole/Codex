@@ -1,5 +1,6 @@
 import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto";
 import type { BookCreateDto } from "../../models/item/BookCreateDto";
+import type { BookDetailsDto } from "../../models/item/BookDetailsDto";
 import type { ItemDto } from "../../models/item/ItemDto";
 
 export interface IItemApiService {
@@ -7,11 +8,11 @@ export interface IItemApiService {
   getAllItems(): Promise<ItemDto[]>;
   getItemById(itemId: number): Promise<ItemDto>;
   getItemsByType(type: string): Promise<ItemDto[]>;
-  getBook(itemId: number): Promise<ItemDto>;
-  getAccessory(itemId: number): Promise<ItemDto>;
+  getBook(itemId: number): Promise<BookDetailsDto>;
+  getAccessory(itemId: number): Promise<AccessoryDetailsDto>;
 
   // ADMIN (requires token)
-  addItem(token: string, item: ItemDto | BookCreateDto | AccessoryDetailsDto): Promise<number>;
+  addItem(token: string, book: BookCreateDto): Promise<number>;
   updateItem(token: string, itemId: number, item: ItemDto): Promise<boolean>;
   deleteItem(token: string, itemId: number): Promise<boolean>;
 

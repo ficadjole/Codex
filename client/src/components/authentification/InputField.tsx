@@ -1,9 +1,4 @@
-type InputFieldProps = {
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: string;
-};
+import type { InputFieldProps } from "../../types/props/auth_form_props/InputFieldProps";
 
 export default function InputField({
   placeholder,

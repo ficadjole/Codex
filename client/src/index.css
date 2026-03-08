@@ -5,7 +5,8 @@ body {
 }
 
 .input{
-  @apply w-full p-3 rounded-lg bg-[#0F1C1F] border border-[#1F3337];
+  @apply w-full p-3 rounded-lg bg-[#0F1C1F] border border-[#1F3337] 
+  focus:outline-none focus:ring-2 focus:ring-[#3F8A4B];
 }
 
 .card{
@@ -13,7 +14,7 @@ body {
 }
 
 .btn-primary{
-  @apply w-full bg-[#3F8A4B] hover:bg-[#4fa55c] transition p-3 rounded-lg font-medium;
+  @apply w-full bg-[#3F8A4B] hover:bg-[#4fa55c] transition px-4 py-3 rounded-lg font-medium cursor-pointer disabled:opacity-50;
 }
 
 .btn-secondary{

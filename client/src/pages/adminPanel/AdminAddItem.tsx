@@ -1,7 +1,8 @@
 import { useState } from "react"
-import BookForm from "../../components/admin/BookForm"
-import AccessoryForm from "../../components/admin/AccessoryForm"
+import BookForm from "../../components/forms/BookForm"
+import AccessoryForm from "../../components/forms/AccessoryForm"
 import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
+import { itemImageApi } from "../../api_services/itemImageApi/ItemImageApiService"
 
 
 export default function AdminAddItem({genreApi, itemApi} : AdminApiProps){
@@ -31,7 +32,7 @@ className="bg-[#142326] border border-[#1F3337] rounded-lg p-3"
 
 </div>
 
-{type==="knjiga" && <BookForm genreApi={genreApi} itemApi={itemApi}/>}
+{type==="knjiga" && <BookForm genreApi={genreApi} itemApi={itemApi} itemImageApi={itemImageApi}/>}
 {type==="aksesoar" && <AccessoryForm/>}
 
 </div>

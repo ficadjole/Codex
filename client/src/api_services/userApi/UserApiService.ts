@@ -4,7 +4,6 @@ import type { IUsersApiService } from "./IUserApiService";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "user";
 
-
 export const usersApi: IUsersApiService = {
     async getUserById(token: string, userId: number): Promise<UserDto> {
         try{

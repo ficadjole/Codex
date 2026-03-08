@@ -1,13 +1,8 @@
 import { useState } from "react";
-import type { ItemDto } from "../../models/item/ItemDto";
 import ItemCard from "./ItemCard";
+import type { ItemCarouselProps } from "../../types/props/item_props/ItemCarouselProps";
 
-interface Props {
-  items: ItemDto[];
-  visibleCount: number;
-}
-
-export default function ItemCarousel({ items, visibleCount }: Props) {
+export default function ItemCarousel({ items, visibleCount }: ItemCarouselProps) {
 
   const [index, setIndex] = useState(0);
 

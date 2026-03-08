@@ -15,7 +15,7 @@ export class BookDetailsDto {
     public goodreadsLink: string = "",
     public pdfUrl: string = "",
     public cover: string = "",
-    public publicationDate: number = 0,
+    public publicationYear: number = 0,
     public genres: GenreDto[] = [],
     public images: string[] = [],
   ) {}

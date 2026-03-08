@@ -1,4 +1,13 @@
+Fiki
 Dodati slike i pdf na R2 CloudFlare
 Dodati PDF pregled knjige
 Dodati Resend slanje mejlova kupcu prilikom kupovine artikla ili prijave na aplikaciju
 Dodati Slack slanje notifikacije o kupovini
+
+Kaca
+Dodati validaciju za BookForm
+Uraditi AccessoryForm, dodati AccessoryCreateDto
+Takodje uraditi validaciju formi
+Uraditi Book details stranicu (kad se klikne na detaljnije u kartici)
+dodati na kartice za popust ikonicu ili sta vec
+Uraditi responsive 

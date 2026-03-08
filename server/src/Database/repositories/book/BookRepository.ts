@@ -106,7 +106,7 @@ export class BookRepository implements IBookRepository {
   async getByAuthor(autor: string): Promise<Book[]> {
     try {
       const query =
-        "SELECT * FROM knjiga WHERE autor = ? ORDER BY godina_izdanja DESC";
+        "SELECT * FROM books WHERE autor = ? ORDER BY godina_izdanja DESC";
 
       const [rows] = await db.execute<RowDataPacket[]>(query, [autor]);
 

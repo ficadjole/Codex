@@ -3,10 +3,11 @@ import type { ItemDto } from "./ItemDto"
 export interface BookDetailsDto extends ItemDto {
   author            : string
   isbn              : string
-  pages             : number
+  nmbrOfPages       : number
   goodreadsLink     : string
+  publicationYear   : number
   cover             : "meke" | "tvrde"
-  publicationDate   : number
-  genreIds          : number[]
+  pdfUrl            ?: string
+  genres            : number[]
   images            : string[]
 }

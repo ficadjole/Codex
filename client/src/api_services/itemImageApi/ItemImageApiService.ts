@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { IItemImageApiService } from "./IItemImageApiService";
+import type { ItemImageCreateDto } from "../../models/item/ItemImageCreateDto";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "itemImages";
 
@@ -7,18 +8,12 @@ export const itemImageApi: IItemImageApiService = {
   async addImage(
     token: string,
     itemId: number,
-    imageUrl: string,
-    isPrimary?: boolean,
-    sortOrder?: number
+    image: ItemImageCreateDto
   ): Promise<boolean> {
     try {
       const res = await axios.post(
         `${API_URL}/items/${itemId}/images`,
-        {
-          imageUrl,
-          isPrimary,
-          sortOrder,
-        },
+        image,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

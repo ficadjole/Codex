@@ -40,6 +40,7 @@ CREATE TABLE books (
     cover ENUM('meke', 'tvrde'),
     publicationYear YEAR,
     goodreadsLink VARCHAR(255),
+    pdfUrl VARCHAR(255),
     FOREIGN KEY (itemId) REFERENCES items(itemId) ON DELETE CASCADE
 );
 
