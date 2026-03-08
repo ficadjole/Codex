@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth_context/AuthContext';
-import HomePage from './pages/HomePage';
 import { authApi } from './api_services/authApi/AuthAPIService';
 import Layout from './components/layout/Layout';
-import LoginPage from './pages/LoginPage';
 import ScrollToTop from './components/layout/ScrollToTop';
 import UserOrdersPage from './pages/orders/UserOrdersPage';
 import AdminOrdersPage from './pages/adminPanel/AdminOrdersPage';
@@ -16,7 +14,8 @@ import GenreAdminPanel from './pages/adminPanel/GenreAdminPanel';
 import { genreApi } from './api_services/genreApi/GenreApiSevice';
 import { itemApi } from './api_services/itemApi/ItemApiService';
 import { itemImageApi } from './api_services/itemImageApi/ItemImageApiService';
-
+import HomePage from './pages/home/HomePage';
+import LoginPage from './pages/login/LoginPage';
 
 function App() {
   return (
@@ -25,7 +24,7 @@ function App() {
         <ScrollToTop />
         <Layout>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage itemApi={itemApi}/>} />
             <Route path="/login" element={<LoginPage authApi={authApi} />} />
             <Route path="/orders" element={<UserOrdersPage orderApi={orderApi} />} />
             <Route path="/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />} />

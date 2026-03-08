@@ -1,12 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import AuthForm from "../components/authentification/AuthForm";
-import type { IAuthAPIService } from "../api_services/authApi/IAuthAPIService";
-import AuthContext from "../contexts/auth_context/AuthContext";
-
-interface LoginPageProps {
-  authApi: IAuthAPIService;
-}
+import type { LoginPageProps } from "../../types/props/auth_form_props/LoginPageProps";
+import AuthContext from "../../contexts/auth_context/AuthContext";
+import AuthForm from "../../components/authentification/AuthForm";
 
 export default function LoginPage({ authApi }: LoginPageProps) {
   const navigate = useNavigate();

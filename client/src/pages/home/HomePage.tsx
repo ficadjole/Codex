@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { itemApi } from "../api_services/itemApi/ItemApiService";
-import ItemCarousel from "../components/items/ItemCarousel";
-import type { ItemDto } from "../models/item/ItemDto";
+import type { HomeProps } from "../../types/props/home_props/HomeProps";
+import type { ItemDto } from "../../models/item/ItemDto";
+import ItemCarousel from "../../components/items/ItemCarousel";
 
-export default function Home() {
+export default function Home({itemApi} : HomeProps) {
 const positions = [
   "object-[20%_5%]",    
   "object-[80%_10%]",   
