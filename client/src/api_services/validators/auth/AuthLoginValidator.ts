@@ -1,9 +1,9 @@
-import type { ValidationReusult } from "../../../types/validation/ValidationResult";
+import type { ValidationResult } from "../../../types/validation/ValidationResult";
 
 export function validateAuthLoginData(
   username?: string,
   password?: string
-): ValidationReusult {
+): ValidationResult {
   let message: string = "";
 
   // Username validation

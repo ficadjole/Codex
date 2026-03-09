@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { useAuth } from "../../hooks/auth/useAuthHook"
-import type { AccessoryCreateDto } from "../../models/item/AccessoryCreateDto"
 import ImageUploader from "./ImageUploader"
 import DiscountCard from "./DiscountCard"
 import AccessoryDetailsCard from "../accessoryForm/AccessoryDetailsCard"
 import type { AccessoryFormProps } from "../../types/props/admin_add_item_props/AccessoryFormProps"
+import { validateAccessoryCreateData } from "../../api_services/validators/accessoryForm/AccessoryCreateValidator"
+import type { AccessoryValidationErrors } from "../../types/validation/accessory/AccessoryValidationErrors"
+import { mapToAccessoryDto } from "../../helpers/accessoryMapper"
 
 export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormProps) {
 
@@ -12,7 +14,7 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
 
   const [itemId, setItemId] = useState<number | null>(null)
   const [name, setName] = useState("")
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState<number | null>(null)
   const [description, setDescription] = useState("")
   const [content, setContent] = useState("")
   const [discountPercent, setDiscountPercent] = useState<number | null>(null)
@@ -22,19 +24,38 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
   const [images, setImages] = useState<File[]>([])
   const [primary, setPrimary] = useState<number>(0)
 
+  const [errors, setErrors] = useState<AccessoryValidationErrors>({})
+
   async function handleSubmit() {
 
-    if (!token) return
-
-    const accessory: AccessoryCreateDto = {
+    const validation = validateAccessoryCreateData(
       name,
       price,
       description,
       content,
-      discountPercent: discountPercent ?? null,
-      discountFrom: discountFrom ?? null,
-      discountTo: discountTo ?? null
+      discountPercent,
+      discountFrom,
+      discountTo
+    );
+
+    if (!validation.success) {
+      setErrors(validation.errors)
+      return
     }
+
+    setErrors({})
+
+    if (!token) return
+
+    const accessory = mapToAccessoryDto({
+      name,
+      price,
+      description,
+      content,
+      discountPercent,
+      discountFrom,
+      discountTo
+    })
 
     const id = await itemApi.addAccessory(token, accessory)
 
@@ -85,6 +106,7 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
         setDescription={setDescription}
         content={content}
         setContent={setContent}
+        errors={errors}
       />
 
       <div className="space-y-8">
@@ -143,6 +165,7 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
           setDiscountFrom={setDiscountFrom}
           discountTo={discountTo}
           setDiscountTo={setDiscountTo}
+          errors={errors}
         />
 
         <button

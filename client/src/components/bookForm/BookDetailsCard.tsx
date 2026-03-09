@@ -21,7 +21,8 @@ export default function BookDetailsCard({
     setCover,
     genres,
     genreIds,
-    toggleGenre
+    toggleGenre,
+    errors
 }: BookDetailsCardProps) {
 
     return (
@@ -32,73 +33,156 @@ export default function BookDetailsCard({
                 Informacije o knjizi
             </h2>
 
-            <input
-                placeholder="Naziv knjige"
-                className="input"
-                value={name}
-                onChange={e => setName(e.target.value)}
-            />
+            <div className="space-y-1">
+                <label className="text-sm">
+                    Naziv knjige <span className="text-red-500">*</span>
+                </label>
+                <input
+                    className={`input ${errors.name ? "border-red-500" : ""}`}
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                />
 
-            <input
-                placeholder="Autor"
-                className="input"
-                value={author}
-                onChange={e => setAuthor(e.target.value)}
-            />
+                {errors.name && (
+                    <p className="text-red-500 text-xs">
+                        {errors.name}
+                    </p>
+                )}
+            </div>
 
-            <input
-                placeholder="ISBN broj"
-                className="input"
-                value={isbn}
-                onChange={e => setIsbn(e.target.value)}
-            />
+            <div className="space-y-1">
+                <label className="text-sm">
+                    Autor <span className="text-red-500">*</span>
+                </label>
+                <input
+                    className="input"
+                    value={author}
+                    onChange={e => setAuthor(e.target.value)}
+                />
+
+                {errors.author && (
+                    <p className="text-red-500 text-xs">
+                        {errors.author}
+                    </p>
+                )}
+            </div>
+
+            <div className="space-y-1">
+                <label className="text-sm">
+                    ISBN broj <span className="text-red-500">*</span>
+                </label>
+                <input
+                    className="input"
+                    value={isbn}
+                    onChange={e => setIsbn(e.target.value)}
+                />
+                {errors.isbn && (
+                    <p className="text-red-500 text-xs">
+                        {errors.isbn}
+                    </p>
+                )}
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
 
-                <input
-                    type="number"
-                    placeholder="Cena (RSD)"
-                    className="input"
-                    value={price || ""}
-                    onChange={e => setPrice(Number(e.target.value))}
-                />
+                <div className="space-y-1">
+                    <label className="text-sm">
+                        Cena (RSD)<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        className="input"
+                        value={price || ""}
+                        onChange={e => setPrice(e.target.value ? Number(e.target.value) : null)}
+                    />
+                    {errors.price && (
+                        <p className="text-red-500 text-xs">
+                            {errors.price}
+                        </p>
+                    )}
+                </div>
 
-                <input
-                    type="number"
-                    placeholder="Broj strana"
-                    className="input"
-                    value={nmbrOfPages || ""}
-                    onChange={e => setNmbrOfPages(Number(e.target.value))}
-                />
+                <div className="space-y-1">
+                    <label className="text-sm">
+                        Broj strana <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        className="input"
+                        value={nmbrOfPages || ""}
+                        onChange={e =>
+                            setNmbrOfPages(e.target.value ? Number(e.target.value) : null)
+                        } />
+                    {errors.pages && (
+                        <p className="text-red-500 text-xs">
+                            {errors.pages}
+                        </p>
+                    )}
+                </div>
 
             </div>
 
-            <textarea
-                placeholder="Opis knjige"
-                rows={4}
-                className="input"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-            />
+            <div className="space-y-1">
+                <label className="text-sm">
+                    Opis knjige <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                    rows={4}
+                    className="input"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                />
+                {errors.description && (
+                    <p className="text-red-500 text-xs">
+                        {errors.description}
+                    </p>
+                )}
+            </div>
 
-            <input
-                placeholder="Goodreads link"
-                className="input"
-                value={goodreadsLink}
-                onChange={e => setGoodreadsLink(e.target.value)}
-            />
+            <div className="space-y-1">
+                <label className="text-sm">
+                    Goodreads link 
+                </label>
+                <input
+                    className="input"
+                    value={goodreadsLink}
+                    onChange={e => setGoodreadsLink(e.target.value)}
+                />
+                <button
+                    type="button"
+                    className="text-sm text-blue-400 underline"
+                    onClick={() => window.open(goodreadsLink, "_blank")}
+                >
+                    Proveri link
+                </button>
+                {errors.goodreadsLink && (
+                    <p className="text-red-500 text-xs">
+                        {errors.goodreadsLink}
+                    </p>
+                )}
+            </div>
 
-            <input
-                type="number"
-                placeholder="Godina izdanja"
-                className="input"
-                value={publicationYear || ""}
-                onChange={e => setPublicationYear(Number(e.target.value))}
-            />
+            <div className="space-y-1">
+                <label className="text-sm">
+                    Godina izdanja <span className="text-red-500">*</span>
+                </label>
+                <input
+                    type="number"
+                    className="input"
+                    value={publicationYear || ""}
+                    onChange={e =>
+                        setPublicationYear(e.target.value ? Number(e.target.value) : null)
+                    } />
+                {errors.publicationYear && (
+                    <p className="text-red-500 text-xs">
+                        {errors.publicationYear}
+                    </p>
+                )}
+            </div>
 
             <div className="space-y-2">
 
-                <p className="font-medium">
+                <p className="text-sm">
                     Tip korica
                 </p>
 
@@ -129,33 +213,41 @@ export default function BookDetailsCard({
 
             <div className="space-y-3">
 
-                <p className="font-medium">
-                    Žanrovi
+                <p className="text-sm">
+                    Žanrovi <span className="text-red-500">*</span>
                 </p>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
 
-                    {genres.map(g => (
+                    <div className="grid grid-cols-3 gap-2">
 
-                        <label
-                            key={g.genreId}
-                            className="flex items-center gap-2 cursor-pointer"
-                        >
+                        {genres.map(g => (
 
-                            <input
-                                type="checkbox"
-                                checked={genreIds.includes(g.genreId)}
-                                onChange={() => toggleGenre(g.genreId)}
-                            />
+                            <label
+                                key={g.genreId}
+                                className="flex items-center gap-2 cursor-pointer"
+                            >
 
-                            <span>{g.name}</span>
+                                <input
+                                    type="checkbox"
+                                    checked={genreIds.includes(g.genreId)}
+                                    onChange={() => toggleGenre(g.genreId)}
+                                />
 
-                        </label>
+                                <span className="text-sm">{g.name}</span>
 
-                    ))}
+                            </label>
+
+                        ))}
+
+                    </div>
 
                 </div>
-
+                {errors.genreIds && (
+                    <p className="text-red-500 text-xs">
+                        {errors.genreIds}
+                    </p>
+                )}
             </div>
 
         </div>

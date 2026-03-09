@@ -4,6 +4,7 @@ import type { ImageUploaderProps } from "../../types/props/admin_add_item_props/
 export default function ImageUploader({ onChange }: ImageUploaderProps) {
 
   const [images, setImages] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
   const [primary, setPrimary] = useState<number | null>(null)
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
@@ -13,15 +14,22 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
     const files = Array.from(e.target.files)
 
     const newImages = [...images, ...files]
+    const newPreviews = [
+      ...previews,
+      ...files.map(file => URL.createObjectURL(file))
+    ]
 
     setImages(newImages)
+    setPreviews(newPreviews)
+
+    let newPrimary = primary
 
     if (primary === null && newImages.length > 0) {
+      newPrimary = 0
       setPrimary(0)
-      onChange(newImages, 0)
-    } else {
-      onChange(newImages, primary)
     }
+
+    onChange(newImages, newPrimary)
   }
 
   function selectPrimary(index: number) {
@@ -31,15 +39,20 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
 
   function removeImage(index: number) {
 
+    URL.revokeObjectURL(previews[index])
+
     const newImages = images.filter((_, i) => i !== index)
+    const newPreviews = previews.filter((_, i) => i !== index)
 
     setImages(newImages)
+    setPreviews(newPreviews)
 
     let newPrimary = primary
 
     if (primary === index) {
-      newPrimary = null
+      newPrimary = newImages.length > 0 ? 0 : null
     }
+
     setPrimary(newPrimary)
     onChange(newImages, newPrimary)
   }
@@ -57,6 +70,7 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
         <input
           type="file"
           multiple
+          accept="image/*"
           onChange={handleFiles}
           className="hidden"
         />
@@ -64,7 +78,7 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
 
       <div className="grid grid-cols-3 gap-4">
 
-        {images.map((img, index) => {
+        {previews.map((src, index) => {
 
           const isPrimary = primary === index
 
@@ -77,7 +91,7 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
             >
 
               <img
-                src={URL.createObjectURL(img)}
+                src={src}
                 className="w-full h-24 object-cover cursor-pointer"
                 onClick={() => selectPrimary(index)}
               />

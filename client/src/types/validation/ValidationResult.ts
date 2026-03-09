@@ -1,4 +1,4 @@
-export type ValidationReusult = {
+export type ValidationResult = {
   success: boolean;
   message?: string;
 };

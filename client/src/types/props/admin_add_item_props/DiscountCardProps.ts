@@ -1,3 +1,5 @@
+import type { DiscountValidationErrors } from "../../validation/DiscountValidationErrors"
+
 export type DiscountCardProps = {
     discountPercent: number | null
     setDiscountPercent: (v: number | null) => void
@@ -5,4 +7,5 @@ export type DiscountCardProps = {
     setDiscountFrom: (v: string) => void
     discountTo: string
     setDiscountTo: (v: string) => void
+    errors : DiscountValidationErrors
 }

@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react"
 import ImageUploader from "./ImageUploader"
 import { useAuth } from "../../hooks/auth/useAuthHook"
-import type { BookCreateDto } from "../../models/item/BookCreateDto"
 import type { GenreDto } from "../../models/genre/GenreDto"
 import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
 import PdfUploader from "../bookForm/PdfUploader"
 import BookDetailsCard from "../bookForm/BookDetailsCard"
 import DiscountCard from "./DiscountCard"
+import { validateBookCreateData } from "../../api_services/validators/bookForm/BookCreateValidator"
+import { mapToBookDto } from "../../helpers/bookMapper"
+import type { BookValidationErrors } from "../../types/validation/book/BookValidationErrors"
 
 export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiProps) {
   const { token } = useAuth()
   const [itemId, setItemId] = useState<number | null>(null) //null knjiga nije napravljena, number knjiga postoji
   const [name, setName] = useState("")
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState<number | null>(null)
   const [author, setAuthor] = useState("")
   const [isbn, setIsbn] = useState("")
-  const [nmbrOfPages, setNmbrOfPages] = useState(0)
+  const [nmbrOfPages, setNmbrOfPages] = useState<number | null>(null)
   const [description, setDescription] = useState("")
   const [goodreadsLink, setGoodreadsLink] = useState("")
-  const [publicationYear, setPublicationYear] = useState<number>(0)
+  const [publicationYear, setPublicationYear] = useState<number | null>(null)
   const [genreIds, setGenreIds] = useState<number[]>([])
   const [cover, setCover] = useState<"meke" | "tvrde">("meke")
   const [pdf, setPdf] = useState<File | null>(null)
@@ -31,15 +33,40 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
   const [images, setImages] = useState<File[]>([])
   const [primary, setPrimary] = useState<number>(0)
 
+  const [errors, setErrors] = useState<BookValidationErrors>({})
+
   async function handleSubmit(e: React.FormEvent) {
 
     e.preventDefault() //sluzi da spreci podrazumevano ponasanje browsera
 
+    const validation = validateBookCreateData(
+      name,
+      author,
+      isbn,
+      price,
+      nmbrOfPages,
+      description,
+      publicationYear,
+      genreIds,
+      goodreadsLink,
+      discountPercent,
+      discountFrom,
+      discountTo
+    )
+
+    if (!validation.success) {
+      setErrors(validation.errors)
+      return
+    }
+
+    setErrors({})
+
     if (!token) return
 
     try {
-
-      const book: BookCreateDto = {
+      //price : price!
+      //! znači: "Siguran sam da nije null jer sam proverio u validatoru."
+      const book = mapToBookDto({
         name,
         price,
         description,
@@ -49,12 +76,12 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
         goodreadsLink,
         publicationYear,
         cover,
-        pdfUrl: pdf ? pdf.name : "",
-        genres: genreIds,
-        discountPercent: discountPercent ?? null,
-        discountFrom: discountFrom ?? null,
-        discountTo: discountTo ?? null,
-      }
+        pdf,
+        genreIds,
+        discountPercent,
+        discountFrom,
+        discountTo
+      })
 
       const id = await itemApi.addBook(token, book)
 
@@ -150,6 +177,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
         genres={genres}
         genreIds={genreIds}
         toggleGenre={toggleGenre}
+        errors={errors}
       />
 
       <div className="flex flex-col gap-8 h-full">
@@ -211,6 +239,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
           setDiscountFrom={setDiscountFrom}
           discountTo={discountTo}
           setDiscountTo={setDiscountTo}
+          errors={errors}
         />
 
         <button
