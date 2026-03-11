@@ -40,23 +40,41 @@ export class ItemController {
     this.router.get("/getItemsByType/:type", this.getItemsByType.bind(this));
     this.router.get("/getBook/:itemId", this.getBook.bind(this));
     this.router.get("/getAccessory/:itemId", this.getAccessory.bind(this));
-    this.router.put("/addDiscount/:itemId", authenticate, authorize(UserRole.ADMIN), this.addDiscount.bind(this));
+    this.router.put(
+      "/addDiscount/:itemId",
+      authenticate,
+      authorize(UserRole.ADMIN),
+      this.addDiscount.bind(this),
+    );
   }
 
   private async addItem(req: Request, res: Response) {
     try {
       const item = {
         ...req.body,
-        userId: req.user?.id
-      }
+        userId: req.user?.id,
+      };
       const result = await this.service.addItem(item);
-      if (result.itemId === 0)
-        return res
-          .status(400)
-          .json({ success: false, message: "Failed to add item." });
-      res
-        .status(201)
-        .json({ success: true, message: "Item added successfully.", data: result });
+      if (result.itemId === 0) {
+        if (result.name !== "") {
+          return res
+            .status(400)
+            .json({
+              success: false,
+              message: "Cannot add item with same name",
+            });
+        } else {
+          return res
+            .status(400)
+            .json({ success: false, message: "Failed to add item." });
+        }
+      }
+
+      res.status(201).json({
+        success: true,
+        message: "Item added successfully.",
+        data: result,
+      });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
     }

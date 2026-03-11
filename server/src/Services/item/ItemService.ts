@@ -48,6 +48,10 @@ export class ItemService implements IItemService {
   }
 
   async addItem(item: Item): Promise<ItemDto> {
+    const sameName = await this.itemRepository.getByName(item.name);
+
+    if (sameName.itemId !== 0) return new ItemDto(0, "isto ime");
+
     const newItem = await this.itemRepository.create(item);
     if (newItem.itemId === 0) return new ItemDto();
 
@@ -55,7 +59,7 @@ export class ItemService implements IItemService {
       case ItemType.BOOK:
         const newBook = { ...(item as Book), itemId: newItem.itemId };
         const addedBook = await this.bookRepository.create(newBook);
-        
+
         if (addedBook.itemId === 0) return new ItemDto();
 
         if (newBook.genres?.length) {
