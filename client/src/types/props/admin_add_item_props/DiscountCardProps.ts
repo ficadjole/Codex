@@ -1,4 +1,4 @@
-import type { DiscountValidationErrors } from "../../validation/DiscountValidationErrors"
+import type { DiscountValidationErrors } from "../../validation/discount/DiscountValidationErrors"
 
 export type DiscountCardProps = {
     discountPercent: number | null

@@ -2,15 +2,16 @@ import { useEffect, useState } from "react"
 import ImageUploader from "./ImageUploader"
 import { useAuth } from "../../hooks/auth/useAuthHook"
 import type { GenreDto } from "../../models/genre/GenreDto"
-import type { AdminApiProps } from "../../types/props/admin_add_item_props/AdminAddItemProps"
 import PdfUploader from "../bookForm/PdfUploader"
 import BookDetailsCard from "../bookForm/BookDetailsCard"
 import DiscountCard from "./DiscountCard"
 import { validateBookCreateData } from "../../api_services/validators/bookForm/BookCreateValidator"
-import { mapToBookDto } from "../../helpers/bookMapper"
+import { mapToBookDto, mapToBookUpdateDto } from "../../helpers/bookMapper"
 import type { BookValidationErrors } from "../../types/validation/book/BookValidationErrors"
+import type { BookFormProps } from "../../types/props/form_props/BookFormProps"
+import toast from "react-hot-toast"
 
-export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiProps) {
+export default function BookForm({ genreApi, itemApi, itemImageApi, initialData, isEdit = false }: BookFormProps) {
   const { token } = useAuth()
   const [itemId, setItemId] = useState<number | null>(null) //null knjiga nije napravljena, number knjiga postoji
   const [name, setName] = useState("")
@@ -61,11 +62,54 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
 
     setErrors({})
 
-    if (!token) return
-
+    if (!token) {
+      toast.error("Niste ulogovani")
+      return
+    }
     try {
-      //price : price!
-      //! znači: "Siguran sam da nije null jer sam proverio u validatoru."
+
+      // EDIT
+      if (isEdit && itemId) {
+
+        const dto = mapToBookUpdateDto({
+          name,
+          price,
+          description,
+          author,
+          isbn,
+          nmbrOfPages,
+          goodreadsLink,
+          publicationYear,
+          cover,
+          pdf,
+          genreIds,
+          discountPercent,
+          discountFrom,
+          discountTo
+        }, itemId)
+
+        const success = await itemApi.updateItem(token, itemId, dto)
+
+        if (!success) {
+          toast.error("Greška pri izmeni knjige")
+          return
+        }
+
+        if (discountPercent !== null && discountFrom && discountTo) {
+          await itemApi.addDiscount(
+            token,
+            itemId,
+            discountPercent,
+            discountFrom,
+            discountTo
+          )
+        }
+
+        toast.success("Knjiga uspešno izmenjena")
+        return
+      }
+
+      // CREATE
       const book = mapToBookDto({
         name,
         price,
@@ -86,14 +130,13 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
       const id = await itemApi.addBook(token, book)
 
       if (!id) {
-        alert("Greška pri dodavanju knjige")
+        toast.error("Greška pri dodavanju knjige")
         return
       }
       setItemId(id)
-      alert("Knjiga uspešno kreirana! Sada možeš dodati slike.")
-    } catch (err) {
-      console.error(err)
-      alert("Greška pri dodavanju knjige")
+      toast.success("Knjiga uspešno kreirana. Sada dodaj slike.")
+    } catch {
+      toast.error("Došlo je do greške")
     }
   }
 
@@ -119,14 +162,14 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
 
       }
 
-      alert("Slike uspešno dodate!")
+      toast.success("Slike uspešno dodate")
 
       setImages([])
       setPrimary(0)
 
     } catch (err) {
       console.error(err)
-      alert("Greška pri uploadu slika")
+      toast.error("Greška pri uploadu slika")
     }
 
   }
@@ -138,6 +181,30 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
     }
     loadGenres()
   }, [])
+
+  useEffect(() => {
+    if (!initialData) return
+
+    console.log(initialData)
+
+    setItemId(initialData.itemId!)
+    setName(initialData.name)
+    setAuthor(initialData.author)
+    setIsbn(initialData.isbn)
+    setPrice(initialData.price)
+    setNmbrOfPages(initialData.nmbrOfPages)
+    setDescription(initialData.description)
+    setGoodreadsLink(initialData.goodreadsLink)
+    setPublicationYear(initialData.publicationYear)
+    setCover(initialData.cover)
+
+    setGenreIds(initialData.genres?.map(g => g.genreId) ?? [])
+
+    setDiscountPercent(initialData.discountPercent ?? null)
+    setDiscountFrom(initialData.discountFrom?.split("T")[0] ?? "")
+    setDiscountTo(initialData.discountTo?.split("T")[0] ?? "")
+
+  }, [initialData])
 
   function toggleGenre(id: number) {
     setGenreIds(prev => {
@@ -246,7 +313,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi }: AdminApiPr
           className="btn-primary"
           onClick={handleSubmit}
         >
-          Kreiraj knjigu
+          {isEdit ? "Sačuvaj izmene" : "Kreiraj knjigu"}
         </button>
 
       </div>

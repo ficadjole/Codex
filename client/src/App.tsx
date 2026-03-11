@@ -16,12 +16,16 @@ import { itemApi } from './api_services/itemApi/ItemApiService';
 import { itemImageApi } from './api_services/itemImageApi/ItemImageApiService';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/login/LoginPage';
+import { Toaster } from "react-hot-toast"
+import EditItemPage from './pages/adminPanel/EditItemPage';
+
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
+        <Toaster position="top-right" />
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage itemApi={itemApi}/>} />
@@ -30,11 +34,12 @@ function App() {
             <Route path="/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />} />
             <Route path="/admin/orders/:orderId" element={<OrderDetailsPage orderApi={orderApi} />} />
             <Route path="/admin" element={<AdminLayout />}>
-              <Route path="items" element={<AdminItems />} />
+              <Route path="items" element={<AdminItems itemApi={itemApi} genreApi={genreApi} itemImageApi={itemImageApi}/>} />
               <Route path="/admin/orders" element={<AdminOrdersPage orderApi={orderApi} />} />
               <Route path="items/add" element={<AdminAddItem genreApi={genreApi} itemApi={itemApi} itemImageApi={itemImageApi}/>} />
               <Route path="orders" element={<AdminOrdersPage orderApi={orderApi} />} />
               <Route path="genres" element={<GenreAdminPanel genreApi={genreApi} />} />
+              <Route path="items/edit/:id" element={<EditItemPage itemApi={itemApi} genreApi={genreApi} itemImageApi={itemImageApi} />} />
             </Route>
           </Routes>
         </Layout>

@@ -15,7 +15,7 @@ export interface IItemApiService {
   // ADMIN (requires token)
   addBook(token: string, book: BookCreateDto): Promise<number>;
   addAccessory(token: string, accessory: AccessoryCreateDto) : Promise<number>;
-  updateItem(token: string, itemId: number, item: ItemDto): Promise<boolean>;
+  updateItem(token: string, itemId: number, item: ItemDto | BookDetailsDto | AccessoryDetailsDto): Promise<boolean>;
   deleteItem(token: string, itemId: number): Promise<boolean>;
 
   addDiscount(

@@ -158,6 +158,8 @@ export class ItemController {
       book.price = item.price;
       book.description = item.description;
 
+      console.log("Knjiga " + book)
+
       if (book.itemId === 0 || item.itemId === 0)
         return res
           .status(404)

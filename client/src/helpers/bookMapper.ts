@@ -1,4 +1,5 @@
 import type { BookCreateDto } from "../models/item/BookCreateDto"
+import type { BookDetailsDto } from "../models/item/BookDetailsDto"
 import { mapDiscount } from "./discountMapper"
 
 interface MapBookParams {
@@ -32,5 +33,38 @@ export function mapToBookDto(data: MapBookParams): BookCreateDto {
     pdfUrl: data.pdf ? data.pdf.name : "",
     genres: data.genreIds,
     ...mapDiscount(data.discountPercent, data.discountFrom, data.discountTo)
+  }
+}
+
+export function mapToBookUpdateDto(
+  data: MapBookParams,
+  itemId: number
+): BookDetailsDto {
+
+  const discount = mapDiscount(
+    data.discountPercent,
+    data.discountFrom,
+    data.discountTo
+  )
+
+  return {
+    itemId,
+    name: data.name,
+    price: data.price!,
+    description: data.description,
+    author: data.author,
+    isbn: data.isbn,
+    nmbrOfPages: data.nmbrOfPages!,
+    goodreadsLink: data.goodreadsLink,
+    publicationYear: data.publicationYear!,
+    cover: data.cover,
+    pdfUrl: data.pdf ? data.pdf.name : "",
+    genres: [], // backend obično ignoriše kod update
+    images: [],
+    primaryImageUrl: "",
+    type: "knjiga",
+    discountPercent: discount.discountPercent ?? undefined,
+    discountFrom: discount.discountFrom ?? undefined,
+    discountTo: discount.discountTo ?? undefined
   }
 }
