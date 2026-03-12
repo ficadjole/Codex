@@ -3,6 +3,8 @@ import type { AuthFormProps } from "../../types/props/auth_form_props/AuthFormPr
 import { validateAuthLoginData } from "../../api_services/validators/auth/AuthLoginValidator";
 import { validateAuthRegistrationData } from "../../api_services/validators/auth/AuthRegisterValidator";
 import InputField from "./InputField";
+import type { AuthValidationErrors } from "../../types/validation/auth/AuthValidationErrors";
+import toast from "react-hot-toast";
 
 export default function AuthForm({ authApi, onLoginSuccess }: AuthFormProps) {
   const [username, setUsername] = useState("");
@@ -12,15 +14,34 @@ export default function AuthForm({ authApi, onLoginSuccess }: AuthFormProps) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
 
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<AuthValidationErrors>({})
   const [isRegistration, setIsRegistration] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
 
     const validation = isRegistration
       ? validateAuthRegistrationData(
+        firstName,
+        lastName,
+        email,
+        username,
+        password,
+        "user"
+      )
+      : validateAuthLoginData(username, password);
+
+    if (!validation.success) {
+      setErrors(validation.errors)
+      return
+    }
+
+    setErrors({})
+
+    try {
+      const response = isRegistration
+        ? await authApi.registration(
           firstName,
           lastName,
           email,
@@ -28,32 +49,16 @@ export default function AuthForm({ authApi, onLoginSuccess }: AuthFormProps) {
           password,
           "user"
         )
-      : validateAuthLoginData(username, password);
-
-    if (!validation.success) {
-      setError(validation.message ?? "Neispravni podaci");
-      return;
-    }
-
-    try {
-      const response = isRegistration
-        ? await authApi.registration(
-            firstName,
-            lastName,
-            email,
-            username,
-            password,
-            "user"
-          )
         : await authApi.login(username, password);
 
       if (response.success && response.data) {
         onLoginSuccess(response.data);
       } else {
-        setError(response.message);
+        toast.error(response.message || "Pogrešno korisničko ime ili lozinka.");
       }
+
     } catch {
-      setError("Došlo je do greške. Pokušajte ponovo.");
+      toast.error("Došlo je do greške. Pokušajte ponovo.");
     }
   };
 
@@ -72,49 +77,87 @@ export default function AuthForm({ authApi, onLoginSuccess }: AuthFormProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
           {isRegistration && (
             <>
-              <InputField
-                placeholder="Ime"
-                value={firstName}
-                onChange={setFirstName}
-              />
-              <InputField
-                placeholder="Prezime"
-                value={lastName}
-                onChange={setLastName}
-              />
-              <InputField
-                placeholder="Email adresa"
-                value={email}
-                onChange={setEmail}
-                type="email"
-              />
+              <div className="space-y-1">
+                <label className="text-sm">
+                  Ime <span className="text-red-500">*</span>
+                </label>
+                <InputField
+                  value={firstName}
+                  onChange={setFirstName}
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-xs">
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm">
+                  Prezime <span className="text-red-500">*</span>
+                </label>
+                <InputField
+                  value={lastName}
+                  onChange={setLastName}
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-xs">
+                    {errors.lastName}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <InputField
+                  value={email}
+                  onChange={setEmail}
+                  type="email"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
             </>
           )}
 
-          <InputField
-            placeholder="Korisničko ime"
-            value={username}
-            onChange={setUsername}
-          />
+          <div className="space-y-1">
+            <label className="text-sm">
+              Korisničko ime <span className="text-red-500">*</span>
+            </label>
+            <InputField
+              value={username}
+              onChange={setUsername}
+            />
+            {errors.username && (
+              <p className="text-red-500 text-xs">
+                {errors.username}
+              </p>
+            )}
+          </div>
 
-          <InputField
-            placeholder="Lozinka"
-            value={password}
-            onChange={setPassword}
-            type="password"
-          />
-
-          {error && (
-            <p className="text-red-400 text-sm text-center">
-              {error}
-            </p>
-          )}
+          <div className="space-y-1">
+            <label className="text-sm">
+              Lozinka <span className="text-red-500">*</span>
+            </label>
+            <InputField
+              value={password}
+              onChange={setPassword}
+              type="password"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs">
+                {errors.password}
+              </p>
+            )}
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-[#28623A] hover:bg-[#3F8A4B]
-                       text-white py-3 rounded-lg
-                       transition duration-300 font-medium"
+            className="btn-primary w-full"
           >
             {isRegistration ? "Registruj se" : "Prijavi se"}
           </button>

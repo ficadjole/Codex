@@ -6,8 +6,8 @@ Dodati Slack slanje notifikacije o kupovini
 
 Kaca
 edit book i aksesoar, treba videti samo za slike i pdf kad se uradi sa javnim url da ih prikaze, jer sad to nema jos
-validaciju login i register forme kao za book i aksesoar, msm to za greske poruke ispod input itd
 uraditi da ako istekne token da izbaci sa admin panela da ne ostane u njoj
 Uraditi Book details stranicu (kad se klikne na detaljnije u kartici)
+uraditi korpu i narucivanje artikala
 dodati na kartice za popust ikonicu ili sta vec
 Uraditi responsive 
