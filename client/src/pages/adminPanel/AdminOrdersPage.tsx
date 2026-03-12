@@ -65,7 +65,9 @@ export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
               setStatusFilter(e.target.value)
               setCurrentPage(1)
             }}
-            className="bg-[#142326] border border-[#1F3337] rounded-lg px-3 py-2 text-sm"
+            className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
+                       pl-4 pr-3 py-2 rounded-lg
+                       focus:outline-none focus:border-[#3F8A4B]"
           >
             <option value="sve">Sve</option>
             <option value="na_cekanju">Na čekanju</option>
@@ -98,75 +100,87 @@ export default function AdminOrdersPage({ orderApi }: OrderApiProps) {
 
             <tbody>
 
-              {currentOrders.map((order) => (
+              {currentOrders.map((order) => {
 
-                <tr
-                  key={order.orderId}
-                  onClick={() =>
-                    navigate(`/admin/orders/${order.orderId}`)
-                  }
-                  className="border-t border-[#1F3337] hover:bg-[#1B2E33] transition cursor-pointer"
-                >
+                const isFinalStatus =
+                  order.orderStatus === "poslato" ||
+                  order.orderStatus === "otkazano"
 
-                  <td className="px-6 py-4 font-medium">
-                    #{order.orderId}
-                  </td>
+                return (
 
-                  <td className="px-6 py-4">
-                    {order.firstname} {order.lastname}
-                  </td>
-
-                  <td
-                    className="px-6 py-4"
-                    onClick={(e) => e.stopPropagation()}
+                  <tr
+                    key={order.orderId}
+                    onClick={() =>
+                      navigate(`/admin/orders/${order.orderId}`)
+                    }
+                    className="border-t border-[#1F3337] hover:bg-[#1B2E33] transition cursor-pointer"
                   >
 
-                    <select
-                      value={order.orderStatus}
-                      onChange={async (e) => {
+                    <td className="px-6 py-4 font-medium">
+                      #{order.orderId}
+                    </td>
 
-                        if (!token) return
+                    <td className="px-6 py-4">
+                      {order.firstname} {order.lastname}
+                    </td>
 
-                        const newStatus = e.target.value
-
-                        const success = await orderApi.changeStatus(
-                          token,
-                          order.orderId,
-                          newStatus
-                        )
-
-                        if (success) {
-                          setOrders((prev) =>
-                            prev.map((o) =>
-                              o.orderId === order.orderId
-                                ? { ...o, orderStatus: newStatus }
-                                : o
-                            )
-                          )
-                        }
-
-                      }}
-                      className="bg-[#142326] border border-[#1F3337] rounded px-2 py-1 text-sm"
+                    <td
+                      className="px-6 py-4"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <option value="na_cekanju">Na čekanju</option>
-                      <option value="placeno">Plaćeno</option>
-                      <option value="poslato">Poslato</option>
-                      <option value="otkazano">Otkazano</option>
-                    </select>
 
-                  </td>
+                      <select
+                        value={order.orderStatus}
+                        disabled={isFinalStatus}
+                        onChange={async (e) => {
 
-                  <td className="px-6 py-4 font-semibold text-[#3F8A4B]">
-                    {order.totalPrice} RSD
-                  </td>
+                          if (!token) return
 
-                  <td className="px-6 py-4 text-[#9DB7AA]">
-                    {new Date(order.orderDate).toLocaleString("sr-RS")}
-                  </td>
+                          const newStatus = e.target.value
 
-                </tr>
+                          const success = await orderApi.changeStatus(
+                            token,
+                            order.orderId,
+                            newStatus
+                          )
 
-              ))}
+                          if (success) {
+                            setOrders((prev) =>
+                              prev.map((o) =>
+                                o.orderId === order.orderId
+                                  ? { ...o, orderStatus: newStatus }
+                                  : o
+                              )
+                            )
+                          }
+
+                        }}
+                        className={`border border-[#1F3337] rounded px-2 py-1 text-sm
+                          ${isFinalStatus
+                            ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                            : "bg-[#142326] text-[#EAF4EF]"
+                          }`}
+                      >
+                        <option value="na_cekanju">Na čekanju</option>
+                        <option value="placeno">Plaćeno</option>
+                        <option value="poslato">Poslato</option>
+                        <option value="otkazano">Otkazano</option>
+                      </select>
+
+                    </td>
+
+                    <td className="px-6 py-4 font-semibold text-[#3F8A4B]">
+                      {order.totalPrice} RSD
+                    </td>
+
+                    <td className="px-6 py-4 text-[#9DB7AA]">
+                      {new Date(order.orderDate).toLocaleString("sr-RS")}
+                    </td>
+
+                  </tr>
+
+                )
+              })}
 
             </tbody>
 

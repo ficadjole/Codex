@@ -24,10 +24,6 @@ export default function AdminItems({ itemApi }: ItemApiProps) {
     const indexOfLastItem = currentPage * itemsPerPage
     const indexOfFirstItem = indexOfLastItem - itemsPerPage
 
-    const currentItems = items.slice(indexOfFirstItem, indexOfLastItem)
-
-    const totalPages = Math.ceil(items.length / itemsPerPage)
-
     const [selectedItem, setSelectedItem] = useState<ItemDto | null>(null)
     const [showDiscountModal, setShowDiscountModal] = useState(false)
 
@@ -39,6 +35,23 @@ export default function AdminItems({ itemApi }: ItemApiProps) {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [itemToDelete, setItemToDelete] = useState<number | null>(null)
+
+    const [search, setSearch] = useState("")
+    const [typeFilter, setTypeFilter] = useState<"sve" | "knjiga" | "aksesoar">("sve")
+
+    const filteredItems = items.filter(item => {
+
+        const matchesSearch =
+            item.name.toLowerCase().includes(search.toLowerCase())
+
+        const matchesType =
+            typeFilter === "sve" || item.type === typeFilter
+
+        return matchesSearch && matchesType
+    })
+
+    const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem)
+    const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
 
     useEffect(() => {
         loadItems()
@@ -159,6 +172,52 @@ export default function AdminItems({ itemApi }: ItemApiProps) {
                         + Dodaj artikal
                     </Link>
                 </div>
+
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+
+                    <div className="flex items-center gap-4">
+
+                        {/* SEARCH */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Pretraži artikle..."
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value)
+                                    setCurrentPage(1)
+                                }}
+                                className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
+                                            pl-4 pr-3 py-2 rounded-lg w-56
+                                            focus:outline-none focus:border-[#3F8A4B]"
+                            />
+                        </div>
+
+                        {/* FILTER */}
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={typeFilter}
+                                onChange={(e) => {
+                                    setTypeFilter(e.target.value as "sve" | "knjiga" | "aksesoar")
+                                    setCurrentPage(1)
+                                }}
+                                className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
+                                        px-3 py-2 rounded-lg
+                                        focus:outline-none focus:border-[#3F8A4B]"
+                            >
+                                <option value="sve">Svi artikli</option>
+                                <option value="knjiga">Knjige</option>
+                                <option value="aksesoar">Aksesoari</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <span className="text-sm text-[#9DB7AA]">
+                        Pronađeno: {filteredItems.length}
+                    </span>
+
+                </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-center">
                         <thead className="bg-[#1B2E33] text-[#9DB7AA] uppercase text-xs">
@@ -241,6 +300,13 @@ export default function AdminItems({ itemApi }: ItemApiProps) {
                                     </tr>
                                 )
                             })}
+                            {currentItems.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="py-10 text-gray-400 text-center">
+                                        Nema pronađenih artikala
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                     <Pagination

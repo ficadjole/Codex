@@ -95,7 +95,7 @@ export default function Header() {
                     <div className="relative flex items-center">
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder="Pretraži..."
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className={`absolute right-8 bg-[#142326] text-[#EAF4EF]

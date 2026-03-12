@@ -5,7 +5,6 @@ Dodati Resend slanje mejlova kupcu prilikom kupovine artikla ili prijave na apli
 Dodati Slack slanje notifikacije o kupovini
 
 Kaca
-update zanrova za knjige
 edit book i aksesoar, treba videti samo za slike i pdf kad se uradi sa javnim url da ih prikaze, jer sad to nema jos
 validaciju login i register forme kao za book i aksesoar, msm to za greske poruke ispod input itd
 uraditi da ako istekne token da izbaci sa admin panela da ne ostane u njoj
