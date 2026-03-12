@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import BookForm from "../../components/forms/BookForm"
 import type { ItemApiProps } from "../../types/props/admin_add_item_props/ItemProps"
-import type { BookDetailsDto } from "../../models/item/BookDetailsDto"
+import type { BookDetailsDto } from "../../models/item/details/BookDetailsDto"
 import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto"
 import AccessoryForm from "../../components/forms/AccessoryForm"
 

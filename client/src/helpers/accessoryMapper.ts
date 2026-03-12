@@ -1,5 +1,5 @@
-import type { AccessoryCreateDto } from "../models/item/AccessoryCreateDto"
-import type { AccessoryDetailsDto } from "../models/item/AccessoryDetailsDto"
+import type { AccessoryCreateDto } from "../models/item/create/AccessoryCreateDto"
+import type { AccessoryUpdateDto } from "../models/item/update/AccessoryUpdateDto"
 import { mapDiscount } from "./discountMapper"
 
 interface MapAccessoryParams {
@@ -25,7 +25,7 @@ export function mapToAccessoryDto(data: MapAccessoryParams): AccessoryCreateDto 
 export function mapToAccessoryUpdateDto(
     data: MapAccessoryParams,
     itemId: number
-): AccessoryDetailsDto {
+): AccessoryUpdateDto {
 
     const discount = mapDiscount(
         data.discountPercent,
@@ -39,9 +39,9 @@ export function mapToAccessoryUpdateDto(
         price: data.price!,
         description: data.description,
         content: data.content,
+
         type: "aksesoar",
-        primaryImageUrl: "",
-        images: [],
+
         discountPercent: discount.discountPercent ?? undefined,
         discountFrom: discount.discountFrom ?? undefined,
         discountTo: discount.discountTo ?? undefined

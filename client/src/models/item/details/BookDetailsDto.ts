@@ -1,5 +1,5 @@
-import type { ItemDto } from "./ItemDto"
-import type { GenreDto } from "../genre/GenreDto"
+import type { ItemDto } from "../ItemDto"
+import type { GenreDto } from "../../genre/GenreDto"
 
 export interface BookDetailsDto extends ItemDto {
   author              : string

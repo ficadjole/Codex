@@ -74,7 +74,7 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
           return
         }
 
-        if (discountPercent && discountFrom && discountTo) {
+        if (discountPercent !== null && discountFrom && discountTo) {
 
           await itemApi.addDiscount(
             token,

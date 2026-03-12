@@ -1,10 +1,12 @@
 import axios from "axios";
 import type { IItemApiService } from "./IItemApiService";
 import type { ItemDto } from "../../models/item/ItemDto";
-import type { BookDetailsDto } from "../../models/item/BookDetailsDto";
-import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto";
-import type { BookCreateDto } from "../../models/item/BookCreateDto";
-import type { AccessoryCreateDto } from "../../models/item/AccessoryCreateDto";
+import type { BookDetailsDto } from "../../models/item/details/BookDetailsDto";
+import type { BookCreateDto } from "../../models/item/create/BookCreateDto";
+import type { AccessoryCreateDto } from "../../models/item/create/AccessoryCreateDto";
+import type { BookUpdateDto } from "../../models/item/update/BookUpdateDto";
+import type { AccessoryDetailsDto } from "../../models/item/details/AccessoryDetailsDto";
+import type { AccessoryUpdateDto } from "../../models/item/update/AccessoryUpdateDto";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "item";
 
@@ -109,7 +111,7 @@ export const itemApi: IItemApiService = {
   async updateItem(
     token: string,
     itemId: number,
-    item: ItemDto | BookDetailsDto | AccessoryDetailsDto
+    item: ItemDto | BookUpdateDto | AccessoryUpdateDto
   ): Promise<boolean> {
     try {
       await axios.put(`${API_URL}/updateItem/${itemId}`, item, {
