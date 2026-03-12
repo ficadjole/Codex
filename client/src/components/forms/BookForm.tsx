@@ -140,6 +140,31 @@ export default function BookForm({ genreApi, itemApi, itemImageApi, initialData,
     }
   }
 
+  function resetForm() {
+    setItemId(null)
+
+    setName("")
+    setPrice(null)
+    setAuthor("")
+    setIsbn("")
+    setNmbrOfPages(null)
+    setDescription("")
+    setGoodreadsLink("")
+    setPublicationYear(null)
+    setGenreIds([])
+    setCover("meke")
+    setPdf(null)
+
+    setDiscountPercent(null)
+    setDiscountFrom("")
+    setDiscountTo("")
+
+    setImages([])
+    setPrimary(0)
+
+    setErrors({})
+  }
+
   async function handleImageUpload() {
 
     if (!token || !itemId) return
@@ -164,8 +189,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi, initialData,
 
       toast.success("Slike uspešno dodate")
 
-      setImages([])
-      setPrimary(0)
+      resetForm()
 
     } catch (err) {
       console.error(err)
@@ -296,7 +320,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi, initialData,
 
         </div>
 
-        <PdfUploader onChange={(file) => setPdf(file)} disabled={!isEdit && itemId !== null}/>
+        <PdfUploader onChange={(file) => setPdf(file)} disabled={!isEdit && itemId !== null} />
 
 
         <DiscountCard

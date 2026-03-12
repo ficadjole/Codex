@@ -5,6 +5,7 @@ Dodati Resend slanje mejlova kupcu prilikom kupovine artikla ili prijave na apli
 Dodati Slack slanje notifikacije o kupovini
 
 Kaca
+zbog necega slike imaju kao shadow preko u kartici ali ne znam zasto
 edit book i aksesoar, treba videti samo za slike i pdf kad se uradi sa javnim url da ih prikaze, jer sad to nema jos
 uraditi da ako istekne token da izbaci sa admin panela da ne ostane u njoj
 Uraditi Book details stranicu (kad se klikne na detaljnije u kartici)

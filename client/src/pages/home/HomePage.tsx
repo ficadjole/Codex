@@ -3,16 +3,16 @@ import type { HomeProps } from "../../types/props/home_props/HomeProps";
 import type { ItemDto } from "../../models/item/ItemDto";
 import ItemCarousel from "../../components/items/ItemCarousel";
 
-export default function Home({itemApi} : HomeProps) {
-const positions = [
-  "object-[20%_5%]",    
-  "object-[80%_10%]",   
-  "object-[75%_45%]",   
-  "object-[25%_60%]",  
-  "object-[20%_95%]",   
-  "object-[80%_85%]",   
-  "object-[50%_50%]",   
-];
+export default function Home({ itemApi }: HomeProps) {
+  const positions = [
+    "object-[20%_5%]",
+    "object-[80%_10%]",
+    "object-[75%_45%]",
+    "object-[25%_60%]",
+    "object-[20%_95%]",
+    "object-[80%_85%]",
+    "object-[50%_50%]",
+  ];
 
   const [positionIndex, setPositionIndex] = useState(0);
   const [books, setBooks] = useState<ItemDto[]>([]);
@@ -44,7 +44,7 @@ const positions = [
 
       <section className="relative h-[450px] overflow-hidden">
         <img
-          src="/mapa.jpg" 
+          src="/mapa.jpg"
           alt="Mapa Dekatona"
           className={`absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-[4000ms] ease-in-out ${positions[positionIndex]}`}
         />
@@ -62,17 +62,31 @@ const positions = [
         </div>
       </section>
 
-      <section className="px-8 py-16">
-        <h2 className="text-xl mb-8">KNJIGE</h2>
+      <section className="max-w-7xl mx-auto px-8 py-16">
 
+        <div className="flex items-center gap-6 mb-10">
+          <div className="flex-1 h-[1px] bg-[#1F3337]" />
+          <h2 className="text-2xl tracking-widest text-[#9DB7AA]">
+            KNJIGE
+          </h2>
+          <div className="flex-1 h-[1px] bg-[#1F3337]" />
+        </div>
+        
         <ItemCarousel
           items={books}
           visibleCount={4}
         />
       </section>
 
-      <section className="px-8 py-16">
-        <h2 className="text-xl mb-8">AKSESOARI</h2>
+      <section className="max-w-7xl mx-auto px-8 py-16">
+
+        <div className="flex items-center gap-6 mb-10">
+          <div className="flex-1 h-[1px] bg-[#1F3337]" />
+          <h2 className="text-2xl tracking-widest text-[#9DB7AA]">
+            AKSESOARI
+          </h2>
+          <div className="flex-1 h-[1px] bg-[#1F3337]" />
+        </div>
 
         <ItemCarousel
           items={accessories}

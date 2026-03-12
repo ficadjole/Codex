@@ -115,28 +115,49 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
     }
   }
 
+  function resetForm() {
+    setItemId(null)
+    setName("")
+    setPrice(null)
+    setDescription("")
+    setContent("")
+    setDiscountPercent(null)
+    setDiscountFrom("")
+    setDiscountTo("")
+    setImages([])
+    setPrimary(0)
+
+    setErrors({})
+  }
+
   async function handleImageUpload() {
 
     if (!token || !itemId) return
 
-    for (let i = 0; i < images.length; i++) {
+    try{
 
-      const imageUrl = URL.createObjectURL(images[i])
-
-      await itemImageApi.addImage(
-        token,
-        itemId,
-        {
-          imageUrl,
-          isPrimary: i === primary,
-          sortOrder: i
-        }
-      )
-
+      
+      for (let i = 0; i < images.length; i++) {
+        
+        const imageUrl = URL.createObjectURL(images[i])
+        
+        await itemImageApi.addImage(
+          token,
+          itemId,
+          {
+            imageUrl,
+            isPrimary: i === primary,
+            sortOrder: i
+          }
+        )
+        
+      }
+      toast.success("Slike uspešno dodate")
+      resetForm()
+    } catch {
+      toast.error("Greška pri uploadu slika")
     }
 
-    toast.success("Slike uspešno dodate")
-    setImages([])
   }
 
   useEffect(() => {

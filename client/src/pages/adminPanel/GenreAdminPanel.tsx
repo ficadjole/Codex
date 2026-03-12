@@ -102,10 +102,10 @@ export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
                     />
 
                     <button
-                        className="btn-primary"
+                        className="btn-primary w-55"
                         onClick={handleAdd}
                     >
-                        Dodaj
+                        + Dodaj žanr
                     </button>
 
                 </div>
