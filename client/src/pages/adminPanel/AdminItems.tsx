@@ -163,61 +163,58 @@ export default function AdminItems({ itemApi }: ItemApiProps) {
             <h1 className="text-2xl font-semibold">
                 Artikli
             </h1>
-            <div className="bg-[#142326] border border-[#1F3337] rounded-2xl p-6 shadow-lg">
-                <div className="flex justify-end mb-6">
+            <div className="bg-[#142326] border border-[#1F3337] rounded-2xl p-6 shadow-lg space-y-4">
+
+                {/* TOP CONTROLS */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                    <div className="flex items-center gap-4">
+
+                        {/* SEARCH */}
+                        <input
+                            type="text"
+                            placeholder="Pretraži artikle..."
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value)
+                                setCurrentPage(1)
+                            }}
+                            className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
+                            pl-4 pr-3 py-2 rounded-lg w-56
+                            focus:outline-none focus:border-[#3F8A4B]"
+                        />
+
+                        {/* FILTER */}
+                        <select
+                            value={typeFilter}
+                            onChange={(e) => {
+                                setTypeFilter(e.target.value as "sve" | "knjiga" | "aksesoar")
+                                setCurrentPage(1)
+                            }}
+                            className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
+                            px-3 py-2 rounded-lg
+                            focus:outline-none focus:border-[#3F8A4B]"
+                        >
+                            <option value="sve">Svi artikli</option>
+                            <option value="knjiga">Knjige</option>
+                            <option value="aksesoar">Aksesoari</option>
+                        </select>
+
+                    </div>
+
                     <Link
                         to="/admin/items/add"
                         className="bg-[#3F8A4B] hover:bg-[#34733f] text-white px-4 py-2 rounded-lg transition"
                     >
                         + Dodaj artikal
                     </Link>
-                </div>
-
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-
-                    <div className="flex items-center gap-4">
-
-                        {/* SEARCH */}
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Pretraži artikle..."
-                                value={search}
-                                onChange={(e) => {
-                                    setSearch(e.target.value)
-                                    setCurrentPage(1)
-                                }}
-                                className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
-                                            pl-4 pr-3 py-2 rounded-lg w-56
-                                            focus:outline-none focus:border-[#3F8A4B]"
-                            />
-                        </div>
-
-                        {/* FILTER */}
-                        <div className="flex items-center gap-2">
-                            <select
-                                value={typeFilter}
-                                onChange={(e) => {
-                                    setTypeFilter(e.target.value as "sve" | "knjiga" | "aksesoar")
-                                    setCurrentPage(1)
-                                }}
-                                className="bg-[#142326] border border-[#1F3337] text-[#EAF4EF]
-                                        px-3 py-2 rounded-lg
-                                        focus:outline-none focus:border-[#3F8A4B]"
-                            >
-                                <option value="sve">Svi artikli</option>
-                                <option value="knjiga">Knjige</option>
-                                <option value="aksesoar">Aksesoari</option>
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <span className="text-sm text-[#9DB7AA]">
-                        Pronađeno: {filteredItems.length}
-                    </span>
 
                 </div>
+
+                {/* RESULT COUNT */}
+                <p className="text-sm text-[#9DB7AA]">
+                    Pronađeno: {filteredItems.length}
+                </p>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-center">
                         <thead className="bg-[#1B2E33] text-[#9DB7AA] uppercase text-xs">
