@@ -21,7 +21,6 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
   const [discountPercent, setDiscountPercent] = useState<number | null>(null)
   const [discountFrom, setDiscountFrom] = useState("")
   const [discountTo, setDiscountTo] = useState("")
-  const [loading, setLoading] = useState(false)
 
   const [images, setImages] = useState<File[]>([])
   const [primary, setPrimary] = useState<number>(0)
@@ -232,8 +231,10 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
         />
 
         <button
-          className="btn-primary w-full"
+          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           onClick={handleSubmit}
+          disabled={!isEdit && itemId !== null}
         >
           {isEdit ? "Sačuvaj izmene" : "Kreiraj aksesoar"}
         </button>

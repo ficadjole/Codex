@@ -296,7 +296,7 @@ export default function BookForm({ genreApi, itemApi, itemImageApi, initialData,
 
         </div>
 
-        <PdfUploader onChange={(file) => setPdf(file)} />
+        <PdfUploader onChange={(file) => setPdf(file)} disabled={!isEdit && itemId !== null}/>
 
 
         <DiscountCard
@@ -310,8 +310,10 @@ export default function BookForm({ genreApi, itemApi, itemImageApi, initialData,
         />
 
         <button
-          className="btn-primary"
+          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+            }`}
           onClick={handleSubmit}
+          disabled={!isEdit && itemId !== null}
         >
           {isEdit ? "Sačuvaj izmene" : "Kreiraj knjigu"}
         </button>
