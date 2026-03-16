@@ -1,7 +1,7 @@
 import { useState } from "react"
 import type { PdfUploaderProps } from "../../types/props/admin_add_item_props/PdfUploaderProps"
 
-export default function PdfUploader({ onChange }: PdfUploaderProps) {
+export default function PdfUploader({ onChange, disabled }: PdfUploaderProps) {
 
     const [pdf, setPdf] = useState<File | null>(null)
 
@@ -31,13 +31,17 @@ export default function PdfUploader({ onChange }: PdfUploaderProps) {
             </h2>
 
             {!pdf && (
-                <label className="btn-primary cursor-pointer text-center block">
+                <label
+                    className={`btn-primary cursor-pointer text-center block ${disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+                        }`}
+                >
                     Dodaj PDF
                     <input
                         type="file"
                         accept="application/pdf"
                         onChange={handleFile}
                         className="hidden"
+                        disabled={disabled}
                     />
                 </label>
             )}

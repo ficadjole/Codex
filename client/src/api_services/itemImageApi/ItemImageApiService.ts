@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { IItemImageApiService } from "./IItemImageApiService";
-import type { ItemImageCreateDto } from "../../models/item/ItemImageCreateDto";
+import type { ItemImageCreateDto } from "../../models/item/create/ItemImageCreateDto";
 
 const API_URL: string = import.meta.env.VITE_API_URL + "itemImages";
 

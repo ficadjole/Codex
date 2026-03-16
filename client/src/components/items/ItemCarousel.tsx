@@ -20,31 +20,42 @@ export default function ItemCarousel({ items, visibleCount }: ItemCarouselProps)
   const visibleItems = items.slice(index, index + visibleCount);
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center justify-center gap-6 w-full">
 
-      {canGoLeft && (
-        <button
-          onClick={prev}
-          className="text-3xl text-[#9DB7AA] hover:text-white transition"
-        >
-          {"<"}
-        </button>
-      )}
+      {/* LEFT BUTTON */}
+      <button
+        onClick={prev}
+        disabled={!canGoLeft}
+        className={`w-10 h-10 rounded-full border border-[#1F3337] flex items-center justify-center
+        transition
+        ${canGoLeft
+            ? "text-[#9DB7AA] hover:text-white hover:border-[#3F8A4B]"
+            : "text-[#2A3B3F] cursor-not-allowed"
+          }`}
+      >
+        ❮
+      </button>
 
+      {/* ITEMS */}
       <div className="flex gap-6">
         {visibleItems.map((item) => (
           <ItemCard key={item.itemId} item={item} />
         ))}
       </div>
 
-      {canGoRight && (
-        <button
-          onClick={next}
-          className="text-3xl text-[#9DB7AA] hover:text-white transition"
-        >
-          {">"}
-        </button>
-      )}
+      {/* RIGHT BUTTON */}
+      <button
+        onClick={next}
+        disabled={!canGoRight}
+        className={`w-10 h-10 rounded-full border border-[#1F3337] flex items-center justify-center
+        transition
+        ${canGoRight
+            ? "text-[#9DB7AA] hover:text-white hover:border-[#3F8A4B]"
+            : "text-[#2A3B3F] cursor-not-allowed"
+          }`}
+      >
+        ❯
+      </button>
 
     </div>
   );

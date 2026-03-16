@@ -10,7 +10,7 @@ export class BookDetailsDto {
     public discountTo?: Date,
     public author: string = "",
     public isbn: string = "",
-    public pages: number = 0,
+    public nmbrOfPages: number = 0,
     public description: string = "",
     public goodreadsLink: string = "",
     public pdfUrl: string = "",

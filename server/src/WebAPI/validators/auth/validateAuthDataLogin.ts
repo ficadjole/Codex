@@ -8,20 +8,20 @@ export function validateAuthDataLogin(
 
   // Username validation
   if (!username || username.trim() === "") {
-    message = "Username cannot be empty.";
+    message = "Korisničko ime ne sme biti prazno.";
   } else if (username.length < 3) {
-    message = "Username must be at least 3 characters long.";
+    message = "Korisničko ime mora imati najmanje 3 karaktera.";
   } else if (username.length > 15) {
-    message = "Username cannot be longer than 15 characters.";
+    message = "Korisničko ime ne sme imati više od 15 karaktera.";
   }
 
   // Password validation
   if (!password || password.trim() === "") {
-    message = "Password cannot be empty.";
+    message = "Lozinka ne sme biti prazna.";
   } else if (password.length < 3) {
-    message = "Password must be at least 3 characters long.";
+    message = "Lozinka mora imati najmanje 3 karaktera.";
   } else if (password.length > 15) {
-    message = "Password cannot be longer than 15 characters.";
+    message = "Lozinka ne sme imati više od 15 karaktera.";
   }
 
   return {

@@ -14,11 +14,19 @@ export default function ItemCard({ item, author }: ItemCardProps) {
         overflow-hidden
       "
     >
-      <img
+      <div className="w-full h-48 flex items-center justify-center">
+        <img
+          src={item.primaryImageUrl}
+          alt={item.name}
+          className="max-h-full object-contain"
+        />
+      </div>
+
+      {/* <img
         src={item.primaryImageUrl}
         alt={item.name}
-        className="w-full h-40 object-cover"
-      />
+        className="w-full h-48 object-contain p-2"
+      /> */}
 
       <div className="p-3 flex flex-col gap-1">
 

@@ -4,7 +4,7 @@ export interface ItemDto {
     itemId          ?:   number,
     name            :   string,
     price           :   number,
-    discountPercent ?:  number,
+    discountPercent ?:  number | null,
     discountFrom    ?:  string,
     discountTo      ?:  string,
     type            :   ItemType,

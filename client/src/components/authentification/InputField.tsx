@@ -1,7 +1,6 @@
 import type { InputFieldProps } from "../../types/props/auth_form_props/InputFieldProps";
 
 export default function InputField({
-  placeholder,
   value,
   onChange,
   type = "text",
@@ -9,7 +8,6 @@ export default function InputField({
   return (
     <input
       type={type}
-      placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="w-full 

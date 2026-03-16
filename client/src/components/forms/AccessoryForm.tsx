@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/auth/useAuthHook"
 import ImageUploader from "./ImageUploader"
 import DiscountCard from "./DiscountCard"
@@ -6,9 +6,10 @@ import AccessoryDetailsCard from "../accessoryForm/AccessoryDetailsCard"
 import type { AccessoryFormProps } from "../../types/props/admin_add_item_props/AccessoryFormProps"
 import { validateAccessoryCreateData } from "../../api_services/validators/accessoryForm/AccessoryCreateValidator"
 import type { AccessoryValidationErrors } from "../../types/validation/accessory/AccessoryValidationErrors"
-import { mapToAccessoryDto } from "../../helpers/accessoryMapper"
+import { mapToAccessoryDto, mapToAccessoryUpdateDto } from "../../helpers/accessoryMapper"
+import toast from "react-hot-toast"
 
-export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormProps) {
+export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEdit = false }: AccessoryFormProps) {
 
   const { token } = useAuth()
 
@@ -45,53 +46,135 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
 
     setErrors({})
 
-    if (!token) return
-
-    const accessory = mapToAccessoryDto({
-      name,
-      price,
-      description,
-      content,
-      discountPercent,
-      discountFrom,
-      discountTo
-    })
-
-    const id = await itemApi.addAccessory(token, accessory)
-
-    if (!id) {
-      alert("Greška pri kreiranju aksesoara")
+    if (!token) {
+      toast.error("Niste ulogovani")
       return
     }
 
-    setItemId(id)
+    try {
 
-    alert("Aksesoar uspešno kreiran. Sada dodaj slike.")
+      // EDIT
+      if (isEdit && itemId) {
+
+        const dto = mapToAccessoryUpdateDto({
+          name,
+          price,
+          description,
+          content,
+          discountPercent,
+          discountFrom,
+          discountTo
+        }, itemId)
+
+        const success = await itemApi.updateItem(token, itemId, dto)
+
+        if (!success) {
+          toast.error("Greška pri izmeni aksesoara")
+          return
+        }
+
+        if (discountPercent !== null && discountFrom && discountTo) {
+
+          await itemApi.addDiscount(
+            token,
+            itemId,
+            discountPercent,
+            discountFrom,
+            discountTo
+          )
+
+        }
+
+        toast.success("Aksesoar uspešno izmenjen")
+        return
+      }
+
+      // CREATE
+      const dto = mapToAccessoryDto({
+        name,
+        price,
+        description,
+        content,
+        discountPercent,
+        discountFrom,
+        discountTo
+      })
+
+      const id = await itemApi.addAccessory(token, dto)
+
+      if (!id) {
+        toast.error("Greška pri kreiranju aksesoara")
+        return
+      }
+
+      setItemId(id)
+      toast.success("Aksesoar uspešno kreiran. Sada dodaj slike.")
+
+    } catch {
+      toast.error("Došlo je do greške")
+    }
+  }
+
+  function resetForm() {
+    setItemId(null)
+    setName("")
+    setPrice(null)
+    setDescription("")
+    setContent("")
+    setDiscountPercent(null)
+    setDiscountFrom("")
+    setDiscountTo("")
+    setImages([])
+    setPrimary(0)
+
+    setErrors({})
   }
 
   async function handleImageUpload() {
 
     if (!token || !itemId) return
 
-    for (let i = 0; i < images.length; i++) {
+    try{
 
-      const imageUrl = URL.createObjectURL(images[i])
-
-      await itemImageApi.addImage(
-        token,
-        itemId,
-        {
-          imageUrl,
-          isPrimary: i === primary,
-          sortOrder: i
-        }
-      )
-
+      
+      for (let i = 0; i < images.length; i++) {
+        
+        const imageUrl = URL.createObjectURL(images[i])
+        
+        await itemImageApi.addImage(
+          token,
+          itemId,
+          {
+            imageUrl,
+            isPrimary: i === primary,
+            sortOrder: i
+          }
+        )
+        
+      }
+      toast.success("Slike uspešno dodate")
+      resetForm()
+    } catch {
+      toast.error("Greška pri uploadu slika")
     }
 
-    alert("Slike uspešno dodate")
-    setImages([])
   }
+
+  useEffect(() => {
+
+    if (!initialData) return
+
+    setItemId(initialData.itemId!)
+    setName(initialData.name)
+    setPrice(initialData.price)
+    setDescription(initialData.description)
+    setContent(initialData.content)
+
+    setDiscountPercent(initialData.discountPercent ?? null)
+    setDiscountFrom(initialData.discountFrom?.split("T")[0] ?? "")
+    setDiscountTo(initialData.discountTo?.split("T")[0] ?? "")
+
+  }, [initialData])
 
   return (
 
@@ -169,10 +252,12 @@ export default function AccessoryForm({ itemApi, itemImageApi }: AccessoryFormPr
         />
 
         <button
-          className="btn-primary w-full"
+          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           onClick={handleSubmit}
+          disabled={!isEdit && itemId !== null}
         >
-          Kreiraj aksesoar
+          {isEdit ? "Sačuvaj izmene" : "Kreiraj aksesoar"}
         </button>
       </div>
 

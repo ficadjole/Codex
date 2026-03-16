@@ -1,4 +1,4 @@
-import type { ItemImageCreateDto } from "../../models/item/ItemImageCreateDto";
+import type { ItemImageCreateDto } from "../../models/item/create/ItemImageCreateDto";
 
 export interface IItemImageApiService {
   // AUTH (admin / authenticated user)

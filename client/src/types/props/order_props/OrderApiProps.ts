@@ -1,5 +1,5 @@
 import type { IOrderApiService } from "../../../api_services/orderApi/IOrderApiService";
 
-export interface OrderApiProps {
+export type OrderApiProps = {
   orderApi: IOrderApiService;
 }

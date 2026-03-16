@@ -1,4 +1,4 @@
-import type { DiscountValidationErrors } from "../../../types/validation/DiscountValidationErrors"
+import type { DiscountValidationErrors } from "../../../types/validation/discount/DiscountValidationErrors"
 
 export function validateDiscount(
     discountPercent?: number | null,
@@ -30,9 +30,21 @@ export function validateDiscount(
     if (discountFrom) {
 
         const fromDate = new Date(discountFrom)
+        fromDate.setHours(0, 0, 0, 0)
 
         if (fromDate < today) {
-            errors.discountFrom = "Popust ne može početi u prošlosti."
+            errors.discountFrom = "Datum početka ne može biti u prošlosti."
+        }
+
+    }
+
+    if (discountTo) {
+
+        const toDate = new Date(discountTo)
+        toDate.setHours(0, 0, 0, 0)
+
+        if (toDate < today) {
+            errors.discountTo = "Datum kraja ne može biti u prošlosti."
         }
 
     }

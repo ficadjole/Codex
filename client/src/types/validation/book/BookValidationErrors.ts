@@ -1,4 +1,4 @@
-import type { DiscountValidationErrors } from "../DiscountValidationErrors"
+import type { DiscountValidationErrors } from "../discount/DiscountValidationErrors"
 
 export type BookValidationErrors = DiscountValidationErrors & {
     name                ?: string

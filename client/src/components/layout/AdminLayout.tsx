@@ -33,10 +33,6 @@ export default function AdminLayout() {
               Artikli
             </NavLink>
 
-            <NavLink to="/admin/items/add" className={linkClass}>
-              Dodaj artikal
-            </NavLink>
-
             <NavLink to="/admin/genres" className={linkClass}>
               Žanrovi
             </NavLink>

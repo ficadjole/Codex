@@ -3,6 +3,7 @@ import type { GenreDto } from "../../models/genre/GenreDto"
 import { useAuth } from "../../hooks/auth/useAuthHook"
 import type { GenreApiProps } from "../../types/props/genre_props/GenreApiProps"
 import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa"
+import toast from "react-hot-toast"
 
 export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
 
@@ -31,7 +32,7 @@ export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
             setNewGenre("")
             loadGenres()
         } else {
-            alert("Greška pri dodavanju žanra")
+            toast.error("Greška pri dodavanju žanra")
         }
     }
 
@@ -43,7 +44,7 @@ export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
         if (success) {
             setGenres(prev => prev.filter(g => g.genreId !== id))
         } else {
-            alert("Greška pri brisanju")
+            toast.error("Greška pri brisanju")
         }
     }
 
@@ -71,7 +72,7 @@ export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
 
         } else {
 
-            alert("Greška pri izmjeni")
+            toast.error("Greška pri izmjeni")
 
         }
     }
@@ -101,10 +102,10 @@ export default function GenreAdminPanel({ genreApi }: GenreApiProps) {
                     />
 
                     <button
-                        className="btn-primary"
+                        className="btn-primary w-55"
                         onClick={handleAdd}
                     >
-                        Dodaj
+                        + Dodaj žanr
                     </button>
 
                 </div>
