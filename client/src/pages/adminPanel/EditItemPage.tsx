@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom"
 import BookForm from "../../components/forms/BookForm"
 import type { ItemApiProps } from "../../types/props/admin_add_item_props/ItemProps"
 import type { BookDetailsDto } from "../../models/item/details/BookDetailsDto"
-import type { AccessoryDetailsDto } from "../../models/item/AccessoryDetailsDto"
 import AccessoryForm from "../../components/forms/AccessoryForm"
+import type { AccessoryDetailsDto } from "../../models/item/details/AccessoryDetailsDto"
 
 export default function EditItemPage({ itemApi, genreApi, itemImageApi }: ItemApiProps) {
 
@@ -28,7 +28,6 @@ export default function EditItemPage({ itemApi, genreApi, itemImageApi }: ItemAp
 
       if (item.type === "knjiga") {
         const bookData = await itemApi.getBook(Number(id))
-        console.log("BOOK DATA:", bookData)
 
         setBook({
           ...bookData,

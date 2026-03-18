@@ -74,7 +74,7 @@ export default function Home({ itemApi }: HomeProps) {
         
         <ItemCarousel
           items={books}
-          visibleCount={4}
+          visibleCount={5}
         />
       </section>
 

@@ -10,5 +10,5 @@ edit book i aksesoar, treba videti samo za slike i pdf kad se uradi sa javnim ur
 uraditi da ako istekne token da izbaci sa admin panela da ne ostane u njoj
 Uraditi Book details stranicu (kad se klikne na detaljnije u kartici)
 uraditi korpu i narucivanje artikala
-dodati na kartice za popust ikonicu ili sta vec
+dodati na kartice za popust ikonicu ili sta vec i da cena bude ono sa popustom ako ima popusta
 Uraditi responsive 

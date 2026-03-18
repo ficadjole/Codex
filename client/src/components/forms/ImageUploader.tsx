@@ -1,7 +1,7 @@
 import { useState } from "react"
 import type { ImageUploaderProps } from "../../types/props/admin_add_item_props/ImageUploaderProps"
 
-export default function ImageUploader({ onChange }: ImageUploaderProps) {
+export default function ImageUploader({ onChange, initialImages = [] }: ImageUploaderProps) {
 
   const [images, setImages] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
@@ -77,6 +77,18 @@ export default function ImageUploader({ onChange }: ImageUploaderProps) {
       </label>
 
       <div className="grid grid-cols-3 gap-4">
+        
+        {initialImages.map((src, index) => (
+          <div
+            key={`existing-${index}`}
+            className="relative border rounded-xl overflow-hidden border-[#1F3337]"
+          >
+            <img
+              src={src}
+              className="w-full h-24 object-cover"
+            />
+          </div>
+        ))}
 
         {previews.map((src, index) => {
 
