@@ -2,19 +2,23 @@ import axios from "axios";
 import { r2StorageApi } from "../api_services/r2StorageApi/R2StorageApi";
 import { optimizeImage } from "./optimizeImage";
 
-export async function uploadImage(
+export async function uploadFile(
   itemId: number,
   file: File,
   token: string,
   itemType: string,
 ) {
-  const optimized = await optimizeImage(file);
+  let processedFile = file;
+
+  if (file.type.startsWith("image/")) {
+    processedFile = await optimizeImage(file);
+  }
 
   const uploadData = await r2StorageApi.generateUrlForUpload(
     itemId,
     {
-      fileName: optimized.name,
-      contentType: optimized.type,
+      fileName: processedFile.name,
+      contentType: processedFile.type,
       itemType: itemType,
     },
     token,
@@ -22,9 +26,9 @@ export async function uploadImage(
 
   const { uploadUrl, fileName } = uploadData;
 
-  const res = await axios.put(uploadUrl, optimized, {
+  const res = await axios.put(uploadUrl, processedFile, {
     headers: {
-      "Content-Type": optimized.type,
+      "Content-Type": processedFile.type,
     },
   });
 

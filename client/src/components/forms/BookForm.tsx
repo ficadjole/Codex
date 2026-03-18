@@ -10,7 +10,7 @@ import { mapToBookDto, mapToBookUpdateDto } from "../../helpers/bookMapper";
 import type { BookValidationErrors } from "../../types/validation/book/BookValidationErrors";
 import type { BookFormProps } from "../../types/props/form_props/BookFormProps";
 import toast from "react-hot-toast";
-import { uploadImage } from "../../helpers/uploadImage";
+import { uploadFile } from "../../helpers/uploadFile";
 
 export default function BookForm({
   genreApi,
@@ -177,7 +177,7 @@ export default function BookForm({
 
     try {
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadImage(itemId, images[i], token, "knjiga");
+        const imageUrl = await uploadFile(itemId, images[i], token, "knjiga");
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,
@@ -205,8 +205,6 @@ export default function BookForm({
 
   useEffect(() => {
     if (!initialData) return;
-
-    console.log(initialData);
 
     setItemId(initialData.itemId!);
     setName(initialData.name);

@@ -11,7 +11,7 @@ import {
   mapToAccessoryUpdateDto,
 } from "../../helpers/accessoryMapper";
 import toast from "react-hot-toast";
-import { uploadImage } from "../../helpers/uploadImage";
+import { uploadFile } from "../../helpers/uploadFile";
 
 export default function AccessoryForm({
   itemApi,
@@ -140,12 +140,7 @@ export default function AccessoryForm({
 
     try {
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadImage(
-          itemId,
-          images[i],
-          token,
-          "aksesoar",
-        );
+        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar");
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,

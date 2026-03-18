@@ -22,7 +22,7 @@ export class R2StorageService implements IR2StorageService {
   async generateUrlForUpload(
     dto: PresingedUrlDto,
   ): Promise<PresignedUrlResult> {
-    const slug = this.generateFileName(dto.fileName, "webp");
+    const slug = this.generateFileName(dto.fileName, dto.contentType);
 
     const key = `items/${dto.itemType}/${dto.itemId}/${slug}`;
 
