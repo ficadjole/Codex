@@ -1,34 +1,41 @@
-import { useEffect, useState } from "react"
-import { useAuth } from "../../hooks/auth/useAuthHook"
-import ImageUploader from "./ImageUploader"
-import DiscountCard from "./DiscountCard"
-import AccessoryDetailsCard from "../accessoryForm/AccessoryDetailsCard"
-import type { AccessoryFormProps } from "../../types/props/admin_add_item_props/AccessoryFormProps"
-import { validateAccessoryCreateData } from "../../api_services/validators/accessoryForm/AccessoryCreateValidator"
-import type { AccessoryValidationErrors } from "../../types/validation/accessory/AccessoryValidationErrors"
-import { mapToAccessoryDto, mapToAccessoryUpdateDto } from "../../helpers/accessoryMapper"
-import toast from "react-hot-toast"
+import { useEffect, useState } from "react";
+import { useAuth } from "../../hooks/auth/useAuthHook";
+import ImageUploader from "./ImageUploader";
+import DiscountCard from "./DiscountCard";
+import AccessoryDetailsCard from "../accessoryForm/AccessoryDetailsCard";
+import type { AccessoryFormProps } from "../../types/props/admin_add_item_props/AccessoryFormProps";
+import { validateAccessoryCreateData } from "../../api_services/validators/accessoryForm/AccessoryCreateValidator";
+import type { AccessoryValidationErrors } from "../../types/validation/accessory/AccessoryValidationErrors";
+import {
+  mapToAccessoryDto,
+  mapToAccessoryUpdateDto,
+} from "../../helpers/accessoryMapper";
+import toast from "react-hot-toast";
+import { uploadImage } from "../../helpers/uploadImage";
 
-export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEdit = false }: AccessoryFormProps) {
+export default function AccessoryForm({
+  itemApi,
+  itemImageApi,
+  initialData,
+  isEdit = false,
+}: AccessoryFormProps) {
+  const { token } = useAuth();
 
-  const { token } = useAuth()
+  const [itemId, setItemId] = useState<number | null>(null);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState<number | null>(null);
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+  const [discountPercent, setDiscountPercent] = useState<number | null>(null);
+  const [discountFrom, setDiscountFrom] = useState("");
+  const [discountTo, setDiscountTo] = useState("");
 
-  const [itemId, setItemId] = useState<number | null>(null)
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState<number | null>(null)
-  const [description, setDescription] = useState("")
-  const [content, setContent] = useState("")
-  const [discountPercent, setDiscountPercent] = useState<number | null>(null)
-  const [discountFrom, setDiscountFrom] = useState("")
-  const [discountTo, setDiscountTo] = useState("")
+  const [images, setImages] = useState<File[]>([]);
+  const [primary, setPrimary] = useState<number>(0);
 
-  const [images, setImages] = useState<File[]>([])
-  const [primary, setPrimary] = useState<number>(0)
-
-  const [errors, setErrors] = useState<AccessoryValidationErrors>({})
+  const [errors, setErrors] = useState<AccessoryValidationErrors>({});
 
   async function handleSubmit() {
-
     const validation = validateAccessoryCreateData(
       name,
       price,
@@ -36,57 +43,56 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
       content,
       discountPercent,
       discountFrom,
-      discountTo
+      discountTo,
     );
 
     if (!validation.success) {
-      setErrors(validation.errors)
-      return
+      setErrors(validation.errors);
+      return;
     }
 
-    setErrors({})
+    setErrors({});
 
     if (!token) {
-      toast.error("Niste ulogovani")
-      return
+      toast.error("Niste ulogovani");
+      return;
     }
 
     try {
-
       // EDIT
       if (isEdit && itemId) {
+        const dto = mapToAccessoryUpdateDto(
+          {
+            name,
+            price,
+            description,
+            content,
+            discountPercent,
+            discountFrom,
+            discountTo,
+          },
+          itemId,
+        );
 
-        const dto = mapToAccessoryUpdateDto({
-          name,
-          price,
-          description,
-          content,
-          discountPercent,
-          discountFrom,
-          discountTo
-        }, itemId)
-
-        const success = await itemApi.updateItem(token, itemId, dto)
+        const success = await itemApi.updateItem(token, itemId, dto);
 
         if (!success) {
-          toast.error("Greška pri izmeni aksesoara")
-          return
+          toast.error("Greška pri izmeni aksesoara");
+          return;
         }
 
         if (discountPercent !== null && discountFrom && discountTo) {
-
           await itemApi.addDiscount(
             token,
             itemId,
             discountPercent,
             discountFrom,
-            discountTo
-          )
-
+            discountTo,
+          );
         }
 
-        toast.success("Aksesoar uspešno izmenjen")
-        return
+        toast.success("Aksesoar uspešno izmenjen");
+        return;
       }
 
       // CREATE
@@ -97,89 +103,79 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
         content,
         discountPercent,
         discountFrom,
-        discountTo
-      })
+        discountTo,
+      });
 
-      const id = await itemApi.addAccessory(token, dto)
+      const id = await itemApi.addAccessory(token, dto);
 
       if (!id) {
-        toast.error("Greška pri kreiranju aksesoara")
-        return
+        toast.error("Greška pri kreiranju aksesoara");
+        return;
       }
 
-      setItemId(id)
-      toast.success("Aksesoar uspešno kreiran. Sada dodaj slike.")
-
+      setItemId(id);
+      toast.success("Aksesoar uspešno kreiran. Sada dodaj slike.");
     } catch {
-      toast.error("Došlo je do greške")
+      toast.error("Došlo je do greške");
     }
   }
 
   function resetForm() {
-    setItemId(null)
-    setName("")
-    setPrice(null)
-    setDescription("")
-    setContent("")
-    setDiscountPercent(null)
-    setDiscountFrom("")
-    setDiscountTo("")
-    setImages([])
-    setPrimary(0)
+    setItemId(null);
+    setName("");
+    setPrice(null);
+    setDescription("");
+    setContent("");
+    setDiscountPercent(null);
+    setDiscountFrom("");
+    setDiscountTo("");
+    setImages([]);
+    setPrimary(0);
 
-    setErrors({})
+    setErrors({});
   }
 
   async function handleImageUpload() {
+    if (!token || !itemId) return;
 
-    if (!token || !itemId) return
-
-    try{
-
-      
+    try {
       for (let i = 0; i < images.length; i++) {
-        
-        const imageUrl = URL.createObjectURL(images[i])
-        
-        await itemImageApi.addImage(
-          token,
+        const imageUrl = await uploadImage(
           itemId,
-          {
-            imageUrl,
-            isPrimary: i === primary,
-            sortOrder: i
-          }
-        )
-        
-      }
-      toast.success("Slike uspešno dodate")
-      resetForm()
-    } catch {
-      toast.error("Greška pri uploadu slika")
-    }
+          images[i],
+          token,
+          "aksesoar",
+        );
 
+        await itemImageApi.addImage(token, itemId, {
+          imageUrl,
+          isPrimary: i === primary,
+          sortOrder: i,
+        });
+      }
+      toast.success("Slike uspešno dodate");
+      resetForm();
+    } catch {
+      toast.error("Greška pri uploadu slika");
+    }
   }
 
   useEffect(() => {
+    if (!initialData) return;
 
-    if (!initialData) return
+    setItemId(initialData.itemId!);
+    setName(initialData.name);
+    setPrice(initialData.price);
+    setDescription(initialData.description);
+    setContent(initialData.content);
 
-    setItemId(initialData.itemId!)
-    setName(initialData.name)
-    setPrice(initialData.price)
-    setDescription(initialData.description)
-    setContent(initialData.content)
-
-    setDiscountPercent(initialData.discountPercent ?? null)
-    setDiscountFrom(initialData.discountFrom?.split("T")[0] ?? "")
-    setDiscountTo(initialData.discountTo?.split("T")[0] ?? "")
-
-  }, [initialData])
+    setDiscountPercent(initialData.discountPercent ?? null);
+    setDiscountFrom(initialData.discountFrom?.split("T")[0] ?? "");
+    setDiscountTo(initialData.discountTo?.split("T")[0] ?? "");
+  }, [initialData]);
 
   return (
-
     <div className="grid lg:grid-cols-3 gap-10">
-
       <AccessoryDetailsCard
         name={name}
         setName={setName}
@@ -193,12 +189,8 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
       />
 
       <div className="space-y-8">
-
         <div className="card relative min-h-[320px]">
-
-          <h2 className="text-xl font-semibold mb-4">
-            Slike
-          </h2>
+          <h2 className="text-xl font-semibold mb-4">Slike</h2>
 
           {!itemId && (
             <div className="absolute inset-0 bg-[#0F1A1C]/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl z-10 text-center p-4">
@@ -209,7 +201,10 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
                   d="M12 11c1.1 0 2 .9 2 2v2a2 2 0 11-4 0v-2c0-1.1.9-2 2-2zm6-3V7a6 6 0 10-12 0v1H4v12h16V8h-2z"
                 />
               </svg>
@@ -220,11 +215,10 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
           )}
 
           <div className={!itemId ? "opacity-40 pointer-events-none" : ""}>
-
             <ImageUploader
               onChange={(files, primaryIndex) => {
-                setImages(files)
-                setPrimary(primaryIndex ?? 0)
+                setImages(files);
+                setPrimary(primaryIndex ?? 0);
               }}
             />
 
@@ -236,9 +230,7 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
                 Sačuvaj slike
               </button>
             )}
-
           </div>
-
         </div>
 
         <DiscountCard
@@ -252,16 +244,15 @@ export default function AccessoryForm({ itemApi, itemImageApi, initialData, isEd
         />
 
         <button
-          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          className={`btn-primary w-full ${
+            !isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}
         >
           {isEdit ? "Sačuvaj izmene" : "Kreiraj aksesoar"}
         </button>
       </div>
-
     </div>
-
-  )
+  );
 }

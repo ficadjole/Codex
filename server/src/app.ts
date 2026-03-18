@@ -68,6 +68,9 @@ import { ItemImageRepository } from "./Database/repositories/itemImage/ItemImage
 import { IItemImageService } from "./Domain/services/itemImage/IItemImageService";
 import { ItemImageService } from "./Services/itemImage/ItemImageService";
 import { ItemImageController } from "./WebAPI/controllers/ItemImageController";
+import { IR2StorageService } from "./Domain/services/R2/IR2StorageService";
+import { R2StorageService } from "./R2/services/R2StorageService";
+import { R2Controller } from "./WebAPI/controllers/R2Controller";
 
 require("dotenv").config();
 
@@ -151,6 +154,11 @@ const orderService: IOrderService = new OrderService(
 );
 const orderController = new OrderController(orderService);
 
+// --- R2 ---
+
+const r2StorageService: IR2StorageService = new R2StorageService();
+const r2StorageController = new R2Controller(r2StorageService);
+
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1/item", itemController.getRouter());
 app.use("/api/v1/itemImages", itemImageController.getRouter());
@@ -159,5 +167,6 @@ app.use("/api/v1/blogPost", blogPostController.getRouter());
 app.use("/api/v1/comment", commentController.getRouter());
 app.use("/api/v1/genre", genreController.getRouter());
 app.use("/api/v1/order", orderController.getRouter());
+app.use("/api/v1/", r2StorageController.getRouter());
 
 export default app;
