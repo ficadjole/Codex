@@ -17,7 +17,7 @@ export class R2Controller {
 
   private initializeRoutes(): void {
     this.router.post(
-      "/r2/:itemId",
+      "/r2",
       authenticate,
       authorize(UserRole.ADMIN),
       this.getPresignedUrl.bind(this),
@@ -26,20 +26,11 @@ export class R2Controller {
 
   async getPresignedUrl(req: Request, res: Response): Promise<void> {
     try {
-      const itemId = Number(req.params.itemId);
-      const { itemType, fileName, contentType } = req.body;
-
-      if (!itemId) {
-        res.status(400).json({
-          success: false,
-          message: "itemId is required",
-        });
-        return;
-      }
+      const { itemType, fileName, itemName, contentType } = req.body;
 
       const dto: PresingedUrlDto = {
-        itemId,
         fileName,
+        itemName,
         contentType,
         itemType,
       };

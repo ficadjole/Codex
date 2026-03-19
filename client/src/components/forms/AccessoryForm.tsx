@@ -140,7 +140,7 @@ export default function AccessoryForm({
 
     try {
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar");
+        const imageUrl = await uploadFile(images[i], token, "aksesoar", name);
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,
@@ -240,8 +240,9 @@ export default function AccessoryForm({
         />
 
         <button
-          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          className={`btn-primary w-full ${
+            !isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}
         >

@@ -17,7 +17,7 @@ CREATE TABLE users (
 -- ========================================
 CREATE TABLE items (
     itemId INT AUTO_INCREMENT PRIMARY KEY,
-    itemName VARCHAR(255) NOT NULL,
+    itemName VARCHAR(255) UNIQUE NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     discountPercent DECIMAL(5,2) DEFAULT NULL,
     discountFrom DATE DEFAULT NULL,

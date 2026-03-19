@@ -116,6 +116,10 @@ export default function BookForm({
         return;
       }
 
+      const pdfUrl = await uploadFile(pdf!, token, "knjiga", name);
+
+      //PROMENI MAPTOBOOKDTO DA PRIMA pdfURL kao STRING
+
       // CREATE
       const book = mapToBookDto({
         name,
@@ -177,7 +181,7 @@ export default function BookForm({
 
     try {
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadFile(itemId, images[i], token, "knjiga");
+        const imageUrl = await uploadFile(images[i], token, "knjiga", name);
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,
@@ -323,10 +327,11 @@ export default function BookForm({
         />
 
         <button
-          className={`btn-primary w-full ${!isEdit && itemId
+          className={`btn-primary w-full ${
+            !isEdit && itemId
               ? "opacity-50 cursor-not-allowed pointer-events-none"
               : ""
-            }`}
+          }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}
         >

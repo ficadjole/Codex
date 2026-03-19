@@ -21,12 +21,25 @@ export class R2StorageService implements IR2StorageService {
     return `${slug}-${timestamp}-${random}.${ext}`;
   }
 
+  keyGenerator(dto: PresingedUrlDto, slug: string): string {
+    const itemNameFormatted = dto.itemName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+    if (dto.contentType.includes("pdf")) {
+      return `items/${dto.itemType}/${itemNameFormatted}/pdf/${slug}`;
+    }
+
+    return `items/${dto.itemType}/${itemNameFormatted}/images/${slug}`;
+  }
+
   async generateUrlForUpload(
     dto: PresingedUrlDto,
   ): Promise<PresignedUrlResult> {
     const slug = this.generateFileName(dto.fileName, dto.contentType);
 
-    const key = `items/${dto.itemType}/${dto.itemId}/${slug}`;
+    const key = this.keyGenerator(dto, slug);
 
     const newPutUrl = await getSignedUrl(
       S3,
