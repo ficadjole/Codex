@@ -6,7 +6,7 @@ import { PresingedUrlDto } from "../../Domain/DTOs/r2/PresignedUrlDto";
 import { PresignedUrlResult } from "../../Domain/types/PresignedUrlResult";
 
 export class R2StorageService implements IR2StorageService {
-  generateFileName(fileName: string, ext: string): string {
+  generateFileName(fileName: string, contentType: string): string {
     const slug = fileName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -15,6 +15,8 @@ export class R2StorageService implements IR2StorageService {
     const timestamp = Date.now();
 
     const random = Math.random().toString(36).substring(2, 8);
+
+    const ext = contentType.split("/")[1];
 
     return `${slug}-${timestamp}-${random}.${ext}`;
   }
