@@ -211,6 +211,7 @@ export default function AccessoryForm({
 
           <div className={!itemId ? "opacity-40 pointer-events-none" : ""}>
             <ImageUploader
+              initialImages={initialData?.images || []}
               onChange={(files, primaryIndex) => {
                 setImages(files);
                 setPrimary(primaryIndex ?? 0);
@@ -239,9 +240,8 @@ export default function AccessoryForm({
         />
 
         <button
-          className={`btn-primary w-full ${
-            !isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`btn-primary w-full ${!isEdit && itemId ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}
         >

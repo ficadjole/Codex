@@ -289,6 +289,7 @@ export default function BookForm({
 
           <div className={!itemId ? "opacity-40 pointer-events-none" : ""}>
             <ImageUploader
+              initialImages={initialData?.images || []}
               onChange={(files, primaryIndex) => {
                 setImages(files);
                 setPrimary(primaryIndex ?? 0);
@@ -322,11 +323,10 @@ export default function BookForm({
         />
 
         <button
-          className={`btn-primary w-full ${
-            !isEdit && itemId
+          className={`btn-primary w-full ${!isEdit && itemId
               ? "opacity-50 cursor-not-allowed pointer-events-none"
               : ""
-          }`}
+            }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}
         >
