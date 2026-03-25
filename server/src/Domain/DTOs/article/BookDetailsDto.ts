@@ -1,4 +1,5 @@
 import { GenreDto } from "../genre/GenreDto";
+import { ItemImageDto } from "../itemImage/ItemImageDto";
 
 export class BookDetailsDto {
   public constructor(
@@ -17,6 +18,6 @@ export class BookDetailsDto {
     public cover: string = "",
     public publicationYear: number = 0,
     public genres: GenreDto[] = [],
-    public images: string[] = [],
+    public images: ItemImageDto[] = [],
   ) {}
 }

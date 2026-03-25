@@ -1,3 +1,5 @@
+import { ItemImageDto } from "../itemImage/ItemImageDto";
+
 export class AccessoryDetailsDto {
   public constructor(
     public itemId: number = 0,
@@ -8,6 +10,6 @@ export class AccessoryDetailsDto {
     public discountTo?: Date,
     public description: string = "",
     public content: string = "",
-    public images: string[] = [],
+    public images: ItemImageDto[] = [],
   ) {}
 }

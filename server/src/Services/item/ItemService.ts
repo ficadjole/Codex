@@ -22,7 +22,7 @@ export class ItemService implements IItemService {
     private bookGenreRepository: IBookGenreRepository,
     private accessoryRepository: IAccessoryRepository,
     private itemImageRepository: IItemImageRepository,
-  ) {}
+  ) { }
   async addDiscount(
     itemId: number,
     discountPercent: number,
@@ -231,7 +231,12 @@ export class ItemService implements IItemService {
 
     const images = await this.itemImageRepository.getByItemId(itemId);
 
-    const imagesUrls = images.map((img) => img.imageUrl);
+    const imagesDto = images.map((img) => ({
+      imageId: img.imageId,
+      imageUrl: img.imageUrl,
+      isPrimary: img.isPrimary,
+      sortOrder: img.sortOrder,
+    }));
 
     return new BookDetailsDto(
       book.itemId,
@@ -249,7 +254,7 @@ export class ItemService implements IItemService {
       book.cover,
       book.publicationYear,
       genresDto,
-      imagesUrls,
+      imagesDto,
     );
   }
 
@@ -259,7 +264,12 @@ export class ItemService implements IItemService {
 
     const images = await this.itemImageRepository.getByItemId(itemId);
 
-    const imagesUrls = images.map((img) => img.imageUrl);
+    const imagesDto = images.map((img) => ({
+      imageId: img.imageId,
+      imageUrl: img.imageUrl,
+      isPrimary: img.isPrimary,
+      sortOrder: img.sortOrder,
+    }));
 
     return new AccessoryDetailsDto(
       accessory.itemId,
@@ -270,7 +280,7 @@ export class ItemService implements IItemService {
       accessory.discountTo,
       accessory.description,
       accessory.content,
-      imagesUrls,
+      imagesDto,
     );
   }
 }

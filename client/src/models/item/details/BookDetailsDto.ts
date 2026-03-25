@@ -1,5 +1,6 @@
 import type { ItemDto } from "../ItemDto"
 import type { GenreDto } from "../../genre/GenreDto"
+import type { ItemImageDto } from "./ItemImageDto"
 
 export interface BookDetailsDto extends ItemDto {
   author              : string
@@ -10,5 +11,5 @@ export interface BookDetailsDto extends ItemDto {
   cover               : "meke" | "tvrde"
   pdfUrl              ?: string
   genres              : GenreDto[]
-  images              : string[]
+  images              : ItemImageDto[]
 }

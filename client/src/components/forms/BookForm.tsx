@@ -11,6 +11,7 @@ import type { BookValidationErrors } from "../../types/validation/book/BookValid
 import type { BookFormProps } from "../../types/props/form_props/BookFormProps";
 import toast from "react-hot-toast";
 import { uploadFile } from "../../helpers/uploadFile";
+import type { ItemImageDto } from "../../models/item/details/ItemImageDto";
 
 export default function BookForm({
   genreApi,
@@ -42,6 +43,11 @@ export default function BookForm({
   const [primary, setPrimary] = useState<number>(0);
 
   const [errors, setErrors] = useState<BookValidationErrors>({});
+
+  const [existingImages, setExistingImages] = useState<ItemImageDto[]>(
+    initialData?.images || []
+  );
+  const [originalPrimaryIndex, setOriginalPrimaryIndex] = useState<number | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); //sluzi da spreci podrazumevano ponasanje browsera
@@ -172,28 +178,74 @@ export default function BookForm({
     setErrors({});
   }
 
+  useEffect(() => {
+    if (!initialData) return
+
+    const index = initialData.images.findIndex(
+      (img: ItemImageDto) => img.isPrimary
+    )
+    setOriginalPrimaryIndex(index)
+  }, [initialData])
+
   async function handleImageUpload() {
     if (!token || !itemId) return;
 
     try {
+
+      // 1. upload novih slika
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadFile(itemId, images[i], token, "knjiga");
+        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar")
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,
-          isPrimary: i === primary,
+          isPrimary: primary === existingImages.length + i,
           sortOrder: i,
-        });
+        })
+      }
+
+      // 2. AKO je primary promenjen NA POSTOJEĆU sliku
+      if (
+        primary !== null &&
+        primary < existingImages.length &&
+        primary !== originalPrimaryIndex
+      ) {
+        const selected = existingImages[primary]
+
+        await itemImageApi.addImage(token, itemId, {
+          imageUrl: selected.imageUrl,
+          isPrimary: true,
+          sortOrder: 0,
+        })
       }
 
       toast.success("Slike uspešno dodate");
-
       resetForm();
-    } catch (err) {
-      console.error(err);
+
+    } catch {
       toast.error("Greška pri uploadu slika");
     }
   }
+
+  useEffect(() => {
+    if (!initialData) return;
+    setExistingImages(initialData.images || []);
+  }, [initialData]);
+
+  async function handleDeleteExistingImage(imageId: number) {
+    if (!token) return;
+
+    const success = await itemImageApi.deleteImage(token, imageId);
+
+    if (success) {
+      toast.success("Slika obrisana");
+
+      // ukloni iz UI-a (initialData ili poseban state)
+      setExistingImages(prev => prev.filter(img => img.imageId !== imageId));
+    } else {
+      toast.error("Greška pri brisanju slike");
+    }
+  }
+
 
   useEffect(() => {
     async function loadGenres() {
@@ -289,11 +341,12 @@ export default function BookForm({
 
           <div className={!itemId ? "opacity-40 pointer-events-none" : ""}>
             <ImageUploader
-              initialImages={initialData?.images || []}
+              initialImages={existingImages} // ✅ OVO
               onChange={(files, primaryIndex) => {
                 setImages(files);
                 setPrimary(primaryIndex ?? 0);
               }}
+              onDeleteExisting={handleDeleteExistingImage}
             />
 
             {itemId && (
@@ -324,8 +377,8 @@ export default function BookForm({
 
         <button
           className={`btn-primary w-full ${!isEdit && itemId
-              ? "opacity-50 cursor-not-allowed pointer-events-none"
-              : ""
+            ? "opacity-50 cursor-not-allowed pointer-events-none"
+            : ""
             }`}
           onClick={handleSubmit}
           disabled={!isEdit && itemId !== null}

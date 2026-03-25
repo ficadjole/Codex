@@ -12,6 +12,7 @@ import {
 } from "../../helpers/accessoryMapper";
 import toast from "react-hot-toast";
 import { uploadFile } from "../../helpers/uploadFile";
+import type { ItemImageDto } from "../../models/item/details/ItemImageDto";
 
 export default function AccessoryForm({
   itemApi,
@@ -34,6 +35,10 @@ export default function AccessoryForm({
   const [primary, setPrimary] = useState<number>(0);
 
   const [errors, setErrors] = useState<AccessoryValidationErrors>({});
+  const [existingImages, setExistingImages] = useState<ItemImageDto[]>(
+    initialData?.images || []
+  );
+  const [originalPrimaryIndex, setOriginalPrimaryIndex] = useState<number | null>(null)
 
   async function handleSubmit() {
     const validation = validateAccessoryCreateData(
@@ -135,23 +140,71 @@ export default function AccessoryForm({
     setErrors({});
   }
 
+  useEffect(() => {
+    if (!initialData) return
+
+    const index = initialData.images.findIndex(
+      (img: ItemImageDto) => img.isPrimary
+    )
+    setOriginalPrimaryIndex(index)
+  }, [initialData])
+
   async function handleImageUpload() {
     if (!token || !itemId) return;
 
     try {
+
+      // 1. upload novih slika
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar");
+        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar")
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,
-          isPrimary: i === primary,
+          isPrimary: primary === existingImages.length + i,
           sortOrder: i,
-        });
+        })
       }
+
+      // 2. AKO je primary promenjen NA POSTOJEĆU sliku
+      if (
+        primary !== null &&
+        primary < existingImages.length &&
+        primary !== originalPrimaryIndex
+      ) {
+        const selected = existingImages[primary]
+
+        await itemImageApi.addImage(token, itemId, {
+          imageUrl: selected.imageUrl,
+          isPrimary: true,
+          sortOrder: 0,
+        })
+      }
+
       toast.success("Slike uspešno dodate");
       resetForm();
+
     } catch {
       toast.error("Greška pri uploadu slika");
+    }
+  }
+
+  useEffect(() => {
+    if (!initialData) return;
+    setExistingImages(initialData.images || []);
+  }, [initialData]);
+
+  async function handleDeleteExistingImage(imageId: number) {
+    if (!token) return;
+
+    const success = await itemImageApi.deleteImage(token, imageId);
+
+    if (success) {
+      toast.success("Slika obrisana");
+
+      // ukloni iz UI-a (initialData ili poseban state)
+      setExistingImages(prev => prev.filter(img => img.imageId !== imageId));
+    } else {
+      toast.error("Greška pri brisanju slike");
     }
   }
 
@@ -211,11 +264,12 @@ export default function AccessoryForm({
 
           <div className={!itemId ? "opacity-40 pointer-events-none" : ""}>
             <ImageUploader
-              initialImages={initialData?.images || []}
+              initialImages={existingImages} // ✅ OVO
               onChange={(files, primaryIndex) => {
                 setImages(files);
                 setPrimary(primaryIndex ?? 0);
               }}
+              onDeleteExisting={handleDeleteExistingImage}
             />
 
             {itemId && (

@@ -1,14 +1,29 @@
-import { useState } from "react"
-import type { ImageUploaderProps } from "../../types/props/admin_add_item_props/ImageUploaderProps"
+import { useEffect, useState } from "react"
+import type { ItemImageDto } from "../../models/item/details/ItemImageDto"
 
-export default function ImageUploader({ onChange, initialImages = [] }: ImageUploaderProps) {
+type Props = {
+  initialImages?: ItemImageDto[]
+  onChange: (files: File[], primaryIndex: number | null) => void
+  onDeleteExisting?: (imageId: number) => void
+}
+
+export default function ImageUploader({
+  onChange,
+  initialImages = [],
+  onDeleteExisting
+}: Props) {
 
   const [images, setImages] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
   const [primary, setPrimary] = useState<number | null>(null)
 
-  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+  // set initial primary
+  useEffect(() => {
+    const index = initialImages.findIndex(img => img.isPrimary)
+    if (index !== -1) setPrimary(index)
+  }, [initialImages])
 
+  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
 
     const files = Array.from(e.target.files)
@@ -25,8 +40,8 @@ export default function ImageUploader({ onChange, initialImages = [] }: ImageUpl
     let newPrimary = primary
 
     if (primary === null && newImages.length > 0) {
-      newPrimary = 0
-      setPrimary(0)
+      newPrimary = initialImages.length // prvi novi
+      setPrimary(newPrimary)
     }
 
     onChange(newImages, newPrimary)
@@ -38,7 +53,6 @@ export default function ImageUploader({ onChange, initialImages = [] }: ImageUpl
   }
 
   function removeImage(index: number) {
-
     URL.revokeObjectURL(previews[index])
 
     const newImages = images.filter((_, i) => i !== index)
@@ -47,18 +61,11 @@ export default function ImageUploader({ onChange, initialImages = [] }: ImageUpl
     setImages(newImages)
     setPreviews(newPreviews)
 
-    let newPrimary = primary
-
-    if (primary === index) {
-      newPrimary = newImages.length > 0 ? 0 : null
-    }
-
-    setPrimary(newPrimary)
-    onChange(newImages, newPrimary)
+    setPrimary(null)
+    onChange(newImages, null)
   }
 
   return (
-
     <div className="space-y-4">
 
       <p className="text-sm text-[#9DB7AA]">
@@ -77,35 +84,55 @@ export default function ImageUploader({ onChange, initialImages = [] }: ImageUpl
       </label>
 
       <div className="grid grid-cols-3 gap-4">
-        
-        {initialImages.map((src, index) => (
-          <div
-            key={`existing-${index}`}
-            className="relative border rounded-xl overflow-hidden border-[#1F3337]"
-          >
-            <img
-              src={src}
-              className="w-full h-24 object-cover"
-            />
-          </div>
-        ))}
 
-        {previews.map((src, index) => {
-
+        {/* POSTOJEĆE */}
+        {initialImages.map((img, index) => {
           const isPrimary = primary === index
 
           return (
+            <div
+              key={img.imageId}
+              className={`relative border rounded-xl overflow-hidden
+              ${isPrimary ? "border-green-500" : "border-[#1F3337]"}`}
+            >
+              <img
+                src={img.imageUrl}
+                className="w-full h-24 object-cover cursor-pointer"
+                onClick={() => selectPrimary(index)}
+              />
 
+              <button
+                type="button"
+                onClick={() => onDeleteExisting?.(img.imageId)}
+                className="absolute top-1 right-1 bg-black/70 text-white w-5 h-5 rounded-full text-xs"
+              >
+                ✕
+              </button>
+
+              {isPrimary && (
+                <div className="text-xs text-center bg-green-600 pb-1">
+                  Primary slika
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {/* NOVE */}
+        {previews.map((src, index) => {
+          const realIndex = initialImages.length + index
+          const isPrimary = primary === realIndex
+
+          return (
             <div
               key={index}
               className={`relative border rounded-xl overflow-hidden
               ${isPrimary ? "border-green-500" : "border-[#1F3337]"}`}
             >
-
               <img
                 src={src}
                 className="w-full h-24 object-cover cursor-pointer"
-                onClick={() => selectPrimary(index)}
+                onClick={() => selectPrimary(realIndex)}
               />
 
               <button
@@ -121,16 +148,11 @@ export default function ImageUploader({ onChange, initialImages = [] }: ImageUpl
                   Primary slika
                 </div>
               )}
-
             </div>
-
           )
-
         })}
 
       </div>
-
     </div>
-
   )
 }
