@@ -1,8 +1,9 @@
 Fiki
-Dodati slike i pdf na R2 CloudFlare
-Dodati PDF pregled knjige
+Proveriti kako radi azuriranje slika, prilikom dodavanja novih ili menjanja postojecih
+
 Dodati Resend slanje mejlova kupcu prilikom kupovine artikla ili prijave na aplikaciju
-Dodati Slack slanje notifikacije o kupovini
+
+Dodati korpu u bazu - idKorpe,idUsera,Ukupna cena, Artikli
 
 Kaca
 zbog necega slike imaju kao shadow preko u kartici ali ne znam zasto

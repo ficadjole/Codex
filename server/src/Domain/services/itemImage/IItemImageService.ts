@@ -1,3 +1,4 @@
+import { setPrimaryImageDTO } from "../../DTOs/itemImages/setPrimaryImageDTO";
 import { ItemImage } from "../../models/ItemImage";
 
 export interface IItemImageService {
@@ -13,4 +14,6 @@ export interface IItemImageService {
   getImagesForItem(itemId: number): Promise<ItemImage[]>;
 
   getPrimaryImage(itemId: number): Promise<ItemImage>;
+
+  setPrimaryImage(image: setPrimaryImageDTO): Promise<boolean>;
 }

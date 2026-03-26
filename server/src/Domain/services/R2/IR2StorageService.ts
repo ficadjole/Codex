@@ -3,4 +3,5 @@ import { PresignedUrlResult } from "../../types/PresignedUrlResult";
 
 export interface IR2StorageService {
   generateUrlForUpload(dto: PresingedUrlDto): Promise<PresignedUrlResult>;
+  deleteData(dataUrl: string): Promise<boolean>;
 }

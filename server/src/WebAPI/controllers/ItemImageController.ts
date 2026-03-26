@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { IItemImageService } from "../../Domain/services/itemImage/IItemImageService";
 import { authenticate } from "../middlewere/authentification/AuthMiddleware";
+import { ItemImage } from "../../Domain/models/ItemImage";
 
 export class ItemImageController {
   private router: Router;
@@ -30,6 +31,11 @@ export class ItemImageController {
     this.router.get(
       "/items/:itemId/images/primary",
       this.getPrimaryImage.bind(this),
+    );
+
+    this.router.put(
+      "/items/:itemId/images/:imageId",
+      this.setPrimaryImage.bind(this),
     );
   }
 
@@ -159,6 +165,48 @@ export class ItemImageController {
       });
     }
   }
+
+  async setPrimaryImage(req: Request, res: Response): Promise<void> {
+    try {
+      const itemId = Number(req.params.itemId);
+      const imageId = Number(req.params.imageId);
+      const { isPrimary } = req.body;
+
+      if (!itemId || !imageId) {
+        res.status(400).json({
+          success: false,
+          message: "itemId and imageId are required",
+        });
+        return;
+      }
+
+      const result = await this.ItemImageService.setPrimaryImage({
+        imageId,
+        itemId,
+        isPrimary,
+      });
+
+      if (result) {
+        res.status(200).json({
+          success: true,
+          message: "Succesfully setted primary image",
+        });
+        return;
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "Primary image was not set succesfully",
+        });
+        return;
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to set primary image",
+      });
+    }
+  }
+
   public getRouter(): Router {
     return this.router;
   }

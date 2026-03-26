@@ -46,6 +46,8 @@ export default function BookForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); //sluzi da spreci podrazumevano ponasanje browsera
 
+    var pdfUrl = "";
+
     const validation = validateBookCreateData(
       name,
       author,
@@ -86,7 +88,7 @@ export default function BookForm({
             goodreadsLink,
             publicationYear,
             cover,
-            pdf,
+            pdfUrl,
             genreIds,
             discountPercent,
             discountFrom,
@@ -116,7 +118,9 @@ export default function BookForm({
         return;
       }
 
-      const pdfUrl = await uploadFile(pdf!, token, "knjiga", name);
+      if (pdf !== null) {
+        pdfUrl = await uploadFile(pdf!, token, "knjiga", name);
+      }
 
       //PROMENI MAPTOBOOKDTO DA PRIMA pdfURL kao STRING
 
@@ -131,7 +135,7 @@ export default function BookForm({
         goodreadsLink,
         publicationYear,
         cover,
-        pdf,
+        pdfUrl,
         genreIds,
         discountPercent,
         discountFrom,

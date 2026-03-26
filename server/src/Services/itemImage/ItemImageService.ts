@@ -1,3 +1,4 @@
+import { setPrimaryImageDTO } from "../../Domain/DTOs/itemImages/setPrimaryImageDTO";
 import { ItemImage } from "../../Domain/models/ItemImage";
 import { IItemImageRepository } from "../../Domain/repositories/IItemImageRepository";
 import { IItemImageService } from "../../Domain/services/itemImage/IItemImageService";
@@ -38,5 +39,13 @@ export class ItemImageService implements IItemImageService {
 
   async getPrimaryImage(itemId: number): Promise<ItemImage> {
     return await this.itemImageRepository.getPrimaryImage(itemId);
+  }
+
+  async setPrimaryImage(image: setPrimaryImageDTO): Promise<boolean> {
+    const existing = await this.itemImageRepository.getImageById(image.imageId);
+
+    if (existing.imageId === 0) return false;
+
+    return await this.itemImageRepository.setPrimaryImage(image);
   }
 }

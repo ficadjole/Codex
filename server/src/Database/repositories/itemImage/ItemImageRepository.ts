@@ -2,6 +2,7 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ItemImage } from "../../../Domain/models/ItemImage";
 import db from "../../connection/DbConnectionPool";
 import { IItemImageRepository } from "../../../Domain/repositories/IItemImageRepository";
+import { setPrimaryImageDTO } from "../../../Domain/DTOs/itemImages/setPrimaryImageDTO";
 
 export class ItemImageRepository implements IItemImageRepository {
   async create(image: ItemImage): Promise<ItemImage> {
@@ -84,5 +85,52 @@ export class ItemImageRepository implements IItemImageRepository {
       !!row.isPrimary,
       row.sortOrder,
     );
+  }
+
+  async setPrimaryImage(image: setPrimaryImageDTO): Promise<boolean> {
+    try {
+      if (image.isPrimary) {
+        await db.execute(
+          "UPDATE itemImages SET isPrimary = FALSE WHERE itemId = ? AND isPrimary = TRUE",
+          [image.itemId],
+        );
+      }
+
+      const query = `UPDATE itemImages SET isPrimary = TRUE WHERE imageId = ?`;
+
+      const [result] = await db.execute<ResultSetHeader>(query, [
+        image.imageId,
+      ]);
+
+      if (result.affectedRows > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+
+  async getImageById(imageId: number): Promise<ItemImage> {
+    try {
+      const query = `SELECT * FROM itemImages WHERE imageId = ?`;
+
+      const [rows] = await db.execute<RowDataPacket[]>(query, [imageId]);
+
+      if (rows.length === 0) return new ItemImage();
+
+      const row = rows[0];
+
+      return new ItemImage(
+        row.imageId,
+        row.itemId,
+        row.imageUrl,
+        !!row.isPrimary,
+        row.sortOrder,
+      );
+    } catch {
+      return new ItemImage();
+    }
   }
 }
