@@ -52,6 +52,8 @@ export default function BookForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); //sluzi da spreci podrazumevano ponasanje browsera
 
+    var pdfUrl = "";
+
     const validation = validateBookCreateData(
       name,
       author,
@@ -92,7 +94,7 @@ export default function BookForm({
             goodreadsLink,
             publicationYear,
             cover,
-            pdf,
+            pdfUrl,
             genreIds,
             discountPercent,
             discountFrom,
@@ -122,6 +124,12 @@ export default function BookForm({
         return;
       }
 
+      if (pdf !== null) {
+        pdfUrl = await uploadFile(pdf!, token, "knjiga", name);
+      }
+
+      //PROMENI MAPTOBOOKDTO DA PRIMA pdfURL kao STRING
+
       // CREATE
       const book = mapToBookDto({
         name,
@@ -133,7 +141,7 @@ export default function BookForm({
         goodreadsLink,
         publicationYear,
         cover,
-        pdf,
+        pdfUrl,
         genreIds,
         discountPercent,
         discountFrom,
@@ -194,7 +202,7 @@ export default function BookForm({
 
       // 1. upload novih slika
       for (let i = 0; i < images.length; i++) {
-        const imageUrl = await uploadFile(itemId, images[i], token, "aksesoar")
+        const imageUrl = await uploadFile(images[i], token, "knjiga", name);
 
         await itemImageApi.addImage(token, itemId, {
           imageUrl,

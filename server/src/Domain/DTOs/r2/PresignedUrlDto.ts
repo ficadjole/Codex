@@ -1,8 +1,8 @@
 import { ItemType } from "../../enums/ItemType";
 
 export interface PresingedUrlDto {
-  itemId: number;
   fileName: string;
+  itemName: string;
   contentType: string;
   itemType: ItemType;
 }

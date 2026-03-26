@@ -1,22 +1,22 @@
-import type { BookCreateDto } from "../models/item/create/BookCreateDto"
-import type { BookUpdateDto } from "../models/item/update/BookUpdateDto"
-import { mapDiscount } from "./discountMapper"
+import type { BookCreateDto } from "../models/item/create/BookCreateDto";
+import type { BookUpdateDto } from "../models/item/update/BookUpdateDto";
+import { mapDiscount } from "./discountMapper";
 
 interface MapBookParams {
-  name: string
-  price: number | null
-  description: string
-  author: string
-  isbn: string
-  nmbrOfPages: number | null
-  goodreadsLink: string
-  publicationYear: number | null
-  cover: "meke" | "tvrde"
-  pdf: File | null
-  genreIds: number[]
-  discountPercent: number | null
-  discountFrom: string
-  discountTo: string
+  name: string;
+  price: number | null;
+  description: string;
+  author: string;
+  isbn: string;
+  nmbrOfPages: number | null;
+  goodreadsLink: string;
+  publicationYear: number | null;
+  cover: "meke" | "tvrde";
+  pdfUrl: string | null;
+  genreIds: number[];
+  discountPercent: number | null;
+  discountFrom: string;
+  discountTo: string;
 }
 
 export function mapToBookDto(data: MapBookParams): BookCreateDto {
@@ -30,22 +30,21 @@ export function mapToBookDto(data: MapBookParams): BookCreateDto {
     goodreadsLink: data.goodreadsLink,
     publicationYear: data.publicationYear!,
     cover: data.cover,
-    pdfUrl: data.pdf ? data.pdf.name : "",
+    pdfUrl: data.pdfUrl ?? "",
     genres: data.genreIds,
-    ...mapDiscount(data.discountPercent, data.discountFrom, data.discountTo)
-  }
+    ...mapDiscount(data.discountPercent, data.discountFrom, data.discountTo),
+  };
 }
 
 export function mapToBookUpdateDto(
   data: MapBookParams,
-  itemId: number
+  itemId: number,
 ): BookUpdateDto {
-
   const discount = mapDiscount(
     data.discountPercent,
     data.discountFrom,
-    data.discountTo
-  )
+    data.discountTo,
+  );
 
   return {
     itemId,
@@ -58,7 +57,7 @@ export function mapToBookUpdateDto(
     goodreadsLink: data.goodreadsLink,
     publicationYear: data.publicationYear!,
     cover: data.cover,
-    pdfUrl: data.pdf ? data.pdf.name : "",
+    pdfUrl: data.pdfUrl ?? "",
 
     genres: data.genreIds,
 
@@ -66,6 +65,6 @@ export function mapToBookUpdateDto(
 
     discountPercent: discount.discountPercent ?? undefined,
     discountFrom: discount.discountFrom ?? undefined,
-    discountTo: discount.discountTo ?? undefined
-  }
+    discountTo: discount.discountTo ?? undefined,
+  };
 }

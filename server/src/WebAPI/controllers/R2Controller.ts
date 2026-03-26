@@ -17,29 +17,27 @@ export class R2Controller {
 
   private initializeRoutes(): void {
     this.router.post(
-      "/r2/:itemId",
+      "/r2",
       authenticate,
       authorize(UserRole.ADMIN),
       this.getPresignedUrl.bind(this),
+    );
+
+    this.router.delete(
+      "/r2",
+      authenticate,
+      authorize(UserRole.ADMIN),
+      this.deleteObject.bind(this),
     );
   }
 
   async getPresignedUrl(req: Request, res: Response): Promise<void> {
     try {
-      const itemId = Number(req.params.itemId);
-      const { itemType, fileName, contentType } = req.body;
-
-      if (!itemId) {
-        res.status(400).json({
-          success: false,
-          message: "itemId is required",
-        });
-        return;
-      }
+      const { itemType, fileName, itemName, contentType } = req.body;
 
       const dto: PresingedUrlDto = {
-        itemId,
         fileName,
+        itemName,
         contentType,
         itemType,
       };
@@ -55,6 +53,37 @@ export class R2Controller {
       res.status(500).json({
         success: false,
         message: "Failed to generate presigned url",
+      });
+    }
+  }
+
+  async deleteObject(req: Request, res: Response): Promise<void> {
+    try {
+      const { dataUrl } = req.body;
+      if (
+        dataUrl.trim().length === 0 ||
+        !dataUrl.includes("https://cdn.dekaton.rs/")
+      ) {
+        res.status(400).json({ success: false, message: "Invalid URL" });
+      }
+
+      const result = await this.R2StorageService.deleteData(dataUrl);
+
+      if (result) {
+        res
+          .status(200)
+          .json({ success: true, message: "Object deleted succesfuly" });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "Object with passed url is not found",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete object on R2",
       });
     }
   }

@@ -3,10 +3,10 @@ import { r2StorageApi } from "../api_services/r2StorageApi/R2StorageApi";
 import { optimizeImage } from "./optimizeImage";
 
 export async function uploadFile(
-  itemId: number,
   file: File,
   token: string,
   itemType: string,
+  itemName: string,
 ) {
   let processedFile = file;
 
@@ -15,9 +15,9 @@ export async function uploadFile(
   }
 
   const uploadData = await r2StorageApi.generateUrlForUpload(
-    itemId,
     {
       fileName: processedFile.name,
+      itemName: itemName,
       contentType: processedFile.type,
       itemType: itemType,
     },
