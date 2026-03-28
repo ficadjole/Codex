@@ -176,3 +176,37 @@ CREATE TABLE subscribers (
     email VARCHAR(255) NOT NULL UNIQUE,
     status ENUM('aktivan','odjavljen') DEFAULT 'aktivan'
 );
+
+-- ========================================
+-- Korpa (CART)
+-- ========================================
+CREATE TABLE Cart (
+    cartId INT PRIMARY KEY AUTO_INCREMENT,
+    userId INT NOT NULL,
+
+    CONSTRAINT fk_cart_user
+        FOREIGN KEY (userId) REFERENCES Users(userId)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_cart_user UNIQUE (userId)
+);
+
+-- ========================================
+-- Artikal korpe (CART ITEM)
+-- ========================================
+CREATE TABLE CartItem (
+    cartItemId INT PRIMARY KEY AUTO_INCREMENT,
+    cartId INT NOT NULL,
+    itemId INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+
+    CONSTRAINT fk_cartitem_cart
+        FOREIGN KEY (cartId) REFERENCES Cart(cartId)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_cartitem_item
+        FOREIGN KEY (itemId) REFERENCES Items(itemId)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_cart_item UNIQUE (cartId, itemId)
+);
