@@ -7,11 +7,11 @@ import { ItemType } from "../../Domain/enums/ItemType";
 
 export class ItemController {
   private router: Router;
-  private service: IItemService;
+  private itemService: IItemService;
 
-  constructor(service: IItemService) {
+  constructor(itemService: IItemService) {
     this.router = Router();
-    this.service = service;
+    this.itemService = itemService;
     this.initializeRoutes();
   }
 
@@ -54,15 +54,13 @@ export class ItemController {
         ...req.body,
         userId: req.user?.id,
       };
-      const result = await this.service.addItem(item);
+      const result = await this.itemService.addItem(item);
       if (result.itemId === 0) {
         if (result.name !== "") {
-          return res
-            .status(400)
-            .json({
-              success: false,
-              message: "Cannot add item with same name",
-            });
+          return res.status(400).json({
+            success: false,
+            message: "Cannot add item with same name",
+          });
         } else {
           return res
             .status(400)
@@ -84,7 +82,7 @@ export class ItemController {
     try {
       const item = req.body;
       item.itemId = parseInt(req.params.itemId as string, 10);
-      const result = await this.service.updateItem(item);
+      const result = await this.itemService.updateItem(item);
       if (result.itemId === 0)
         return res
           .status(400)
@@ -100,7 +98,7 @@ export class ItemController {
   private async deleteItem(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
-      const result = await this.service.deleteItem(itemId);
+      const result = await this.itemService.deleteItem(itemId);
       if (!result)
         return res
           .status(400)
@@ -116,7 +114,7 @@ export class ItemController {
   private async getItemById(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
-      const result = await this.service.getItemById(itemId);
+      const result = await this.itemService.getItemById(itemId);
       if (result.itemId === 0)
         return res
           .status(404)
@@ -129,7 +127,7 @@ export class ItemController {
 
   private async getAllItems(req: Request, res: Response) {
     try {
-      const result = await this.service.getAllItems();
+      const result = await this.itemService.getAllItems();
       if (result.length === 0)
         return res
           .status(404)
@@ -155,7 +153,7 @@ export class ItemController {
         return;
       }
 
-      const result = await this.service.getItemsByType(itemType!);
+      const result = await this.itemService.getItemsByType(itemType!);
       if (result.length === 0)
         return res
           .status(404)
@@ -169,9 +167,9 @@ export class ItemController {
   private async getBook(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
-      const item = await this.service.getItemById(itemId);
+      const item = await this.itemService.getItemById(itemId);
 
-      const book = await this.service.getBook(itemId);
+      const book = await this.itemService.getBook(itemId);
       book.name = item.name;
       book.price = item.price;
       book.description = item.description;
@@ -189,15 +187,20 @@ export class ItemController {
   private async getAccessory(req: Request, res: Response) {
     try {
       const itemId = parseInt(req.params.itemId);
-      const item = await this.service.getItemById(itemId);
-      const accessory = await this.service.getAccessory(itemId);
+
+      const item = await this.itemService.getItemById(itemId);
+
+      const accessory = await this.itemService.getAccessory(itemId);
+
       accessory.name = item.name;
       accessory.price = item.price;
       accessory.description = item.description;
+
       if (accessory.itemId === 0 || item.itemId === 0)
         return res
           .status(404)
           .json({ success: false, message: "Accessory not found." });
+
       res.status(200).json({ success: true, data: accessory });
     } catch {
       res.status(500).json({ success: false, message: "Server error." });
@@ -221,7 +224,7 @@ export class ItemController {
         return;
       }
 
-      const result = await this.service.addDiscount(
+      const result = await this.itemService.addDiscount(
         itemId,
         discountPercent,
         discountFrom,

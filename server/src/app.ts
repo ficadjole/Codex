@@ -71,6 +71,13 @@ import { ItemImageController } from "./WebAPI/controllers/ItemImageController";
 import { IR2StorageService } from "./Domain/services/R2/IR2StorageService";
 import { R2StorageService } from "./R2/services/R2StorageService";
 import { R2Controller } from "./WebAPI/controllers/R2Controller";
+import { ICartItemRepository } from "./Domain/repositories/ICartItemRepository";
+import { CartItemRepository } from "./Database/repositories/cartItem/CartItemRepository";
+import { ICartRepository } from "./Domain/repositories/ICartRepository";
+import { CartRepository } from "./Database/repositories/cart/CartRepository";
+import { ICartService } from "./Domain/services/cart/ICartService";
+import { CartService } from "./Services/cart/CartService";
+import { CartController } from "./WebAPI/controllers/CartController";
 
 require("dotenv").config();
 
@@ -159,6 +166,16 @@ const orderController = new OrderController(orderService);
 const r2StorageService: IR2StorageService = new R2StorageService();
 const r2StorageController = new R2Controller(r2StorageService);
 
+// --- Cart ---
+
+const cartItemRepository: ICartItemRepository = new CartItemRepository();
+const cartRepository: ICartRepository = new CartRepository();
+const cartService: ICartService = new CartService(
+  cartRepository,
+  cartItemRepository,
+);
+const cartController = new CartController(cartService);
+
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1/item", itemController.getRouter());
 app.use("/api/v1/itemImages", itemImageController.getRouter());
@@ -168,5 +185,6 @@ app.use("/api/v1/comment", commentController.getRouter());
 app.use("/api/v1/genre", genreController.getRouter());
 app.use("/api/v1/order", orderController.getRouter());
 app.use("/api/v1/", r2StorageController.getRouter());
+app.use("/api/v1/cart", cartController.getRouter());
 
 export default app;

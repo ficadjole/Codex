@@ -7,11 +7,11 @@ import { optionalAuth } from "../middlewere/authentification/OptionalAuthMiddlew
 
 export class OrderController {
     private router: Router;
-    private service: IOrderService;
+    private orderService: IOrderService;
 
-    constructor(service: IOrderService) {
+    constructor(orderService: IOrderService) {
         this.router = Router();
-        this.service = service;
+        this.orderService = orderService;
         this.initializeRoutes();
     }
 
@@ -64,7 +64,7 @@ export class OrderController {
         try {
             const userId = req.user?.id; // iz tokena ako ga nema saljemo undefined tj null sto je okej jer nam to baza podrzava
             const orderData = req.body;
-            const result = await this.service.createOrder(userId!, orderData);
+            const result = await this.orderService.createOrder(userId!, orderData);
 
             if (result.orderId === null)
                 return res
@@ -89,7 +89,7 @@ export class OrderController {
                     message: "Unauthorized",
                 });
             }
-            const result = await this.service.getUserOrders(userId);
+            const result = await this.orderService.getUserOrders(userId);
 
             if (result.length === 0)
                 return res
@@ -119,7 +119,7 @@ export class OrderController {
                     .status(400)
                     .json({ success: false, message: "Invalid orderId." });
 
-            const order = await this.service.getOrderById(orderId);
+            const order = await this.orderService.getOrderById(orderId);
 
             if (!order)
                 return res
@@ -165,7 +165,7 @@ export class OrderController {
                 return;
             }
 
-            const result = await this.service.getFullOrderDetails(orderId);
+            const result = await this.orderService.getFullOrderDetails(orderId);
 
             if (!result || !result.order) {
                 res.status(404).json({
@@ -202,7 +202,7 @@ export class OrderController {
 
     private async getAllOrders(req: Request, res: Response) {
         try {
-            const result = await this.service.getAllOrders();
+            const result = await this.orderService.getAllOrders();
 
             if (result.length === 0)
                 return res
@@ -225,7 +225,7 @@ export class OrderController {
                     .status(400)
                     .json({ success: false, message: "Invalid orderId." });
 
-            const result = await this.service.changeStatus(orderId, status);
+            const result = await this.orderService.changeStatus(orderId, status);
 
             if (!result)
                 return res
@@ -247,7 +247,7 @@ export class OrderController {
                     .status(400)
                     .json({ success: false, message: "Invalid orderId." });
 
-            const result = await this.service.deleteOrder(orderId);
+            const result = await this.orderService.deleteOrder(orderId);
 
             if (!result)
                 return res
