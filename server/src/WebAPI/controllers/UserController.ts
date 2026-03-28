@@ -13,8 +13,16 @@ export class UserController {
   }
 
   private initializeRoutes(): void {
-    this.router.put("/users/updateUser/:id", authenticate, this.updateUser.bind(this));
-    this.router.get("/users/get/:id", authenticate, this.getUserById.bind(this));
+    this.router.put(
+      "/users/updateUser/:id",
+      authenticate,
+      this.updateUser.bind(this),
+    );
+    this.router.get(
+      "/users/get/:id",
+      authenticate,
+      this.getUserById.bind(this),
+    );
   }
 
   private async updateUser(req: Request, res: Response): Promise<void> {
@@ -42,19 +50,21 @@ export class UserController {
   }
 
   private async getUserById(req: Request, res: Response): Promise<void> {
-    try{
+    try {
       const userId = parseInt(req.params.id, 10);
 
       const user = await this.userService.getUserById(userId);
 
-      if(!user.userId) {
+      if (!user.userId) {
         res.status(404).json({ success: false, message: "User not found" });
       }
 
       res.status(200).json(user);
-    } catch(error){
+    } catch (error) {
       console.error("Error fetching user:", error);
-      res.status(500).json({ success: false, message: "Internal server error"});
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
     }
   }
 }
